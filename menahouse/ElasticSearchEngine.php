@@ -37,13 +37,18 @@ class ElasticSearchEngine
   public function getIndexedElements($paramSearch){
 
   $paramTerm = $paramSearch["term"];
-  $paramRange = $paramSearch["range"];
   $must = [];
+  if (count($paramSearch["range"]) != 0) {
+    $paramRange = $paramSearch["range"];
+  }
   if (count($paramTerm) == 1) {
-       $searchConditons = ["gorod" => $paramTerm["gorod"]];
-       if (count($paramRange) != 0 ) {
-         // array_push($searchConditons, "range" => ["obshaya_ploshad" => $this->createRangeQuery($paramRange)]);
-         $searchConditons += ["range" => ["obshaya_ploshad" => $this->createRangeQuery($paramRange)]];
+       $searchConditons["bool"]["must"] = ["match"
+                                => ["gorod" => $paramTerm["gorod"]]];
+       if ( isset($paramRange) ) {
+
+          array_push($searchConditons["bool"]["must"],
+                      ["range" => ["obshaya_ploshad"
+                       => $this ->createRangeQuery($paramRange)]]);
        }
   } else {
 
@@ -52,12 +57,16 @@ class ElasticSearchEngine
       }
 
       $searchConditons = [ "bool" => [ "must" => $must ]];
+      if ( isset($paramRange) ) {
 
-      if (count($paramRange) != 0 ) {
-      //    array_push($searchConditons, "range" => ["obshaya_ploshad" => $this->createRangeQuery($paramRange)]);
-          $searchConditons += ["range" => ["obshaya_ploshad" => $this->createRangeQuery($paramRange)]];
+         array_push($searchConditons["bool"]["must"],
+                     ["range" => ["obshaya_ploshad"
+                      => $this ->createRangeQuery($paramRange)]]);
       }
+
   }
+
+
   $params = [
       "index" => "obivlenie",
       "type" => "obivlenie",
@@ -70,7 +79,6 @@ class ElasticSearchEngine
           ]
     ]];
 
-   //dd(json_encode($searchConditons));
    $results = $this->client->search($params);   // Execute the search
    dd($results['hits']);
 //   return $results;
