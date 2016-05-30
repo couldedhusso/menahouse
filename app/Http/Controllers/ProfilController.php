@@ -76,6 +76,13 @@ class ProfilController extends Controller
         $CloudStorage = Storage::disk('s3');
         $id = Input::get('user_id');
         $user = User::find($id);
+        $profile = Profiles::whereuser_id($id)->first();
+
+        $InputProfile = Input::only('bio', 'vk','ok', 'fb', 'twitter');
+        //dd(Input::get('bio'));
+
+        $profile->fill($InputProfile)->save();
+        return Redirect('/dashboard/settings/'.$id);
 
         // $user->profile()->save(new Profiles);
         // $imgprofi = Images::whereimageable_id($profil->user_id)->get();
@@ -129,8 +136,7 @@ class ProfilController extends Controller
             }
 
       }
-          $profile->save();
-          return Redirect('/home');
+
     }
 
     /**

@@ -12,6 +12,7 @@ use Hash ;
 
 use Auth;
 use App\User ;
+use App\Profiles;
 
 use Illuminate\Database\QueryException ;
 use Laracasts\Flash\Flash;
@@ -148,25 +149,31 @@ class SessionController extends Controller
     {
       $inputid = Input::get('user_id');
       $user = User::whereid($inputid)->first();
+      $userprofile = Profiles::whereuser_id($inputid)->first();
 
       $credentials = [
           'email' => $user->email,
-          'password' => Input::get('oldpassword'),
+          'password' => Input::get('form-account-password-current'),
           'confirmed' => 1
       ];
 
       if ( ! Auth::attempt($credentials))
       {
           Flash::warning('что-то не так, пароль свой проверайте пожалуйста  !!');
-          return view('sessions.settings-profil', compact('user'));
+          return view('sessions.settings-profil', compact('user', 'userprofile'));
 
       }else {
+          if (Input::get('form-account-password-new') == Input::get('form-account-password-confirm-new')) {
+              $user->password = Hash::make(Input::get('form-account-password-new'));
+              $user->save();
 
-          $user->password = Hash::make(Input::get('newpassword'));
-          $user->save();
+              Flash::success('Пароль успешно изменен  !!');
+              return view('sessions.settings-profil', compact('user', 'userprofile'));
+          } else {
+              Flash::warning('что-то не так, проверайте пожалуйста подтверждение пароля !!');
+              return view('sessions.settings-profil', compact('user', 'userprofile'));
+          }
 
-          Flash::success('Пароль успешно изменен  !!');
-          return view('sessions.settings-profil', compact('user'));
 
       }
 

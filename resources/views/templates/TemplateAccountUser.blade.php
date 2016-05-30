@@ -9,13 +9,7 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
 
     <link href="{{ asset('static/assets/fonts/font-awesome.css') }}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/bootstrap/css/bootstrap.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/bootstrap-select.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/magnific-popup.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/jquery.slider.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/owl.carousel.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/style.css') }}" type="text/css">
-
+    <link rel="stylesheet" href="{{ elixir("css/all.css") }}">
 
     <title>Mena | Registration</title>
 
@@ -35,7 +29,7 @@
                 <div class="user-area">
                     <div class="actions">
                       @if(Auth::check())
-                         <a href="{{ url('/dashboard/nedvizhimosts') }}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
+                         <a href="{{ url('/dashboard/advertisements') }}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
                       @else
                          <a href="{{ url('/sign-in')}}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
                       @endif
@@ -53,7 +47,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <div class="navbar-brand nav" id="brand">
-                        <a href="#"> <img src="{{asset('static/assets/img/logo.png')}}" alt="Менахаус" title="Менахаус"></a>
+                        <a href="{{url('/')}}"> <img src="{{asset('static/assets/img/logo.png')}}" alt="Менахаус" title="Менахаус"></a>
                     </div>
                 </div>
                 <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">

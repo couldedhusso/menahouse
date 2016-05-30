@@ -16,9 +16,7 @@
    {
      return $this->morphTo();
    }
-
    
-
    /*public function nedvizhimosts(){
      return $this->morphToMany('App\Nedvizhimosts', 'imageable')
    }

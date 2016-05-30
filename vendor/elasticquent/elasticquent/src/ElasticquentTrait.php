@@ -3,6 +3,9 @@
 namespace Elasticquent;
 
 use Exception;
+use ReflectionMethod;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 /**
  * Elasticquent Trait
@@ -12,7 +15,7 @@ use Exception;
  */
 trait ElasticquentTrait
 {
-    use ElasticquentClientTrait, EloquentMethods;
+    use ElasticquentClientTrait;
 
     /**
      * Uses Timestamps In Index
@@ -59,25 +62,6 @@ trait ElasticquentTrait
     public function newCollection(array $models = array())
     {
         return new ElasticquentCollection($models);
-    }
-
-    /**
-     * Get Index Name
-     *
-     * @return string
-     */
-    public function getIndexName()
-    {
-        // The first thing we check is if there is an elasticquent
-        // config file and if there is a default index.
-        $index_name = $this->getElasticConfig('default_index');
-
-        if (!empty($index_name)) {
-            return $index_name;
-        }
-
-        // Otherwise we will just go with 'default'
-        return 'default';
     }
 
     /**
@@ -135,6 +119,16 @@ trait ElasticquentTrait
     public function setMappingProperties(array $mapping = null)
     {
         $this->mappingProperties = $mapping;
+    }
+
+    /**
+     * Get Index Settings
+     *
+     * @return array
+     */
+    public function getIndexSettings()
+    {
+        return $this->indexSettings;
     }
 
     /**
@@ -251,7 +245,7 @@ trait ElasticquentTrait
 
         $result = $instance->getElasticSearchClient()->search($params);
 
-        return new \Elasticquent\ElasticquentResultCollection($result, $instance = new static);
+        return static::hydrateElasticsearchResult($result);
     }
 
     /**
@@ -268,7 +262,7 @@ trait ElasticquentTrait
 
         $result = $instance->getElasticSearchClient()->search($params);
 
-        return new \Elasticquent\ElasticquentResultCollection($result, $instance = new static);
+        return static::hydrateElasticsearchResult($result);
     }
 
     /**
@@ -290,7 +284,7 @@ trait ElasticquentTrait
 
         $result = $instance->getElasticSearchClient()->search($params);
 
-        return new \Elasticquent\ElasticquentResultCollection($result, $instance = new static);
+        return static::hydrateElasticsearchResult($result);
     }
 
     /**
@@ -349,7 +343,7 @@ trait ElasticquentTrait
      * Get Search Document
      *
      * Retrieve an ElasticSearch document
-     * for this enty.
+     * for this entity.
      *
      * @return array
      */
@@ -527,12 +521,25 @@ trait ElasticquentTrait
             'index' => $instance->getIndexName(),
         );
 
+        $settings = $instance->getIndexSettings();
+        if (!is_null($settings)) {
+            $index['body']['settings'] = $settings;
+        }
+
         if (!is_null($shards)) {
             $index['body']['settings']['number_of_shards'] = $shards;
         }
 
         if (!is_null($replicas)) {
             $index['body']['settings']['number_of_replicas'] = $replicas;
+        }
+
+        $mappingProperties = $instance->getMappingProperties();
+        if (!is_null($mappingProperties)) {
+            $index['body']['mappings'][$instance->getTypeName()] = [
+                '_source' => array('enabled' => true),
+                'properties' => $mappingProperties,
+            ];
         }
 
         return $client->indices()->create($index);
@@ -583,10 +590,14 @@ trait ElasticquentTrait
      */
     public function newFromHitBuilder($hit = array())
     {
-        $instance = $this->newInstance(array(), true);
-
+        $key_name = $this->getKeyName();
+        
         $attributes = $hit['_source'];
 
+        if (isset($hit['_id'])) {
+            $attributes[$key_name] = is_numeric($hit['_id']) ? intval($hit['_id']) : $hit['_id'];
+        }
+        
         // Add fields to attributes
         if (isset($hit['fields'])) {
             foreach ($hit['fields'] as $key => $value) {
@@ -594,7 +605,7 @@ trait ElasticquentTrait
             }
         }
 
-        $instance->setRawAttributes((array)$attributes, true);
+        $instance = $this::newFromBuilderRecursive($this, $attributes);
 
         // In addition to setting the attributes
         // from the index, we will set the score as well.
@@ -612,4 +623,156 @@ trait ElasticquentTrait
         return $instance;
     }
 
+    /**
+     * Create a elacticquent result collection of models from plain elasticsearch result.
+     *
+     * @param  array  $result
+     * @return \Elasticquent\ElasticquentResultCollection
+     */
+    public static function hydrateElasticsearchResult(array $result)
+    {
+        $items = $result['hits']['hits'];
+        return static::hydrateElasticquentResult($items, $meta = $result);
+    }
+
+    /**
+     * Create a elacticquent result collection of models from plain arrays.
+     *
+     * @param  array  $items
+     * @param  array  $meta
+     * @return \Elasticquent\ElasticquentResultCollection
+     */
+    public static function hydrateElasticquentResult(array $items, $meta = null)
+    {
+        $instance = new static;
+
+        $items = array_map(function ($item) use ($instance) {
+            return $instance->newFromHitBuilder($item);
+        }, $items);
+
+        return $instance->newElasticquentResultCollection($items, $meta);
+    }
+
+    /**
+     * Create a new model instance that is existing recursive.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  array  $attributes
+     * @param  \Illuminate\Database\Eloquent\Relations\Relation  $parentRelation
+     * @return static
+     */
+    public static function newFromBuilderRecursive(Model $model, array $attributes = [], Relation $parentRelation = null)
+    {
+        $instance = $model->newInstance([], $exists = true);
+
+        $instance->setRawAttributes((array)$attributes, $sync = true);
+
+        // Load relations recursive
+        static::loadRelationsAttributesRecursive($instance);
+        // Load pivot
+        static::loadPivotAttribute($instance, $parentRelation);
+
+        return $instance;
+    }
+
+    /**
+     * Create a collection of models from plain arrays recursive.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model $model
+     * @param  \Illuminate\Database\Eloquent\Relations\Relation $parentRelation
+     * @param  array $items
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function hydrateRecursive(Model $model, array $items, Relation $parentRelation = null)
+    {
+        $instance = $model;
+
+        $items = array_map(function ($item) use ($instance, $parentRelation) {
+            return static::newFromBuilderRecursive($instance, $item, $parentRelation);
+        }, $items);
+
+        return $instance->newCollection($items);
+    }
+
+    /**
+     * Get the relations attributes from a model.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model $model
+     */
+    public static function loadRelationsAttributesRecursive(Model $model)
+    {
+        $attributes = $model->getAttributes();
+
+        foreach ($attributes as $key => $value) {
+            if (method_exists($model, $key)) {
+                $reflection_method = new ReflectionMethod($model, $key);
+
+                if ($reflection_method->class != "Illuminate\Database\Eloquent\Model") {
+                    $relation = $model->$key();
+
+                    if ($relation instanceof Relation) {
+                        // Check if the relation field is single model or collections
+                        if (!static::isMultiLevelArray($value)) {
+                            $value = [$value];
+                        }
+
+                        $models = static::hydrateRecursive($relation->getModel(), $value, $relation);
+
+                        // Unset attribute before match relation
+                        unset($model[$key]);
+                        $relation->match([$model], $models, $key);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Get the pivot attribute from a model.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  \Illuminate\Database\Eloquent\Relations\Relation  $parentRelation
+     */
+    public static function loadPivotAttribute(Model $model, Relation $parentRelation = null)
+    {
+        $attributes = $model->getAttributes();
+
+        foreach ($attributes as $key => $value) {
+            if ($key === 'pivot') {
+                unset($model[$key]);
+                $pivot = $parentRelation->newExistingPivot($value);
+                $model->setRelation($key, $pivot);
+            }
+        }
+    }
+
+    /**
+     * Create a new Elasticquent Result Collection instance.
+     *
+     * @param  array  $models
+     * @param  array  $meta
+     * @return \Elasticquent\ElasticquentResultCollection
+     */
+    public function newElasticquentResultCollection(array $models = [], $meta = null)
+    {
+        return new ElasticquentResultCollection($models, $meta);
+    }
+
+    /**
+     * Check if an array is multi-level array like [[id], [id], [id]].
+     *
+     * For detect if a relation field is single model or collections.
+     *
+     * @param  array  $array
+     * @return boolean
+     */
+    private static function isMultiLevelArray(array $array)
+    {
+        foreach ($array as $key => $value) {
+            if (!is_array($value)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

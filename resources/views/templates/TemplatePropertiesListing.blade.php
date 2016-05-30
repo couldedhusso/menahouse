@@ -6,21 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="ThemeStarz">
 
-    <link href='http://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
 
-    <link href="{{ asset('static/assets/fonts/font-awesome.css') }}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/bootstrap/css/bootstrap.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/bootstrap-select.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/magnific-popup.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/jquery.slider.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/owl.carousel.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/style.css') }}" type="text/css">
+        <link href='http://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
 
-    <title>Mena | Registration</title>
+        <link href="{{ asset('assets/fonts/font-awesome.css') }}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="{{ elixir("css/all.css") }}">
+
+    <title>Mena | Properties Listing</title>
 
 </head>
 
-<body class="page-sub-page page-create-account page-account" id="page-top">
+<body class="page-sub-page page-create-account page-account" id="page-top" ng-app ="menahouse" ng-controller="SearchItemsController" >
 <!-- Wrapper -->
 <div class="wrapper">
 
@@ -62,7 +58,7 @@
           <div class="row">
               <!-- Results -->
               <div class="col-md-9 col-sm-9">
-                  @yield('result-search')
+                  @yield('search-results')
               </div><!-- /.col-md-9 -->
               <!-- end Results -->
 
@@ -252,9 +248,47 @@
 <script type="text/javascript" src="{{asset('static/assets/js/icheck.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/retina-1.1.0.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/custom.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/vendor/jquery.infinitescroll.min.js')}}"></script>
+<script type="text/javascript" src="{{ asset('js/angular/vendor/angular.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/angular/main.js') }}"></script>
 <!--[if gt IE 8]>
 <script type="text/javascript" src="{{asset('static/assets/js/ie.js')}}"></script>
 <![endif]-->
+<script type="text/javascript">
+/*
+	Load more content with jQuery - May 21, 2013
+	(c) 2013 @ElmahdiMahmoud
+*/
+
+$(function () {
+    $("div.porperties-load").slice(0, 4).show();
+    $("#loadMore").on('click', function (e) {
+        e.preventDefault();
+        $("div.porperties-load:hidden").slice(0, 4).slideDown();
+        if ($("div.porperties-load:hidden").length == 0) {
+            $("#load").fadeOut('slow');
+        }
+        $('html,body').animate({
+            scrollTop: $(this).offset().top
+        }, 1500);
+    });
+});
+
+$('a[href=#top]').click(function () {
+    $('body,html').animate({
+        scrollTop: 0
+    }, 600);
+    return false;
+});
+
+$(window).scroll(function () {
+    if ($(this).scrollTop() > 50) {
+        $('.totop a').fadeIn();
+    } else {
+        $('.totop a').fadeOut();
+    }
+});
+</script>
 
 </body>
 </html>

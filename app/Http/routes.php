@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Role ;
 use App\Obivlenie ;
 use App\Categorie ;
@@ -8,11 +7,16 @@ use App\Images ;
 use App\Profiles;
 use App\User;
 
+use App\Bookmarked;
+use App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input as Input;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\UserMessage;
 use Illuminate\Support\Collection ;
+
+
 // use Request;
 // use Validator;
 
@@ -31,62 +35,57 @@ use Illuminate\Support\Collection ;
 
 Route::group(['middleware' => 'auth'], function () {
 
-    Route::get('dashboard/nedvizhimosts/add', function ()    {
+    Route::get('dashboard/advertisements', function(){
+
+        $userId = Auth::user()->id ;
+        $flag = 'advertisements';
+    //    $obivlenie = obivlenie::whereuser_id($userId)->get();
+        $obivlenie = obivlenie::whereuser_id($userId)->where('available','=','1')
+                                                     ->with('images')
+                                                     ->get();
+
+        return View('sessions.dashboard', compact('flag', 'obivlenie'));
+    });
+
+
+    Route::get('dashboard/advertisement/add', function ()    {
         return View('sessions.additem') ;
     });
 
-    Route::get('dashboard/nedvizhimosts', function(){
+    Route::get('dashboard/advertisement/delete/{id}', ['as' => 'path_delete_item',
+                        'uses' => 'ObivlenieController@destroy']);
 
-      $userId = Auth::user()->id ;
-      $ads = obivlenie::whereuser_id($userId)->with('images')->get() ;
-        return View('sessions.dashboard')->with('ads', $ads);
+    Route::get('dashboard/advertisement/edit/{id}', function ($id)    {
+        $house = DB::table('obivlenie')->whereid($id)->first();
+        return View('sessions.update-item', compact('house')) ;
     });
 
-    Route::get('dashboard/nedvizhimosts/{id}', function($id){
-        $ad = obivlenie::find($id)->get();
-            return View('sessions.dashboard')->with('ad', $ad) ;
-     });
+    Route::get('dashboard/advertisement/edit', ['as' => 'path_update_item',
+                        'uses' => 'ObivlenieController@update']);
 
-    Route::get('dashboard/nedvizhimosts/delete/{id}', ['as' => 'path_delete_item',
-                        'uses' => 'ObivlenieController @destroy']);
+
+    Route::get('dashboard/bookmarked', function (){
+
+        $userId = Auth::user()->id ;
+        $flag = 'bookmarked';
+
+        $indx = DB::table('bookmarked')->select('obivlenie_id')
+                                       ->where('user_id','=', $userId)
+                                       ->where('deleted','=', 'false')
+                                       ->get();
+
+        $houses = DB::table('obivlenie')->whereIn('obivlenie_id', $indx)->get();
+
+        return View('sessions.bookmarked', compact('flag', 'houses'));
+    });
+
+    /* Route::get('dashboard/advertisement/add', function ()    {
+        return View('sessions.additem') ;
+    }); */
 
 
     Route::post('additems', ['as' => 'additem_path',
                        'uses' => 'ObivlenieController@store']);
-
-    // Route::group(['prefix' => 'messages'], function () {
-    //   Route::get('/', ['as' => 'messages', 'uses' => 'MessagesController@index']);
-    //   Route::get('create', ['as' => 'messages.create', 'uses' => 'MessagesController@create']);
-    //   Route::post('/', ['as' => 'messages.store', 'uses' => 'MessagesController@store']);
-    //   Route::get('{id}', ['as' => 'messages.show', 'uses' => 'MessagesController@show']);
-    //   Route::put('{id}', ['as' => 'messages.update', 'uses' => 'MessagesController@update']);
-    // // });
-    //
-
-    // Route::get('message/udalinie', function(){
-    //
-    //   // $ums = UserMessage::wheretoid(Auth::user()->id)
-    //   //                             ->orderBy('id', 'desc')
-    //   //                             ->get();
-    //
-    //   $userid  = Auth::user()->id ;
-    //
-    //   $ums = UserMessage::wheretoid($userid)
-    //                               ->orderBy('id', 'desc')
-    //                               ->get();
-    //
-    //     return view('messenger.deleted-msg', compact('userid', 'ums'));
-    // });
-    //
-    // Route::get('message/otpravlenie', function(){
-    //
-    //   $userid  = Auth::user()->id ;
-    //   $ums = UserMessage::wherefromid($userid)
-    //                               ->orderBy('id', 'desc')
-    //                               ->get();
-    //
-    //   return view('messenger.send-msg', compact('userid', 'ums'));
-    // });
 
     Route::post('message/reply', ['as' => 'reply_msg',
                                           'uses' => 'UserMessageController@store']);
@@ -94,12 +93,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('message/udalenie', ['as' => 'delete_msg',
                                   'uses' => 'UserMessageController@update']);
 
-    Route::group(['prefix' => 'messages'], function () {
-          Route::get('/', ['as' => 'messages', 'uses' => 'UserMessageController@index']);
-          Route::get('create', ['as' => 'messages.create', 'uses' => 'UserMessageController@create']);
-          Route::post('/', ['as' => 'messages.store', 'uses' => 'UserMessageController@store']);
-          Route::get('{id}', ['as' => 'messages.show', 'uses' => 'UserMessageController@show']);
-          Route::put('{id}', ['as' => 'messages.update', 'uses' => 'UserMessageController@update']);
+    Route::group(['prefix' => 'mailbox'], function () {
+          Route::get('inbox', ['as' => 'messages', 'uses' => 'UserMessageController@index']);
+          Route::get('message/new', ['as' => 'messages.create', 'uses' => 'UserMessageController@create']);
+          Route::post('message/new', ['as' => 'messages.store', 'uses' => 'UserMessageController@store']);
+          Route::get('inbox/{id}', ['as' => 'messages.show', 'uses' => 'UserMessageController@show']);
+          Route::put('inbox/{id}', ['as' => 'messages.update', 'uses' => 'UserMessageController@update']);
     });
 
 
@@ -124,20 +123,33 @@ Route::group(['middleware' => 'auth'], function () {
 
     });
 
-    Route::get('user/settings/{id}', function($id){
+    Route::get('dashboard/settings/{id}', function($id){
       // verifier si l user current est autorise a faire
       // ses modifs sinon retour a la page d acceuil
-
+      $flag ='settings';
       if ($id == Auth::user()->id ) {
 
         $user = User::whereid($id)->first();
-        return view('sessions.settings-profil', compact('user'));
+
+        try {
+             $userprofile = Profiles::whereuser_id($user->id)->firstOrfail();
+
+        } catch (ModelNotFoundException $e) {
+             $userprofile = Profiles::create(['user_id' => $id]);
+             // return view('sessions.settings-profil', compact('user'));
+        }
+
+      //  return view('sessions.profil', compact('userprofile', 'user'));
+        return view('sessions.settings-profil', compact('user', 'userprofile', 'flag'));
 
       } else{
 
         return view('/');
       }
     });
+
+    Route::post('dashboard/settings', ['as' => 'dashboard.settings',
+                       'uses' => 'ProfilController@edit']);
 
     Route::post('profil/edit', ['as' => 'profil_edit',
                        'uses' => 'ProfilController@edit']);
@@ -149,25 +161,73 @@ Route::group(['middleware' => 'auth'], function () {
                                         'uses' => 'SessionController@changePasswordUser']);
 });
 
+//====> advertisements routes
 
-Route::get('house/catalogue',  function(){
-    return View('house.catalogue');
+Route::get('dashboard/advertisement/{id}', function($id){
+
+     $house = Obivlenie::whereid($id)->with('images')->first();
+     if (Auth::check()) {
+         $userID = Auth::user()->id;
+
+         if ($userID != $house->user_id) {
+           if ($house->numberclick != null) {
+             $numberclick = $house->numberclick;
+             $numberclick += 1;
+           } else {
+             $numberclick = 1;
+           }
+         } // ne pas prendre en compte les clicks du prioprio
+     } else {
+           if ($house->numberclick != null) {
+             $numberclick = $house->numberclick;
+             $numberclick += 1;
+           } else {
+             $numberclick = 1;
+           }
+     }
+
+
+     $house->numberclick = $numberclick ;
+     $house->save();
+
+    return View('house.property_details', compact('house')) ;
+ });
+
+
+Route::get('advertisements/numberroom/{numberroom}', function($numberroom){
+  if ($numberroom == 4) {
+    $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', $numberroom)->get();
+  } else {
+    $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', $numberroom)->get();
+  }
+
+  $foundelemts = count($houses);
+
+  return view('pages.properties_listing_lines', compact('houses', 'foundelemts'));
 });
 
-Route::get('property/{id}',  function($id){
+Route::post('advertisements', function(){
 
-    $property = Obivlenie::whereid($id)->first();
-
-    return View('house.property_details', compact('property'));
+  return view('pages.properties_listing_lines', compact('houses'));
 });
 
-//Route::post('house/catalogue', 'ObivlenieController@searchInCatalogue');
+Route::post('house/catalogue', 'ObivlenieController@search');
+
 Route::post('house/catalogue', 'ObivlenieController@search');
 // Route::get('dashboard',  'DashboardController@show');
 
 /*
 * register
 */
+Route::get('join', function(){
+  return view('registration.plan');
+});
+
+Route::post('signup', function(){
+  $plan = Input::get('plan');
+  return view('registration.create', compact('plan'));
+});
+
 Route::get('register', ['as' => 'register_path',
                         'uses' => 'RegistrationController@create']);
 Route::post('register', ['as' => 'register_path',
@@ -183,15 +243,6 @@ Route::get('confirmation', function(){
     //  return View('registration.confirm_account');
     $email = 'husseincoulibaly@gmail.com';
     return view('registration.confirm_account', compact('email'));
-});
-
-Route::get('listarenda', function(){
-
-    $categorie_id = Categorie::wherename('Аренда')->get();
-    $arenda =  obivlenie::wherecategorie_id($categorie_id[0]->id)
-                                            ->with('images')
-                                            ->get() ;
-    return Response::json($arenda);
 });
 
 
@@ -275,16 +326,10 @@ Route::get('auth/register',  function(){
 
      return View('registration.create');
 });
-// Route::post('sign-up', ['as'=>'auth_register',
-//                          'uses' => 'Auth\AuthController@postRegister']);
-//
+
+
 Route::post('sign-up', ['as'=>'register_path',
                          'uses' => 'RegistrationController@store']);
-//
-// Route::get('Register', ['as' => 'auth_register',
-//                         'uses' => 'Auth\AuthController@getRegister']);
-
-
 
 // Authentication routes...
 Route::get('auth/login', 'Auth\AuthController@getLogin');
@@ -335,18 +380,5 @@ Route::get('/home', function () {
 });
 
 Route::get('/', function () {
-
-  // $Img = Image::make(public_path('storage/2015-11-16-HSfcHRhO-4da13315dae58b0fa7bdb0f31484a996.jpg'))->resize(200, );
-  // return $Img->response('jpg');
-
-   //$obivlenie = obivlenie::search('Коттедж');
-   //dd($obivlenie);
-   //
-  //  $data = ["gorod" => "Москва"];
-  //      $data += [ "two" => 2 ];
-  //      $data += [ "three" => 3 ];
-  //      $data += [ "four" => 4 ];
-
-
   return view('welcome');
 });

@@ -1,7 +1,13 @@
 @extends('templates.DefaultTemplate')
+
+@section('Title')
+  Mena | Terms & Conditions
+@endsection
+
 @section('active_breadcrumb')
   <li class="active">Правила и соглашения</li>
 @endsection
+
 @section('content')
   <div class="row">
                 <!-- Content -->

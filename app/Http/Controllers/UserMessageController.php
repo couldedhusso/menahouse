@@ -74,7 +74,7 @@ class UserMessageController extends Controller
           //     $newMessageCount[] = $um->id ;
           // }
         }
-        
+
         // dd(count($newMessageCount));
 
         return view('sessions.inbox', compact('userid', 'ums', 'piece_jointes'));
@@ -102,9 +102,8 @@ class UserMessageController extends Controller
     public function store(Request $request)
     {
         $input = Input::all();
-        $Fromid = Auth::user()->id ;
-        $Toid = User::whereemail(Input::get('email'))->first();
-
+        $sender = Auth::user()->id ;
+        $receiver = User::whereid(Input::get('To'))->first();
 
         $storage_path = public_path().'/storage/fichiers_joints/' ;
 
@@ -116,23 +115,23 @@ class UserMessageController extends Controller
 
         $um = UserMessage::create([
             'subject' => Input::get('subject'),
-            'fromid' => Input::get('sender'),
-            'toid' => Input::get('receiver'),
-            'body' => Input::get('body')
+            'fromid' => $sender,
+            'toid' => Input::get('To'),
+            'body' => Input::get('form-message')
         ]);
 
         $receiver = new Receiver ;
 
         // $receiver->from = $Toid->id;
 
-        $receiver->toid = Input::get('receiver');
+        $receiver->toid = Input::get('To');
         $receiver->msgid = $um->id;
         $receiver->last_read = Carbon::now() ;
         $receiver->save();
 
 
         $sender = new Sender;
-        $sender->userid = Input::get('sender') ;
+        $sender->userid = $sender ;
         $sender->msgid = $um->id ;
         $sender->save();
 
@@ -160,7 +159,7 @@ class UserMessageController extends Controller
 
        }
 
-       return redirect('messages');
+       return redirect('mailbox/inbox');
 
     }
 

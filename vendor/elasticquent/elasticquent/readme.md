@@ -49,15 +49,14 @@ Elasticquent allows you take an Eloquent model and easily index and search its c
 When you search, instead of getting a plain array of search results, you instead get an Eloquent collection with some special Elasticsearch functionality.
 
 ```php
-    $books = Book::search('Moby Dick')->get();
+    $books = Book::search('Moby Dick');
     echo $books->totalHits();
 ```
 
 Plus, you can still use all the Eloquent collection functionality:
 
 ```php
-    $books = $books->filter(function($book)
-    {
+    $books = $books->filter(function ($book) {
         return $book->hasISBN();
     });
 ```
@@ -76,15 +75,32 @@ To get started, add Elasticquent to you composer.json file:
 
     "elasticquent/elasticquent": "dev-master"
 
-Once you've run a `composer update`, add the Elasticquent trait to any Eloquent model that you want to be able to index in Elasticsearch:
+Once you've run a `composer update`, you need to register Laravel service provider, in your `config/app.php`:
+
+```php
+'providers' => [
+    ...
+    Elasticquent\ElasticquentServiceProvider::class,
+],
+```
+
+We also provide a facade for elasticsearch-php client (which has connected using our settings), add following to your `config/app.php` if you need so.
+
+```php
+'aliases' => [
+    ...
+    'Es' => Elasticquent\ElasticquentElasticsearchFacade::class,
+],
+```
+
+Then add the Elasticquent trait to any Eloquent model that you want to be able to index in Elasticsearch:
 
 ```php
 use Elasticquent\ElasticquentTrait;
 
-class Book extends Eloquent {
-
+class Book extends Eloquent
+{
     use ElasticquentTrait;
-
 }
 ```
 
@@ -92,7 +108,11 @@ Now your Eloquent model has some extra methods that make it easier to index your
 
 ### Elasticsearch Configuration
 
-If you need to pass a special configuration array Elasticsearch, you can add that in an `elasticquent.php` config file at `/app/config/elasticquent.php` for Laravel 4, or `/config/elasticquent.php` for Laravel 5:
+By default, Elasticquent will connect to `localhost:9200` and use `default` as index name, you can change this and the other settings in the configuration file. You can add the `elasticquent.php` config file at `/app/config/elasticquent.php` for Laravel 4, or use the following Artisan command to publish the configuration file into your config directory for Laravel 5:
+
+```shell
+$ php artisan vendor:publish --provider="Elasticquent\ElasticquentServiceProvider"
+```
 
 ```php
 <?php
@@ -138,6 +158,55 @@ If you want a simple way to create indexes, Elasticquent models have a function 
 
     Book::createIndex($shards = null, $replicas = null);
 
+For custom analyzer, you can set an `indexSettings` property in your model and define the analyzers from there:
+
+```php
+    /**
+     * The elasticsearch settings.
+     *
+     * @var array
+     */
+    protected $indexSettings = [
+        'analysis' => [
+            'char_filter' => [
+                'replace' => [
+                    'type' => 'mapping',
+                    'mappings' => [
+                        '&=> and '
+                    ],
+                ],
+            ],
+            'filter' => [
+                'word_delimiter' => [
+                    'type' => 'word_delimiter',
+                    'split_on_numerics' => false,
+                    'split_on_case_change' => true,
+                    'generate_word_parts' => true,
+                    'generate_number_parts' => true,
+                    'catenate_all' => true,
+                    'preserve_original' => true,
+                    'catenate_numbers' => true,
+                ]
+            ],
+            'analyzer' => [
+                'default' => [
+                    'type' => 'custom',
+                    'char_filter' => [
+                        'html_strip',
+                        'replace',
+                    ],
+                    'tokenizer' => 'whitespace',
+                    'filter' => [
+                        'lowercase',
+                        'word_delimiter',
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+```
+
 For mapping, you can set a `mappingProperties` property in your model and use some mapping functions from there:
 
 ```php
@@ -176,14 +245,14 @@ You can also get the type mapping and check if it exists.
 
 ### Setting a Custom Index Name
 
-Elastiquent will use `default` as your index name, but you can set a custom index name by creating an `elasticquent.php` config file in `/app/config/`:
+By default, Elasticquent will look for the `default_index` key within your configuration file(`config/elasticquent.php`). To set the default value for an index being used, you can edit this file and set the `default_index` key:
 
 ```php
-<?php
-
 return array(
 
-    /*
+   // Other configuration keys ...
+   
+   /*
     |--------------------------------------------------------------------------
     | Default Index Name
     |--------------------------------------------------------------------------
@@ -191,11 +260,21 @@ return array(
     | This is the index name that Elastiquent will use for all
     | Elastiquent models.
     */
-
-    'default_index' => 'my_custom_index_name',
-
+    
+   'default_index' => 'my_custom_index_name',
 );
 ```
+
+If you'd like to have a more dynamic index, you can also override the default configuration with a `getIndexName` method inside your Eloquent model:
+
+```php
+function getIndexName()
+{
+    return 'custom_index_name';
+}
+```
+
+Note: If no index was specified, Elasticquent will use a hardcoded string with the value of `default`.
 
 ### Setting a Custom Type Name
 
@@ -376,7 +455,7 @@ $params = array(
 
 $params['body']['query']['match']['title'] = 'Moby Dick';
 
-$collection = new \Elasticquent\ElasticquentResultCollection($client->search($params), new Book);
+$collection = Book::hydrateElasticsearchResult($client->search($params));
 
 ```
 
@@ -407,8 +486,8 @@ Be careful with this, as Elasticquent reads the document source into the Eloquen
 If you are using a custom collection with your Eloquent models, you just need to add the `ElasticquentCollectionTrait` to your collection so you can use `addToIndex`.
 
 ```php
-class MyCollection extends \Illuminate\Database\Eloquent\Collection {
-
+class MyCollection extends \Illuminate\Database\Eloquent\Collection
+{
     use ElasticquentCollectionTrait;
 }
 ```

@@ -9,48 +9,51 @@ class ElasticquentResultCollection extends \Illuminate\Database\Eloquent\Collect
     protected $shards;
     protected $hits;
     protected $aggregations = null;
-    protected $instance;
 
     /**
      * Create a new instance containing Elasticsearch results
      *
-     * @param $results elasticsearch results
-     * @param $instance
+     * @todo Remove backwards compatible detection at further point
+     * @deprecated Initialize with params ($results, $instance) is deprecated,
+     *    please use Model::hydrateElasticsearchResult($results).
+     *
+     * @param  mixed  $items
+     * @param  array  $meta
+     * @return void
      */
-    public function __construct($results, $instance)
+    public function __construct($items, $meta = null)
     {
-        // Take our result data and map it
+        // Detect if arguments are old deprecated version ($results, $instance)
+        if (isset($items['hits']) and $meta instanceof \Illuminate\Database\Eloquent\Model) {
+            $instance = $meta;
+            $meta = $items;
+            $items = $instance::hydrateElasticsearchResult($meta);
+        }
+
+        parent::__construct($items);
+
+        // Take our result meta and map it
         // to some class properties.
-        $this->took         = $results['took'];
-        $this->timed_out    = $results['timed_out'];
-        $this->shards       = $results['_shards'];
-        $this->hits         = $results['hits'];
-        $this->aggregations = isset($results['aggregations']) ? $results['aggregations'] : array();
-
-        // Save the instance we performed the search on.
-        $this->instance = $instance;
-
-        // Now we need to assign our hits to the
-        // items in the collection.
-        $this->items = $this->hitsToItems($instance);
+        if (is_array($meta)) {
+            $this->setMeta($meta);
+        }
     }
 
     /**
-     * Hits To Items
+     * Set the result meta.
      *
-     * @param Eloquent model instance $instance
-     *
-     * @return array
+     * @param array $meta
+     * @return $this
      */
-    private function hitsToItems($instance)
+    public function setMeta(array $meta)
     {
-        $items = array();
+        $this->took = isset($meta['took']) ? $meta['took'] : null;
+        $this->timed_out = isset($meta['timed_out']) ? $meta['timed_out'] : null;
+        $this->shards = isset($meta['_shards']) ? $meta['_shards'] : null;
+        $this->hits = isset($meta['hits']) ? $meta['hits'] : null;
+        $this->aggregations = isset($meta['aggregations']) ? $meta['aggregations'] : [];
 
-        foreach ($this->hits['hits'] as $hit) {
-            $items[] = $instance->newFromHitBuilder($hit);
-        }
-
-        return $items;
+        return $this;
     }
 
     /**
@@ -139,26 +142,7 @@ class ElasticquentResultCollection extends \Illuminate\Database\Eloquent\Collect
     public function paginate($pageLimit = 25)
     {
         $page = Paginator::resolveCurrentPage() ?: 1;
-        $sliced_items = array_slice($this->items, ($page - 1) * $pageLimit, $pageLimit);
-
-        return new Paginator($sliced_items, $this->hits, $this->totalHits(), $pageLimit, $page, ['path' => Paginator::resolveCurrentPath()]);
-    }
-
-    /**
-     * Chunk the underlying collection array.
-     *
-     * @param  int   $size
-     * @param  bool  $preserveKeys
-     * @return static
-     */
-    public function chunk($size, $preserveKeys = false)
-    {
-        $chunks = [];
-
-        foreach (array_chunk($this->items, $size, $preserveKeys) as $chunk) {
-            $chunks[] = new static($chunk, $this->instance);
-        }
-
-        return new static($chunks, $this->instance);
+       
+        return new Paginator($this->items, $this->hits, $this->totalHits(), $pageLimit, $page, ['path' => Paginator::resolveCurrentPath()]);
     }
 }

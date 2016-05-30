@@ -8,18 +8,15 @@
 
     <link href='http://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
     <link href="assets/fonts/font-awesome.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/bootstrap/css/bootstrap.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/bootstrap-select.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/jquery.slider.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/owl.carousel.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/owl.transitions.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/style.css') }}" type="text/css">
 
-    <title>Mena | Slider with Floated Horizontal Search Box Homepage</title>
+    <link rel="stylesheet" href="{{ elixir("css/all.css") }}">
+
+    <title>Mena | Homepage</title>
 
 </head>
 
-<body class="page-homepage navigation-fixed-top page-slider horizontal-search-float" id="page-top" data-spy="scroll" data-target=".navigation" data-offset="90">
+<body class="page-homepage navigation-fixed-top page-slider horizontal-search-float" id="page-top" data-spy="scroll" data-target=".navigation" data-offset="90"
+      >
 <!-- Wrapper -->
 <div class="wrapper">
     <!-- Navigation -->
@@ -33,7 +30,7 @@
                 <div class="user-area">
                     <div class="actions">
                       @if(Auth::check())
-                         <a href="{{ url('/dashboard/nedvizhimosts') }}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
+                         <a href="{{ url('/dashboard/advertisement/add') }}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
                       @else
                          <a href="{{ url('/sign-in')}}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
                       @endif                    </div>
@@ -57,25 +54,13 @@
                     <ul class="nav navbar-nav">
 
                         @if(Auth::check())
-                          {{-- <li class="has-child"><a href="#"> <div style="width:25px; height:25px;">
-
-                          </div> @include('sessions.user_img') Личный кабинет</a>
-                              <ul class="child-navigation">
-                                  <li><a title="Копировать" href="#" class="active"><img src="assets/img/icons/Copy Link-100.png" width="15" height="15" alt=""> &nbsp; {!! Auth::user()->imia !!} &nbsp; ID: {!! Auth::user()->id  !!} </a></li>
-                                  <li><a href="{{ url('messages/') }}">Сообщения <span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li>
-                                  <li><a href="{{ url('/dashboard/nedvizhimosts') }}">Мои объявления</a></li>
-                                  <li><a href="{{ url('user/settings/'.Auth::user()->id )}}">Настройки</a></li>
-                                  <li><a href="#">Оплата</a></li>
-                                  <li><a href="{{ url('/auth/logout') }}">Выход</a></li>
-                              </ul>
-                          </li> --}}
 
                           <li class="has-child"><a href="#" title="Основное личное меню пользователя"><i class="fa fa-user fa-fw"></i>&nbsp;Личный кабинет</a>
                               <ul class="child-navigation">
                   <li><a href="{{ url('messages/') }}" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
-                  <li><a href="{{ url('/dashboard/nedvizhimosts') }}" title="Проверить и добавить новое объявление"><i class="fa fa-th-list"></i>&nbsp; Мои объявления</a></li>
+                  <li><a href="{{ url('/dashboard/advertisements') }}" title="Проверить и добавить новое объявление"><i class="fa fa-th-list"></i>&nbsp; Мои объявления</a></li>
                                   <li><a href="#" title="Активировать дополнительные функции сайта"><i class="fa fa-rub"></i>&nbsp; Оплата</a></li>
-                  <li><a href="{{ url('user/settings/'.Auth::user()->id )}}" title="Настройки пользователя и сайта"><i class="fa fa-cog"></i>&nbsp; Настройки</a>
+                  <li><a href="{{ url('dashboard/settings/'.Auth::user()->id )}}" title="Настройки пользователя и сайта"><i class="fa fa-cog"></i>&nbsp; Настройки</a>
                                   <li><a href="{{ url('/auth/logout') }}" title="Обязательно зайдите завтра проверить новые сообщения!"><i class="fa fa-sign-out"></i>&nbsp;Выход</a></li>
                               </ul>
                           </li>
@@ -83,11 +68,8 @@
                         @else
                           <li><a href="{{ url('/sign-in') }}" title="Войти с помощью Вашего аккаунта">Войти &nbsp; </a>
                           </li>
-                          <li class="activ"><a href="{{ url('sign-up') }}" title="Пройти быструю регистрацию"><strong>&nbsp;Регистрация</strong></a>
+                          <li class="activ"><a href="{{ url('/join') }}" title="Пройти быструю регистрацию"><strong>&nbsp;Регистрация</strong></a>
                           </li>
-
-                          {{-- <li><a href="{{ url('register') }}"> Зарегистрироваться  <span class="sr-only">(current)</span></a></li>
-                          <li><a href="{{ url('/auth/login') }}">Вход</a></li> --}}
                         @endif
 
                     </ul>
@@ -95,7 +77,7 @@
                 <div class="add-your-property">
 
                   @if(Auth::check())
-                      <a href="{{ url('/dashboard/nedvizhimosts') }}" class="btn btn-green"><i class="fa fa-plus"></i><span class="text">Разместить объявление</span></a>
+                      <a href="{{ url('/dashboard/advertisement/add') }}" class="btn btn-green"><i class="fa fa-plus"></i><span class="text">Разместить объявление</span></a>
                   @else
                       <a href="{{ url('/auth/login') }}" class="btn btn-green"><i class="fa fa-plus"></i><span class="text">Разместить объявление</span></a>
                   @endif
@@ -162,43 +144,35 @@
             <div class="container">
                 <div class="search-box map">
 <br>
-
-                   <form role="form" id="form-map-sale" class="form-map form-search clearfix" method="post" action="house/catalogue">
+                   <form role="form" id="form-map-sale" class="form-map form-search clearfix" method="post" action="/house/catalogue">
                         <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
                         <div class="row">
-                            <div class="col-md-2 col-sm-4">
+                          <div class="col-md-1">
+                          </div>
+                            <div class="col-md-3 col-sm-4">
                                 <div class="form-group">
                                     <select name="form-sale-city">
-                                        <option value="Москва">Москва</option>
+                                        <option value="1">Москва</option>
+                                        <option value="2">Московская область</option>
+                                        <option value="3">Новая Москва</option>
                                     </select>
                                 </div><!-- /.form-group -->
                             </div>
-                            <div class="col-md-2 col-sm-4">
-                                <div class="form-group">
-                                    <select name="form-sale-district">
-                                        <option value="">Район</option>
-                                        <option value="ЦАО">ЦАО</option>
-                                        <option value="ЗАО">ЗАО</option>
-                                        <option value="ЮАО">ЮАО</option>
-                                        <option value="ВАО">ВАО</option>
-                                        <option value="САО">САО</option>
-                                    </select>
-                                </div><!-- /.form-group -->
-                            </div>
-                            <div class="col-md-2 col-sm-4">
+
+                            <div class="col-md-4 col-sm-4">
                                 <div class="form-group">
                                     <select name="form-sale-property-type">
                                         <option value="">Тип жилья</option>
+                                        <option value="Комната">Комната</option>
                                         <option value="Квартира">Квартира</option>
                                         <option value="Частный дом">Частный дом</option>
-                                        <option value="Коттедж">Коттедж</option>
-                                        <option value="Дача">Дача</option>
+                                        <option value="Новостройки">Новостройки</option>
                                     </select>
                                 </div><!-- /.form-group -->
                             </div>
-							<div class="col-md-2 col-sm-4">
+							<!-- <div class="col-md-3 col-sm-4">
                                 <div class="form-group">
-                                    <select name="form-sale-number-room">
+                                    <select name="form-sale-number-room" data-ng-model ="search.number_room">
                                         <option value="">Кол-во комнат</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -206,28 +180,19 @@
                                         <option value="4">4</option>
                                         <option value="5">5+</option>
                                     </select>
-                                </div><!-- /.form-group -->
-                            </div>
-                            <div class="col-md-2 col-sm-4">
+                                </div><!-- /.form-group
+                            </div> -->
+                            <div class="col-md-3 col-sm-4">
                                 <div class="form-group">
-                                    <select name="form-sale-surface">
-                                        <option value="">Площадь</option>
-                                        <option value="1">30-70 +</option>
-                                        <option value="2">70-90 +</option>
-                                        <option value="3">90-110 +</option>
-                                        <option value="4">110 +</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-sm-4">
-                                <div class="form-group">
+                                  <!--  <button type="submit" data-ng-click = "processForm(search)" class="btn btn-default">Искать</button> -->
                                     <button type="submit" class="btn btn-default">Искать</button>
                                 </div><!-- /.form-group -->
                             </div>
 							<div class="col-md-12 col-sm-12">
 								<hr>
 							</div>
-
+              <div class="col-md-1">
+              </div>
               {{--
                   TODO : chercher non pas les types de proprietes a Moscou mais plustot
                             faire une recherche en RF.
@@ -235,56 +200,30 @@
                             url('/catalogue/houses/1')
               --}}
 
-              <div class="col-md-4 col-sm-4">
+              <div class="col-md-3 col-sm-4">
                 <article>
                   <ul class="list-unstyled list-links">
-                    <li><a href="{{ url('/catalogue/houses/Moskva/1') }}" align="center">Однокомнатные квартиры</a></li>
-                    <li><a href="{{ url('/catalogue/houses/Moskva/2') }}" align="center">Двухкомнатные квартиры</a></li>
+                    <li><a href="{{ url('/advertisements/numberroom/1') }}" align="center">Однокомнатные квартиры - 192</a></li>
+                    <li><a href="{{ url('advertisements/numberroom/2') }}" align="center">Двухкомнатные квартиры - 98</a></li>
                   </ul>
                 </article>
               </div><!-- /.col-sm-3 -->
               <div class="col-md-4 col-sm-4">
                 <article>
                   <ul class="list-unstyled list-links" align="center">
-                    <li><a href="{{ url('/catalogue/houses/Moskva/3') }}" align="center">Трехкомнатные квартиры</a></li>
-                    <li><a href="{{ url('/catalogue/houses/Moskva/4') }}" align="center">Четырёхкомнатные квартиры</a></li>
+                    <li><a href="{{ url('advertisements/numberroom/3') }}" align="center">Трехкомнатные квартиры - 67</a></li>
+                    <li><a href="{{ url('advertisements/numberroom/4') }}" align="center">Квартиры четыре+ комнаты - 12</a></li>
                   </ul>
                 </article>
               </div><!-- /.col-sm-3 -->
-              <div class="col-md-4 col-sm-4">
+              <div class="col-md-3 col-sm-4">
                 <article>
                   <ul class="list-unstyled list-links">
-                    <li><a href="{{ url('/catalogue/houses/Moskva/drugie_tip_domov') }}" align="center">Частные дома, коттеджи, таунхаусы</a></li>
-                    <li><a href="{{ url('/catalogue/houses/drugie_goroda') }}" align="center">В других городах России</a></li>
+                    <li><a href="{{ url('/catalogue/houses/Moskva/drugie_tip_domov') }}" align="center">Частные дома - 35</a></li>
+                    <li><a href="{{ url('/catalogue/houses/drugie_goroda') }}" align="center">Новостройки - 18</a></li>
                   </ul>
                 </article>
               </div><!-- /.col-sm-3 -->
-
-
-							{{-- <div class="col-md-4 col-sm-4">
-								<article>
-									<ul class="list-unstyled list-links">
-										<li><a href="properties-listing-lines.html" align="center">Однокомнатные квартиры</a></li>
-										<li><a href="properties-listing-lines.html"align="center">Двухкомнатные квартиры</a></li>
-									</ul>
-								</article>
-							</div><!-- /.col-sm-3 -->
-							<div class="col-md-4 col-sm-4">
-								<article>
-									<ul class="list-unstyled list-links">
-										<li><a href="properties-listing-lines.html"align="center">Трехкомнатные квартиры</a></li>
-										<li><a href="properties-listing-lines.html"align="center">Четырёхкомнатные квартиры</a></li>
-									</ul>
-								</article>
-							</div><!-- /.col-sm-3 -->
-							<div class="col-md-4 col-sm-4">
-								<article>
-									<ul class="list-unstyled list-links">
-										<li><a href="properties-listing-lines.html"align="center">Частные дома, коттеджи, таунхаусы</a></li>
-										<li><a href="properties-listing-lines.html"align="center">В других городах России</a></li>
-									</ul>
-								</article>
-							</div><!-- /.col-sm-3 --> --}}
 						</div>
 
                     </form><!-- /#form-map -->
@@ -452,6 +391,7 @@
 
 <div id="overlay"></div>
 
+
 <script type="text/javascript" src="{{ asset('assets/js/jquery-2.1.0.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/jquery-migrate-1.2.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
@@ -470,25 +410,10 @@
 <script type="text/javascript" src="{{ asset('assets/js/draggable-0.1.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/jquery.slider.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/custom.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/angular/vendor/angular.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/angular/main.js') }}"></script>
 
-{{-- <script type="text/javascript" src="assets/js/jquery-2.1.0.min.js"></script>
-<script type="text/javascript" src="assets/js/jquery-migrate-1.2.1.min.js"></script>
-<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="assets/js/smoothscroll.js"></script>
-<script type="text/javascript" src="assets/js/owl.carousel.min.js"></script>
-<script type="text/javascript" src="assets/js/bootstrap-select.min.js"></script>
-<script type="text/javascript" src="assets/js/jquery.validate.min.js"></script>
-<script type="text/javascript" src="assets/js/jquery.placeholder.js"></script>
-<script type="text/javascript" src="assets/js/icheck.min.js"></script>
-<script type="text/javascript" src="assets/js/jquery.vanillabox-0.1.5.min.js"></script>
-<script type="text/javascript" src="assets/js/retina-1.1.0.min.js"></script>
-<script type="text/javascript" src="assets/js/jshashtable-2.1_src.js"></script>
-<script type="text/javascript" src="assets/js/jquery.numberformatter-1.2.3.js"></script>
-<script type="text/javascript" src="assets/js/tmpl.js"></script>
-<script type="text/javascript" src="assets/js/jquery.dependClass-0.1.js"></script>
-<script type="text/javascript" src="assets/js/draggable-0.1.js"></script>
-<script type="text/javascript" src="assets/js/jquery.slider.js"></script>
-<script type="text/javascript" src="assets/js/custom.js"></script> --}}
+
 <!--[if gt IE 8]>
 <script type="text/javascript" src="assets/js/ie.js"></script>
 <![endif]-->

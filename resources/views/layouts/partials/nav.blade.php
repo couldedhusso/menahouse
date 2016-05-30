@@ -14,7 +14,7 @@
               <li><a href="{{ url('/auth/logout') }}">Выход</a></li>
 
         @else
-            <li><a href="{{ url('register') }}"> Зарегистрироваться  <span class="sr-only">(current)</span></a></li>
+            <li><a href="{{ url('/join') }}"> Зарегистрироваться  <span class="sr-only">(current)</span></a></li>
             <li><a href="{{ url('/auth/login') }}">Вход</a></li>
        @endif
 

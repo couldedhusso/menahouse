@@ -12,47 +12,47 @@ var elixir = require('laravel-elixir');
  */
 
 elixir(function(mix) {
-    mix.sass('app.scss');
+  //  mix.sass('app.scss');
 
-    mix.styles([
-    'vendor/normalize.min.css',
-    'vendor/bootstrap.min.css',
-    'theproject.css',
-    'vendor/styles-mdl.css',
-    'vendor/material.min.css',
-    'vendor/metro.css',
-    'vendor/metro-responsive.css',
-    'vendor/basic.css',
-    'vendor/jquery.bxslider.css',
-    'vendor/dropzone.css',
-    // 'vendor/component.css',
-    'masterstyle.css',
+  mix.styles([
 
-    'app.css'
+  'bootstrap/css/bootstrap.css',
+  'css/bootstrap-select.min.css',
+  'css/jquery.slider.min.css',
+  'css/owl.carousel.css',
+  'css/owl.transitions.css',
+  'css/fileinput.min.css',
+  'css/magnific-popup.css',
+  'css/style.css',
 
-  ], null, 'public/css');
+], null, 'public/assets');
 
-  // mix.scripts([
-  //     'js/jquery-2.1.0.min.js',
-  //     'js/jquery-migrate-1.2.1.min.js',
-  //     // 'bootstrap/js/bootstrap.min.js',
-  //     'js/smoothscroll.js',
-  //     'js/owl.carousel.min.js',
-  //     'js/bootstrap-select.min.js',
-  //     'js/jquery.validate.min.js',
-  //     'js/jquery.placeholder.js',
-  //     'js/icheck.min.js',
-  //     'js/jquery.vanillabox-0.1.5.min.js',
-  //     'js/retina-1.1.0.min.js',
-  //     'js/jshashtable-2.1_src.js',
-  //     'js/jquery.numberformatter-1.2.3.js',
-  //     'js/tmpl.js',
-  //     'js/jquery.dependClass-0.1.js',
-  //     'js/draggable-0.1.js',
-  //     'js/jquery.slider.js',
-  //     'js/custom.js'
-  //
-  // ], null, 'public/assets') ;
+
+mix.scripts([
+      'jquery-2.1.0.min.js',
+      'jquery-migrate-1.2.1.min.js',
+      'markerwithlabel_packed.js',
+      'smoothscroll.js',
+      'owl.carousel.min.js',
+      'bootstrap-select.min.js',
+      'jquery.validate.min.js',
+      'icheck.min.js',
+      'retina-1.1.0.min.js',
+      'smoothscroll.js',
+      'jquery.magnific-popup.min.js',
+      'fileinput.min.js',
+      'jquery.vanillabox-0.1.5.min.js',
+      'jshashtable-2.1_src.js',
+      'jquery.numberformatter-1.2.3.js',
+      'tmpl.js',
+      'jquery.dependClass-0.1.js',
+      'draggable-0.1.js',
+      'jquery.slider.js',
+      'custom-map.js',
+      'custom.js',
+      'ie.js',
+
+], null, 'public/assets/js') ;
 
 mix.scripts([
     'vendor/bootstrap.min.js',
@@ -63,9 +63,6 @@ mix.scripts([
     'vendor/widgets/accordion.js'
 
 ], null, 'public/js') ;
-
-
-
 
   mix.version(['public/css/all.css', 'public/js/all.js']);
 });

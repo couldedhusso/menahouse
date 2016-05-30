@@ -3,10 +3,10 @@
 /**
  *
  */
-class DataCache 
+class DataCache
 {
 
-  function __construct(argument)
+  /*function __construct(argument)
   {
     # code...
   }
@@ -18,6 +18,6 @@ class DataCache
 
   public static put(){
 
-  }
+  }*/
 
 }

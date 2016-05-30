@@ -1,133 +1,163 @@
-@extends('layouts.admin')
+@extends('templates.TemplateDashboard')
+@section('Title')
+  Mena | Profile
+@endsection
+
+@section('active_breadcrumb')
+  <li><a>Аккаунт</a></li>
+  <li class="active">Настройки</li>
+@endsection
+
+@section('sidebar')
+  @include('layouts.partials.sidebar-settings')
+@endsection
 
 @section('content')
-<div class="container">
-  <div class="grid">
-      <div class="row cells12">
-          <div class="cell colspan12">
-            <h3 class="text-light">Настроийки </h3>
-              <hr>
-          </div>
-      </div>
-   </div>
+    <section id="profile">
+      <header>
+        <h1>Персональные настройки</h1></header>
 
-   <div class="grid">
-
-         <div class="row cells12">
-           <div class="cell colspan12">
-                @include('flash::message')
-           </div>
-         </div>
-
-         <div class="row cells12">
-           <div class="cell colspan12">
-
-             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                  <div class="panel-heading" role="tab" id="headingOne">
-                    <h4 class="panel-title">
-                      <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Смена логина
-                      </a>
-                    </h4>
-                  </div>
-                  <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                    <div class="panel-body">
-                      {!! Form::model($user, array('route' => 'email_edit', 'method' => 'post')) !!}
-                      <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
-                      {!! csrf_field() !!}
-
-                        <!-- user id -->
-                        <input name="user_id" type="hidden" value="{!! $user->id !!}" />
-                          <div class="row cells12">
-
-                                <div class="row cells12">
-                                      <div class="cell colspan12">
-                                          <h5>E-mail </h5>
-                                           <div class="full-size input-control text">
-                                                <input type="email" name="email" required>
-                                           </div>
-                                      </div>
-
-                                  </div>
-
-                                  <div class="row cells12">
-                                       <div class="cell colpsan6">
-                                           <input type="submit"  value="Сохранить изменения" class="button primary">
-                                       </div>
-                                    </div>
-
-
-                          </div>
-
-                      {!! Form::close() !!}
-                    </div>
-                  </div>
-                </div>
-                <div class="panel panel-default">
-                  <div class="panel-heading" role="tab" id="headingTwo">
-                    <h4 class="panel-title">
-                      <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Смена пароля
-                      </a>
-                    </h4>
-                  </div>
-                  <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                    <div class="panel-body">
-                      {!! Form::model($user, array('route' => 'password_edit', 'method' => 'post')) !!}
-                      <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
-                      {!! csrf_field() !!}
-
-                          <!-- user id -->
-                          <input name="user_id" type="hidden" value="{!! $user->id !!}" />
-
-                            <div class="row cells12">
-                              <div class="cell colspan6">
-                                   <h5>Текущий пароль</h5>
-                                   <div class="full-size input-control text">
-                                       <input type="password" name="oldpassword" required>
-                                   </div>
-                               </div>
-
-                               <div class="cell colspan6">
-                                     <h5>Новый пароль</h5>
-                                     <div class="full-size input-control text">
-                                         <input type="password" name="newpassword" required>
-                                     </div>
-                               </div>
-                           </div>
-
-                           <div class="row cells12">
-                             <div class="cell colpsan6">
-                                 <input type="submit"  value="Сохранить изменения" class="button primary">
-                             </div>
-                           </div>
-
-                         </div>
-
-
-                      {!! Form::close() !!}
-                    </div>
-                  </div>
-                </div>
-                {{-- <div class="panel panel-default">
-                  <div class="panel-heading" role="tab" id="headingThree">
-                    <h4 class="panel-title">
-                      <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        Collapsible Group Item #3
-                      </a>
-                    </h4>
-                  </div>
-                  <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                    <div class="panel-body">
-                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                    </div>
-                  </div>
-                </div> --}}
+      <div class="account-profile">
+        <div class="row">
+          <div class="col-md-3 col-sm-3">
+            <img alt="" class="image" src="{{asset('assets/img/agent-01.jpg')}}">
+            <div class="center">
+              <div class="form-group">
+                <input id="file-upload" type="file" class="file" multiple="true" data-show-upload="false" data-show-caption="false" data-show-remove="false" accept="image/jpeg,image/png" data-browse-class="btn btn-default-small" data-browse-label="Выбрать файл">
+                <figure class="note"><strong>Совет: </strong>Загрузите изображение формата jpeg или png!</figure>
               </div>
+            </div>
+          </div>
+          <div class="col-md-9 col-sm-9">
+            {!! Form::open(array('route' => 'dashboard.settings', 'method' => 'post')) !!}
+                <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
+                <input name="user_id" type="hidden" value="{!! $user->id !!}" />
 
-           </div>
-         </div>
-   </div>
-</div>
+              <section id="contact">
+                <h3>Контакты</h3>
+                <dl class="contact-fields">
+                  <dt><label for="imia">Ваше имя:</label></dt>
+                  <dd>
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="imia" name="imia" required value="{{$user->imia.' '.$user->familia }}">
+                    </div>
+                    <!-- /.form-group -->
+                  </dd>
+                  <dt><label for="form-account-phone">Номер телефона:</label></dt>
+                  <dd>
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="form-account-phone" name="form-account-phone" value="{{$user->phonenumber}}">
+                    </div>
+                    <!-- /.form-group -->
+                  </dd>
+                  <dt><label for="form-account-email">Email:</label></dt>
+                  <dd>
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="form-account-email" name="form-account-phone" value="{{$user->email}}">
+                    </div>
+                    <!-- /.form-group -->
+                  </dd>
+                </dl>
+              </section>
+              <section id="about-me">
+                <h3>Краткая информация</h3>
+                <div class="form-group">
+
+                  <textarea class="form-control" id="form-contact-agent-message" rows="5" name="bio">
+                  {{$userprofile->bio}}
+                  </textarea>
+                </div>
+                <!-- /.form-group -->
+              </section>
+              <section id="social">
+                <h3>Социальные сети</h3>
+                <div class="form-group">
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-vk"></i></span>
+                    <input type="text" class="form-control" id="account-social-vk" name="vk" value="{{$userprofile->vk }}">
+                  </div>
+                </div>
+                <!-- /.form-group -->
+                <div class="form-group">
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-odnoklassniki"></i></span>
+                    <input type="text" class="form-control" id="account-social-odnoklassniki" name="ok" value="{{$userprofile->ok }}">
+                  </div>
+                </div>
+                <!-- /.form-group -->
+                <div class="form-group">
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-facebook"></i></span>
+                    <input type="text" class="form-control" id="account-social-facebook" name="fb" value="{{$userprofile->fb }}">
+                  </div>
+                </div>
+                <!-- /.form-group -->
+                <div class="form-group">
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-twitter"></i></span>
+                    <input type="text" class="form-control" id="account-social-twitter" name="twitter" value="{{$userprofile->twitter }}">
+                  </div>
+                </div>
+                <!-- /.form-group -->
+                <div class="form-group clearfix">
+                  <button type="submit" class="btn pull-right btn-default" id="account-submit">Сохранить</button>
+                </div>
+                <!-- /.form-group -->
+              </section>
+            {!! Form::close() !!}
+
+            <!-- /#form-contact -->
+            <div class="block clearfix">
+              <section id="change-password">
+                <header>
+                  <h2>Изменить пароль</h2></header>
+                <div class="row">
+                  <div class="col-md-6 col-sm-6">
+                    {!! Form::model($user, array('route' => 'password_edit', 'method' => 'post')) !!}
+                        <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
+
+                         <!-- user id -->
+                         <input name="user_id" type="hidden" value="{!! $user->id !!}" />
+
+
+                        <div class="form-group">
+                          <label for="form-account-password-current">Текущий пароль</label>
+                          <input type="password" class="form-control" id="form-account-password-current" name="form-account-password-current">
+                        </div>
+                        <!-- /.form-group -->
+                        <div class="form-group">
+                          <label for="form-account-password-new">Новый пароль</label>
+                          <input type="password" class="form-control" id="form-account-password-new" name="form-account-password-new">
+                        </div>
+                        <!-- /.form-group -->
+                        <div class="form-group">
+                          <label for="form-account-password-confirm-new">Подтверждение пароля</label>
+                          <input type="password" class="form-control" id="form-account-password-confirm-new" name="form-account-password-confirm-new">
+                        </div>
+                        <!-- /.form-group -->
+                        <div class="form-group clearfix">
+                          <button type="submit" class="btn btn-default" id="form-account-password-submit">Изменить пароль</button>
+                        </div>
+                        <!-- /.form-group -->
+                  {!! Form::close() !!}
+                    <!-- /#form-account-password -->
+                  </div>
+                  <div class="col-md-6 col-sm-6">
+                    @if(Session::has('message'))
+                      <strong>Совет:</strong>
+                      <p>  @include('flash::message') </p>
+                    @endif
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+          <!-- /.col-md-9 -->
+        </div>
+        <!-- /.row -->
+      </div>
+
+      <!-- /.account-profile -->
+    </section>
+    <!-- /#profile -->
 @endsection

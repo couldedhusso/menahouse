@@ -112,7 +112,32 @@ class RegistrationController extends Controller
     // return view('registration.confirm_account', compact('email'));
 
 
-    $confirmation_code = str_random(30);
+  ///  TODO : Reactiver l activation du compte par mail
+  //   $confirmation_code = str_random(30);
+
+  // $user = User::create([
+  //         'familia' => $familia,
+  //         'imia' => $imia,
+  //         'otchestvo' => $otchestvo,
+  //         'phonenumber' => Input::get('phonenumber'),
+  //         'email' => Input::get('email'),
+  //         'password' => bcrypt(Input::get('password')),
+  //         'confirmation_code' => $confirmation_code
+  //   ]);
+
+  // $arrayData = array('confirm_cod' => $confirmation_code, 'imia' => $imia,
+  //                    'otchestvo' => $otchestvo);
+
+  //
+  // Mail::send('mails.verify', $arrayData, function($message)
+  //                           use( $confirmation_code, $imia, $otchestvo)
+  // {
+  //
+  //      $message->to(Input::get('email'), $imia + " "+ $otchestvo )
+  //          ->subject('Подтверждение регистрации');
+  // });
+
+
 
     // list($familia, $imia, $otchestvo) = explode(" ", Input::get('fio'));
     $name = explode(" ", Input::get('fio'));
@@ -131,6 +156,7 @@ class RegistrationController extends Controller
         break;
     }
 
+    /// == > Active le compte a la creation a modifier
     $user = User::create([
             'familia' => $familia,
             'imia' => $imia,
@@ -138,26 +164,19 @@ class RegistrationController extends Controller
             'phonenumber' => Input::get('phonenumber'),
             'email' => Input::get('email'),
             'password' => bcrypt(Input::get('password')),
-            'confirmation_code' => $confirmation_code
+            'confirmed' => '1',
+            'status' => 'activated',
+            'confirmation_code' => null,
       ]);
 
-    // $imia = $name[1] ; $otchestvo = $name[2];
+      $user->assignRole(2);
+      $user->save();
 
-    $arrayData = array('confirm_cod' => $confirmation_code, 'imia' => $imia,
-                       'otchestvo' => $otchestvo);
+      // Authenticate A User Instance
+    Auth::login($user);
 
-
-    Mail::send('mails.verify', $arrayData, function($message)
-                              use( $confirmation_code, $imia, $otchestvo)
-    {
-
-         $message->to(Input::get('email'), $imia + " "+ $otchestvo )
-             ->subject('Подтверждение регистрации');
-    });
-
-    $email = Input::get('email');
-
-    return view('pages.thank_you', compact('email'));
+    return view('pages.thank_you');
+  //  return view('pages.thank_you', compact('email');
 
   }
 

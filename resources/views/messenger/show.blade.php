@@ -1,4 +1,18 @@
-@extends('layouts.LayoutMailClient')
+
+@extends('templates.TemplateDashboard')
+
+@section('Title')
+  Mena | Mailbox
+@endsection
+
+@section('active_breadcrumb')
+  <li><a href="#">Сообщения</a></li>
+  <li class="active">Входящие</li>
+@endsection
+
+@section('sidebar')
+  @include('layouts.partials.sidebar-mailbox')
+@endsection
 
 @section('content')
 <div class="container">

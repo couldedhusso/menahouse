@@ -7,15 +7,11 @@
     <meta name="author" content="ThemeStarz">
 
     <link href='http://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
-    <link href="{{ asset('static/assets/fonts/font-awesome.css') }}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/bootstrap/css/bootstrap.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/bootstrap-select.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/magnific-popup.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/jquery.slider.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/owl.carousel.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/style.css') }}" type="text/css">
 
-    <title>Mena | Terms & Conditions</title>
+    <link href="{{ asset('assets/fonts/font-awesome.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{ elixir("css/all.css") }}">
+
+    <title>@yield('Title')</title>
 
 </head>
 
@@ -33,11 +29,10 @@
                 <div class="user-area">
                     <div class="actions">
                       @if(Auth::check())
-                         <a href="{{ url('/dashboard/nedvizhimosts') }}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
+                         <a href="{{ url('/dashboard/advertisement/add') }}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
                       @else
                          <a href="{{ url('/sign-in')}}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
-                      @endif
-                    </div>
+                      @endif                    </div>
                 </div>
             </div>
         </div>
@@ -51,32 +46,44 @@
                         <span class="icon-bar"></span>
                     </button>
                     <div class="navbar-brand nav" id="brand">
-                        <a href="#"> <img src="{{asset('static/assets/img/logo.png')}}" alt="Менахаус" title="Менахаус"></a>
+                        <a href="{{url('/')}}" > <img src="{{asset('static/assets/img/logo.png')}}" alt="Менахаус" title="Менахаус"></a>
                     </div>
                 </div>
                 <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
-                  <ul class="nav navbar-nav">
-                      <li class="has-child"><a href="#" title="Раздел помощи"> Помощь</a>
-                          <ul class="child-navigation">
-                              <li><a href="landingpage.html">Почему мы?</a></li><!-- Почему работать с нами? -->
-                              <li><a href="terms-conditions.html">Правила сайта</a></li>
-                              <li><a href="faq.html">Справка</a></li>
-                          </ul>
-                      </li>
-                  </ul>
-                </nav><!-- /.navbar collapse-->
+                    <ul class="nav navbar-nav">
 
-				</header><!-- /.navbar -->
+                        @if(Auth::check())
+
+                          <li class="has-child"><a href="#" title="Основное личное меню пользователя"><i class="fa fa-user fa-fw"></i>&nbsp;Личный кабинет</a>
+                              <ul class="child-navigation">
+                  <li><a href="{{ url('messages/') }}" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
+                  <li><a href="{{ url('/dashboard/advertisements') }}" title="Проверить и добавить новое объявление"><i class="fa fa-th-list"></i>&nbsp; Мои объявления</a></li>
+                                  <li><a href="#" title="Активировать дополнительные функции сайта"><i class="fa fa-rub"></i>&nbsp; Оплата</a></li>
+                  <li><a href="{{ url('dashboard/settings/'.Auth::user()->id )}}" title="Настройки пользователя и сайта"><i class="fa fa-cog"></i>&nbsp; Настройки</a>
+                                  <li><a href="{{ url('/auth/logout') }}" title="Обязательно зайдите завтра проверить новые сообщения!"><i class="fa fa-sign-out"></i>&nbsp;Выход</a></li>
+                              </ul>
+                          </li>
+
+                        @else
+                          <li><a href="{{ url('/sign-in') }}" title="Войти с помощью Вашего аккаунта">Войти &nbsp; </a>
+                          </li>
+                          <li class="activ"><a href="{{ url('/join') }}" title="Пройти быструю регистрацию"><strong>&nbsp;Регистрация</strong></a>
+                          </li>
+                        @endif
+
+                    </ul>
+                </nav><!-- /.navbar collapse-->
+            </header><!-- /.navbar -->
         </div><!-- /.container -->
     </div><!-- /.navigation -->
+
     <!-- end Navigation -->
     <!-- Page Content -->
     <div id="page-content">
         <!-- Breadcrumb -->
         <div class="container">
             <ol class="breadcrumb">
-                <li><a href="index.html">Главная</a></li>
-
+                <li><a href="{{url('/')}}">Главная</a></li>
                 @yield('active_breadcrumb')
             </ol>
         </div>
@@ -143,7 +150,7 @@
     </footer>
     <!-- end Page Footer -->
 </div>
-
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=places"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/draggable-0.1.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/jshashtable-2.1_src.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/jquery.numberformatter-1.2.3.js')}}"></script>
@@ -158,10 +165,95 @@
 <script type="text/javascript" src="{{asset('static/assets/js/jquery.validate.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/icheck.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/retina-1.1.0.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('assets/js/markerwithlabel_packed.js')}}"></script>
+<script type="text/javascript" src="{{asset('assets/js/owl.carousel.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('assets/js/jquery.magnific-popup.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('assets/js/fileinput.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('assets/js/custom-map.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/custom.js')}}"></script>
+
 <!--[if gt IE 8]>
 <script type="text/javascript" src="{{asset('static/assets/js/ie.js')}}"></script>
 <![endif]-->
 
+<script>
+    var _latitude = 48.87;
+    var _longitude = 2.29;
+
+
+    google.maps.event.addDomListener(window, 'load', initSubmitMap(_latitude,_longitude));
+    function initSubmitMap(_latitude,_longitude){
+        var mapCenter = new google.maps.LatLng(_latitude,_longitude);
+        var mapOptions = {
+            zoom: 15,
+            center: mapCenter,
+            disableDefaultUI: false,
+            //scrollwheel: false,
+            styles: mapStyles
+        };
+        var mapElement = document.getElementById('submit-map');
+        var map = new google.maps.Map(mapElement, mapOptions);
+        var marker = new MarkerWithLabel({
+            position: mapCenter,
+            map: map,
+            icon: 'assets/img/marker.png',
+            labelAnchor: new google.maps.Point(50, 0),
+            draggable: true
+        });
+        $('#submit-map').removeClass('fade-map');
+        google.maps.event.addListener(marker, "mouseup", function (event) {
+            var latitude = this.position.lat();
+            var longitude = this.position.lng();
+            $('#latitude').val( this.position.lat() );
+            $('#longitude').val( this.position.lng() );
+        });
+
+//      Autocomplete
+        var input = /** @type {HTMLInputElement} */( document.getElementById('address-map') );
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo('bounds', map);
+        google.maps.event.addListener(autocomplete, 'place_changed', function() {
+            var place = autocomplete.getPlace();
+            if (!place.geometry) {
+                return;
+            }
+            if (place.geometry.viewport) {
+                map.fitBounds(place.geometry.viewport);
+            } else {
+                map.setCenter(place.geometry.location);
+                map.setZoom(17);
+            }
+            marker.setPosition(place.geometry.location);
+            marker.setVisible(true);
+            $('#latitude').val( marker.getPosition().lat() );
+            $('#longitude').val( marker.getPosition().lng() );
+            var address = '';
+            if (place.address_components) {
+                address = [
+                    (place.address_components[0] && place.address_components[0].short_name || ''),
+                    (place.address_components[1] && place.address_components[1].short_name || ''),
+                    (place.address_components[2] && place.address_components[2].short_name || '')
+                ].join(' ');
+            }
+        });
+
+    }
+
+    function success(position) {
+        initSubmitMap(position.coords.latitude, position.coords.longitude);
+        $('#latitude').val( position.coords.latitude );
+        $('#longitude').val( position.coords.longitude );
+    }
+
+    $('.geo-location').on("click", function() {
+        if (navigator.geolocation) {
+            $('#submit-map').addClass('fade-map');
+            navigator.geolocation.getCurrentPosition(success);
+        } else {
+            error('Geo Location is not supported');
+        }
+    });
+
+</script>
 </body>
 </html>
