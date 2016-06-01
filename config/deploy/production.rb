@@ -8,8 +8,8 @@
 # server 'db.example.com', user: 'deploy', roles: %w{db}
 
 set :user, 'ubuntu'
-server 'ec2-52-29-149-96.eu-central-1.compute.amazonaws.com', user: 'ubuntu',
-        keys:%w(/home/couldedhusso/workspace/menahouseoncloud/menahouse-vps.pem),
+server 'ec2-52-58-234-223.eu-central-1.compute.amazonaws.com', user: 'ubuntu',
+        keys:%w(/home/couldedhusso/workspace/menahouseoncloud/AWSKeys/kubenetes.pem),
         roles: %w{app, db, web}
 # ssh_options[:keys] = ['/home/couldedhusso/workspace/menahouseoncloud/menahouse-vps.pem']
 
@@ -39,7 +39,7 @@ server 'ec2-52-29-149-96.eu-central-1.compute.amazonaws.com', user: 'ubuntu',
 
 # Custom SSH Options
 # ==================
-# You may pass any option but keep in mind that net/ssh understands a
+# You may pass any optTion but keep in mind that net/ssh understands a
 # limited set of options, consult the Net::SSH documentation.
 # http://net-ssh.github.io/net-ssh/classes/Net/SSH.html#method-c-start
 #

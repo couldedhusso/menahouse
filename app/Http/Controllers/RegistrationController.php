@@ -169,7 +169,9 @@ class RegistrationController extends Controller
             'confirmation_code' => null,
       ]);
 
-      $user->assignRole(2);
+      $roleid = Role::where('name', '=', 'Member')->get();
+
+      $user->assignRole($roleid);
       $user->save();
 
       // Authenticate A User Instance
@@ -177,7 +179,6 @@ class RegistrationController extends Controller
 
     return view('pages.thank_you');
   //  return view('pages.thank_you', compact('email');
-
   }
 
   public function confirm($confirmation_code)
