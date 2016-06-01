@@ -8,7 +8,6 @@
 
 
         <link href='http://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
-
         <link href="{{ asset('assets/fonts/font-awesome.css') }}" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="{{ elixir("css/all.css") }}">
 
@@ -16,7 +15,7 @@
 
 </head>
 
-<body class="page-sub-page page-create-account page-account" id="page-top" ng-app ="menahouse" ng-controller="SearchItemsController" >
+<body class="page-sub-page page-create-account page-account" id="page-top" >
 <!-- Wrapper -->
 <div class="wrapper">
 
@@ -65,59 +64,82 @@
               <!-- sidebar -->
               <div class="col-md-3 col-sm-3">
                   <section id="sidebar">
-                      <aside id="edit-search">
-                          <header><h3>Поиск</h3></header>
-                          <form role="form" id="form-sidebar" class="form-search" method="post" action="{{url('/house/catalogue')}}">
-                              <input type="hidden" name="_token" value="{!! csrf_token() !!}">
-
-                              <div class="form-group">
-                                  <select name="form-sale-city">
-                                      <option value="1">Москва</option>
-                                  </select>
-                              </div><!-- /.form-group -->
-                              <div class="form-group">
-                                  <select name="form-sale-district">
-                                      <option value="">Район</option>
-                                      <option value="1">ЦАО</option>
-                                      <option value="2">ЗАО</option>
-                                      <option value="3">ЮАО</option>
-                                      <option value="4">ВАО</option>
-                                      <option value="5">САО</option>
-                                  </select>
-                              </div><!-- /.form-group -->
-                              <div class="form-group">
-                                  <select name="form-sale-property-type">
-                                      <option value="">Тип жилья</option>
-                                      <option value="1">Квартира</option>
-                                      <option value="2">Частный дом</option>
-                                      <option value="3">Коттедж</option>
-                                      <option value="4">Дача</option>
-                                  </select>
-                              </div><!-- /.form-group -->
-              <div class="form-group">
-                                  <select name="form-sale-room">
-                                      <option value="">Кол-во комнат</option>
-                                      <option value="1">1</option>
-                                      <option value="2">2</option>
-                                      <option value="3">3</option>
-                                      <option value="4">4</option>
-                                      <option value="5">5+</option>
-                                  </select>
-                              </div><!-- /.form-group -->
-              <div class="form-group">
-                                  <select name="form-sale-area">
-                                      <option value="">Площадь</option>
-                                      <option value="1">30-70 +</option>
-                                      <option value="2">70-90 +</option>
-                                      <option value="3">90-110 +</option>
-                                      <option value="4">110 +</option>
-                                  </select>
-                              </div><!-- /.form-group -->
-                              <div class="form-group">
-                                  <button type="submit" class="btn btn-default">Искать</button>
-                              </div><!-- /.form-group -->
-                          </form><!-- /#form-map -->
-                      </aside><!-- /#edit-search -->
+                    <aside id="edit-search">
+                            <header><h3>Поиск</h3></header>
+                            <form role="form" id="form-sidebar" class="form-search" action="properties-listing.html">
+                                <div class="form-group">
+                                    <select name="district">
+										<option value="0">Обмен</option>
+                                        <option value="1">Обмен/продажа</option>
+                                    </select>
+                                </div><!-- /.form-group -->
+                                <div class="form-group">
+                                    <select name="city">
+                                        <option value="">Город</option>
+                                        <option value="1">Москва</option>
+                                        <option value="2">Московская область</option>
+                                        <option value="3">Новая Москва</option>
+                                    </select>
+                                </div><!-- /.form-group -->
+                                <div class="form-group">
+                                    <select name="district">
+                                        <option value="">Район</option>
+										<option value="0">Все районы</option>
+                                        <option value="1">ЦАО</option>
+                                        <option value="2">ЗАО</option>
+                                        <option value="3">ЮАО</option>
+                                        <option value="4">ВАО</option>
+                                        <option value="5">САО</option>
+                                    </select>
+                                </div><!-- /.form-group -->
+                                <div class="form-group">
+                                    <select name="property-type">
+                                        <option value="">Тип жилья</option>
+                                        <option value="1">Квартира</option>
+                                        <option value="2">Комната</option>
+                                        <option value="3">Частный дом</option>
+                                        <option value="4">Новостройки</option>
+                                    </select>
+                                </div><!-- /.form-group -->
+								<div class="form-group">
+                                    <select name="form-sale-room">
+                                        <option value="">Кол-во комнат</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5+</option>
+                                    </select>
+                                </div><!-- /.form-group -->
+								<div class="form-group">
+                                    <select name="form-sale-area">
+                                        <option value="">Площадь</option>
+                                        <option value="1">30-70 +</option>
+                                        <option value="2">70-90 +</option>
+                                        <option value="3">90-110 +</option>
+                                        <option value="4">110 +</option>
+                                    </select>
+                                </div><!-- /.form-group -->
+								<p>Критерии обмена</P>
+								<div class="form-group">
+                                    <select name="form-sale-area">
+                                        <option value="">Обмен на</option>
+                                        <option value="1">На увеличение</option>
+                                        <option value="2">На уменьшение</option>
+                                    </select>
+                                </div><!-- /.form-group -->
+								<div class="form-group">
+                                    <select name="form-sale-area">
+                                        <option value="">Район обмена</option>
+                                        <option value="1">В другом районе</option>
+                                        <option value="2">В своём районе</option>
+                                    </select>
+                                </div><!-- /.form-group -->
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-default">Искать</button>
+                                </div><!-- /.form-group -->
+                            </form><!-- /#form-map -->
+                        </aside><!-- /#edit-search -->
 
                       <aside id="featured-properties">
                           <header><h3>Спецпредложения</h3></header>

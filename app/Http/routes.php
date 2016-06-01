@@ -163,7 +163,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 //====> advertisements routes
 
-Route::get('dashboard/advertisement/{id}', function($id){
+Route::get('advertisement/{id}', function($id){
 
      $house = Obivlenie::whereid($id)->with('images')->first();
      if (Auth::check()) {
@@ -185,7 +185,6 @@ Route::get('dashboard/advertisement/{id}', function($id){
              $numberclick = 1;
            }
      }
-
 
      $house->numberclick = $numberclick ;
      $house->save();
@@ -211,9 +210,9 @@ Route::post('advertisements', function(){
   return view('pages.properties_listing_lines', compact('houses'));
 });
 
-Route::post('house/catalogue', 'ObivlenieController@search');
+Route::post('house/catalogue', 'ObivlenieController@getCatalogue');
 
-Route::post('house/catalogue', 'ObivlenieController@search');
+// Route::post('house/catalogue', 'ObivlenieController@search');
 // Route::get('dashboard',  'DashboardController@show');
 
 /*
@@ -380,5 +379,17 @@ Route::get('/home', function () {
 });
 
 Route::get('/', function () {
-  return view('welcome');
+  $oneroom  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 1)->count();
+  $tworooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 2)->count();
+  $threerooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 3)->count();
+  $fourplusrooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', 4)->count();
+  $home  = DB::table('obivlenie')->where('type_nedvizhimosti', '=', 'Частный дом')->count();
+  $newhome  = DB::table('obivlenie')->where('type_nedvizhimosti', '=', 'Новостройки')->count();
+
+  return view('welcome', compact('oneroom', 'tworooms', 'threerooms',
+                                 'fourplusrooms', 'home', 'newhome'));
 });
+
+Route::any( '{catchall}', function ( $page ) {
+    return view('pages.404');
+})->where('catchall', '(.*)');

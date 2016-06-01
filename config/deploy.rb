@@ -2,13 +2,21 @@
 lock '3.5.0'
 
 set :application, 'menahouseoncloud'
-set :repo_url, 'git@example.com:me/my_repo.git'
+set :repo_url, 'git@github.com:couldedhusso/menahouse.git'
+set :default_stage, 'production'
+set :user, 'ubuntu'
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
-# set :deploy_to, '/var/www/my_app_name'
+set :deploy_to, '/home/ubuntu/www/menahouse'
+
+role :web, 'ec2-52-29-149-96.eu-central-1.compute.amazonaws.com' # Your HTTP server, Apache/etc
+role :app, 'ec2-52-29-149-96.eu-central-1.compute.amazonaws.com' # This may be the same as your `Web` server
+
+set :ssh_options, { :forward_agent => true }
+#ssh_options[:forward_agent] = true
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -24,26 +32,43 @@ set :repo_url, 'git@example.com:me/my_repo.git'
 # set :pty, true
 
 # Default value for :linked_files is []
-# set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
+set :linked_files, fetch(:linked_files, []).push('.env')
 
 # Default value for linked_dirs is []
-# set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system')
+set :linked_dirs, fetch(:linked_dirs, []).push( 'public/storage/fichiers_joins','public/storage/pictures',
+                  'public/storage/profil', 'public/storage/thumbnail', 'storage/framework/sessions')
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
 # Default value for keep_releases is 5
-# set :keep_releases, 5
+set :keep_releases, 2
 
 namespace :deploy do
 
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
+  # after :clear_cache do
+  #   on roles(:web)  do
+  #     # Here we can do anything such as:
+  #     within release_path do
+  #       execute :rake, 'cache:clear'
+  #     end
+  #   end
+  #
+  # end
+
+  after :updated,  :menahouse do
+    on roles(:web)  do
+      within release_path do
+        execute :composer, :install
+      end
     end
+    invoke "laravel:optimize"
+    invoke "laravel:permissions"
   end
+
+
+  # after :finished do
+  #   invoke "php:fpm_restart"
+  # end
 
 end

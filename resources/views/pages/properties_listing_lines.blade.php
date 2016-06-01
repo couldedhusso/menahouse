@@ -1,6 +1,6 @@
 @extends('templates.TemplatePropertiesListing')
 
-@section('earch-results')
+@section('search-results')
   <section id="results">
                <header><h1>Предложения по вашему запросу</h1></header>
                <section id="search-filter">
@@ -18,10 +18,13 @@
                        </div>
                    </figure>
                </section>
+
+
                <section id="properties" class="display-lines">
                  @foreach($houses as $house)
                    @if(Auth::check() )
-                      @if($house->user != Auth::user()->id)
+                      @if($house->user_id != Auth::user()->id)
+                        <div class="property">
                           {{-- <figure class="tag status">Спецпредложение</figure> --}}
                           @if($house->type_nedvizhimosti == 'Квартира' or $house->type_nedvizhimosti =='Комната')
                             <figure class="type" title="Apartment"><img src="{{ asset('static/assets/img/property-types/apartment.png')}}" alt=""></figure>
@@ -35,7 +38,7 @@
 
                           <div class="property-image">
                               {{-- <figure class="ribbon">{{$categerise}}</figure> --}}
-                              <a href="{{ url('property/'.$house->id ) }}">
+                              <a href="{{ url('advertisement/'.$house->id ) }}">
                                   <img alt="" src="{{asset('storage/thumbnail/'.$house->id.'.jpeg')}}">
                               </a>
                           </div>
@@ -67,14 +70,21 @@
                                           <dd>{{ $house->ploshad_kurhni }} м<sup>2</sup></dd>
                                   </dl>
                               </aside>
-                              <a href="{{url('/messages')}}" class="btn btn-white" title="Написать владельцу объявления, узнать полную информацию и добавить в избранное">
+
+                              <a href="{{url('/mailbox/messages/new')}}" class="btn btn-white2" title="Написать владельцу объявления, узнать полную информацию и добавить в избранное">
                               <figure class="fa fa-envelope"></figure>
                               <span>&nbsp; Написать &nbsp;</span>
                               <span class="arrow fa fa-angle-right"></span>
                               </a><!-- /.write-button -->
+                              <span class="actions">
+                                    <!--<a href="#" class="fa fa-print"></a>-->
+                                    <a href="#" class="bookmark" data-bookmark-state="empty"><span class="title">Добавить в избранное</span><span class="title-added">Добавлено</span></a>
+                              </span>
                           </div>  {{-- {!! $houses->render() !!} --}}
+                        </div> <!-- /.property -->
                       @endif
                    @else
+                     <div class="property">
                      {{-- <figure class="tag status">Спецпредложение</figure> --}}
                      @if($house->type_nedvizhimosti == 'Квартира' or $house->type_nedvizhimosti =='Комната')
                        <figure class="type" title="Apartment"><img src="{{ asset('static/assets/img/property-types/apartment.png')}}" alt=""></figure>
@@ -88,7 +98,7 @@
 
                      <div class="property-image">
                          {{-- <figure class="ribbon">{{$categerise}}</figure> --}}
-                         <a href="{{ url('property/'.$house->id ) }}">
+                         <a href="{{ url('advertisement/'.$house->id ) }}">
                              <img alt="" src="{{asset('storage/thumbnail/'.$house->id.'.jpeg')}}">
                          </a>
                      </div>
@@ -120,12 +130,17 @@
                                      <dd>{{ $house->ploshad_kurhni }} м<sup>2</sup></dd>
                              </dl>
                          </aside>
-                         <a href="{{url('/messages')}}" class="btn btn-white" title="Написать владельцу объявления, узнать полную информацию и добавить в избранное">
+                         <a href="{{url('/mailbox/messages/new')}}" class="btn btn-white2" title="Написать владельцу объявления, узнать полную информацию и добавить в избранное">
                          <figure class="fa fa-envelope"></figure>
                          <span>&nbsp; Написать &nbsp;</span>
                          <span class="arrow fa fa-angle-right"></span>
                          </a><!-- /.write-button -->
+                         <span class="actions">
+                               <!--<a href="#" class="fa fa-print"></a>-->
+                               <a href="#" class="bookmark" data-bookmark-state="empty"><span class="title">Добавить в избранное</span><span class="title-added">Добавлено</span></a>
+                         </span>
                      </div>  {{-- {!! $houses->render() !!} --}}
+                     </div> <!-- /.property -->
 
                      @if($count_ads >= 4 )
                          <section id="advertising">
@@ -139,12 +154,10 @@
                             </a>
                           </section><!-- /#adveritsing-->
                       @else
-                        {{ $count_ads  += 1 }}
+                        <?php  $count_ads  += 1; ?>
                      @endif
                    @endif
                  @endforeach
-
-              </div><!-- /.property -->
 
 
                    <!-- Pagination -->
@@ -158,5 +171,6 @@
                        </ul><!-- /.pagination-->
                    </div><!-- /.center-->
                </section><!-- /#properties-->
+
            </section><!-- /#results -->
 @endsection

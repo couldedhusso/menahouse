@@ -152,9 +152,9 @@
                             <div class="col-md-3 col-sm-4">
                                 <div class="form-group">
                                     <select name="form-sale-city">
-                                        <option value="1">Москва</option>
-                                        <option value="2">Московская область</option>
-                                        <option value="3">Новая Москва</option>
+                                        <option value="Москва">Москва</option>
+                                        <option value="Московская область">Московская область</option>
+                                        <option value="Новая Москва">Новая Москва</option>
                                     </select>
                                 </div><!-- /.form-group -->
                             </div>
@@ -198,29 +198,30 @@
                             faire une recherche en RF.
                             Donc remplacer par exemple url('/catalogue/houses/Moskva/1') par
                             url('/catalogue/houses/1')
+
               --}}
 
               <div class="col-md-3 col-sm-4">
                 <article>
                   <ul class="list-unstyled list-links">
-                    <li><a href="{{ url('/advertisements/numberroom/1') }}" align="center">Однокомнатные квартиры - 192</a></li>
-                    <li><a href="{{ url('advertisements/numberroom/2') }}" align="center">Двухкомнатные квартиры - 98</a></li>
+                    <li><a href="{{ url('/advertisements/numberroom/1') }}" align="center">Однокомнатные квартиры - {{$oneroom}}</a></li>
+                    <li><a href="{{ url('advertisements/numberroom/2') }}" align="center">Двухкомнатные квартиры - {{$tworooms}}</a></li>
                   </ul>
                 </article>
               </div><!-- /.col-sm-3 -->
               <div class="col-md-4 col-sm-4">
                 <article>
                   <ul class="list-unstyled list-links" align="center">
-                    <li><a href="{{ url('advertisements/numberroom/3') }}" align="center">Трехкомнатные квартиры - 67</a></li>
-                    <li><a href="{{ url('advertisements/numberroom/4') }}" align="center">Квартиры четыре+ комнаты - 12</a></li>
+                    <li><a href="{{ url('advertisements/numberroom/3') }}" align="center">Трехкомнатные квартиры - {{$threerooms}}</a></li>
+                    <li><a href="{{ url('advertisements/numberroom/4') }}" align="center">Квартиры четыре+ комнаты - {{$fourplusrooms}}</a></li>
                   </ul>
                 </article>
               </div><!-- /.col-sm-3 -->
               <div class="col-md-3 col-sm-4">
                 <article>
                   <ul class="list-unstyled list-links">
-                    <li><a href="{{ url('/catalogue/houses/Moskva/drugie_tip_domov') }}" align="center">Частные дома - 35</a></li>
-                    <li><a href="{{ url('/catalogue/houses/drugie_goroda') }}" align="center">Новостройки - 18</a></li>
+                    <li><a href="{{ url('/catalogue/houses/Moskva/drugie_tip_domov') }}" align="center">Частные дома - {{$home}}</a></li>
+                    <li><a href="{{ url('/catalogue/houses/drugie_goroda') }}" align="center">Новостройки - {{$newhome}}</a></li>
                   </ul>
                 </article>
               </div><!-- /.col-sm-3 -->

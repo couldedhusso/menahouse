@@ -308,9 +308,30 @@ class ObivlenieController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function getCatalogue()
+    public function getCatalogue(Request  $request)
     {
-        return View('catalogue.catalogue');
+        $form_sale_city = Input::get('form-sale-city');
+        $form_sale_property_type = Input::get('form-sale-property-type');
+
+        if ((!empty($form_sale_city)) and (empty($form_sale_property_type) )) {
+              $houses = Obivlenie::where('gorod', '=', $form_sale_city)->get();
+
+        } elseif ((empty($form_sale_city)) and (!empty($form_sale_property_type) )) {
+              $houses = Obivlenie::where('type_nedvizhimosti', '=', $form_sale_property_type)
+                                              ->get();
+
+        } elseif( (!empty($form_sale_city)) and (!empty($form_sale_property_type) ) ){
+              $houses = Obivlenie::where('gorod', '=', $form_sale_city)
+                                              ->where('type_nedvizhimosti', '=', $form_sale_property_type)
+                                              ->get();
+        } else {
+             $houses = Obivlenie::where('gorod', '=', 'Москва')->get();
+
+        }
+
+        $foundelemts = $houses->count();
+
+        return View('pages.properties_listing_lines', compact('houses', 'foundelemts'));
     }
 
     /**

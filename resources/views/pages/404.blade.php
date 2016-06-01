@@ -7,13 +7,9 @@
     <meta name="author" content="ThemeStarz">
 
     <link href='http://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
-    <link href="assets/fonts/font-awesome.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" type="text/css">
-    <link rel="stylesheet" href="assets/css/bootstrap-select.min.css" type="text/css">
-    <link rel="stylesheet" href="assets/css/magnific-popup.css" type="text/css">
-    <link rel="stylesheet" href="assets/css/jquery.slider.min.css" type="text/css">
-    <link rel="stylesheet" href="assets/css/owl.carousel.css" type="text/css">
-    <link rel="stylesheet" href="assets/css/style.css" type="text/css">
+
+    <link href="{{ asset('assets/fonts/font-awesome.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{ elixir("css/all.css") }}">
 
     <title>Mena | 404 Page not found</title>
 
@@ -32,8 +28,11 @@
                 </div>
                 <div class="user-area">
                     <div class="actions">
-                        <a href="submit.html" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
-                    </div>
+                      @if(Auth::check())
+                         <a href="{{ url('/dashboard/advertisement/add') }}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
+                      @else
+                         <a href="{{ url('/sign-in')}}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
+                      @endif                    </div>
                 </div>
             </div>
         </div>
@@ -47,23 +46,33 @@
                         <span class="icon-bar"></span>
                     </button>
                     <div class="navbar-brand nav" id="brand">
-                        <a href="#"><img src="assets/img/logo.png" alt="brand"></a>
+                        <a href="{{url('/')}}" > <img src="{{asset('static/assets/img/logo.png')}}" alt="Менахаус" title="Менахаус"></a>
                     </div>
                 </div>
                 <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
                     <ul class="nav navbar-nav">
-                        <li class="has-child"><a href="#" title="Основное личное меню пользователя"><i class="fa fa-user fa-fw"></i>&nbsp;Личный кабинет</a>
-                            <ul class="child-navigation">
-								<li><a href="#" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">14</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
-								<li><a href="#" title="Проверить и добавить новое объявление"><i class="fa fa-th-list"></i>&nbsp; Мои объявления</a></li>
-                                <li><a href="#" title="Активировать дополнительные функции сайта"><i class="fa fa-rub"></i>&nbsp; Оплата</a></li>
-								<li><a href="#" title="Настройки пользователя и сайта"><i class="fa fa-cog"></i>&nbsp; Настройки</a>
-                                <li><a href="index.html" title="Обязательно зайдите завтра проверить новые сообщения!"><i class="fa fa-sign-out"></i>&nbsp;Выход</a></li>
-                            </ul>
-                        </li>
+
+                        @if(Auth::check())
+
+                          <li class="has-child"><a href="#" title="Основное личное меню пользователя"><i class="fa fa-user fa-fw"></i>&nbsp;Личный кабинет</a>
+                              <ul class="child-navigation">
+                  <li><a href="{{ url('messages/') }}" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
+                  <li><a href="{{ url('/dashboard/advertisements') }}" title="Проверить и добавить новое объявление"><i class="fa fa-th-list"></i>&nbsp; Мои объявления</a></li>
+                                  <li><a href="#" title="Активировать дополнительные функции сайта"><i class="fa fa-rub"></i>&nbsp; Оплата</a></li>
+                  <li><a href="{{ url('dashboard/settings/'.Auth::user()->id )}}" title="Настройки пользователя и сайта"><i class="fa fa-cog"></i>&nbsp; Настройки</a>
+                                  <li><a href="{{ url('/auth/logout') }}" title="Обязательно зайдите завтра проверить новые сообщения!"><i class="fa fa-sign-out"></i>&nbsp;Выход</a></li>
+                              </ul>
+                          </li>
+
+                        @else
+                          <li><a href="{{ url('/sign-in') }}" title="Войти с помощью Вашего аккаунта">Войти &nbsp; </a>
+                          </li>
+                          <li class="activ"><a href="{{ url('/join') }}" title="Пройти быструю регистрацию"><strong>&nbsp;Регистрация</strong></a>
+                          </li>
+                        @endif
+
                     </ul>
                 </nav><!-- /.navbar collapse-->
-
             </header><!-- /.navbar -->
         </div><!-- /.container -->
     </div><!-- /.navigation -->
@@ -125,7 +134,7 @@
                                 <a href="#">mena@example.com</a>
                             </article>
                         </div><!-- /.col-sm-3 -->
-                        <div class="col-md-3 col-sm-3">						
+                        <div class="col-md-3 col-sm-3">
                             <article>
                                 <h3>Меню</h3>
                                 <ul class="list-unstyled list-links">

@@ -180,7 +180,7 @@
                             <div class="property small">
                                 <a href="property-detail.html">
                                     <div class="property-image">
-                                      <img alt="" src="{{sset('assets/img/properties/property-06.jpg')}}">
+                                      <img alt="" src="{{asset('assets/img/properties/property-06.jpg')}}">
                                     </div>
                                 </a>
                                 <div class="info">

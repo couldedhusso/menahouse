@@ -101,9 +101,9 @@
       <div class="col-md-12 col-sm-12">
         <div class="agent-form">
 
-          @if(Auth::check())
+          {{-- @if(Auth::check())
 
-          @endif
+          @endif --}}
           <form role="form" id="form-contact-agent" method="post" class="clearfix" action="messages.store">
             <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
             {!! csrf_field() !!}
