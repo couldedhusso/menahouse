@@ -38,7 +38,7 @@
 
                           <div class="property-image">
                               {{-- <figure class="ribbon">{{$categerise}}</figure> --}}
-                              <a href="{{ url('advertisement/'.$house->id ) }}">
+                              <a href="{{ url('property/'.$house->id ) }}">
                                   <img alt="" src="{{asset('storage/thumbnail/'.$house->id.'.jpeg')}}">
                               </a>
                           </div>
@@ -98,7 +98,7 @@
 
                      <div class="property-image">
                          {{-- <figure class="ribbon">{{$categerise}}</figure> --}}
-                         <a href="{{ url('advertisement/'.$house->id ) }}">
+                         <a href="{{ url('property/'.$house->id ) }}">
                              <img alt="" src="{{asset('storage/thumbnail/'.$house->id.'.jpeg')}}">
                          </a>
                      </div>

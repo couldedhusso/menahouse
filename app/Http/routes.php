@@ -219,6 +219,8 @@ Route::get('property/type/{param}', function($param){
 });
 
 Route::post('house/catalogue', 'ObivlenieController@getCatalogue');
+Route::post('properties/all', 'ObivlenieController@getCatalogue');
+
 
 // Route::post('house/catalogue', 'ObivlenieController@search');
 // Route::get('dashboard',  'DashboardController@show');
@@ -267,9 +269,6 @@ Route::get('catalogue/houses/Moskva/{typehouse}', function($typehouse){
          $houses =  Obivlenie::where('gorod', '<>', 'Москва')
                        ->where('type_nedvizhimosti', '<>', 'Квартира')
                        ->with('images')->Paginate(5);
-                      //  ->with('images')->get();
-
-                      //  ->with('images')->Paginate(5);
        }
 
        else {
@@ -299,12 +298,6 @@ Route::get('catalogue/houses/Moskva/{typehouse}', function($typehouse){
        return View('house.catalogue', compact('houses'));
 });
 
-Route::post('arenda',['as' => 'search_path',
-                     'uses' => 'ObivlenieController@search']);
-
-Route::get('prodazha', function(){
-    return View('prodazha.prodazha');
-});
 
 /*
 * Session
@@ -359,8 +352,6 @@ Route::get('terms-conditions', function()
 
 
 Route::get('/home', function () {
-
-
 //  dd(categorie()->id->where::('name', $categorie));
   $roleCount = Role::count() ;
   if ( $roleCount != 3){

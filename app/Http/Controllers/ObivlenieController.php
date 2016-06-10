@@ -322,8 +322,8 @@ class ObivlenieController extends Controller
 
         } elseif( (!empty($form_sale_city)) and (!empty($form_sale_property_type) ) ){
               $houses = Obivlenie::where('gorod', '=', $form_sale_city)
-                                              ->where('type_nedvizhimosti', '=', $form_sale_property_type)
-                                              ->get();
+                                  ->where('type_nedvizhimosti', '=', $form_sale_property_type)
+                                  ->get();
         } else {
              $houses = Obivlenie::where('gorod', '=', 'Москва')->get();
 
