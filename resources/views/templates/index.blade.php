@@ -204,24 +204,24 @@
               <div class="col-md-3 col-sm-4">
                 <article>
                   <ul class="list-unstyled list-links">
-                    <li><a href="{{ url('/advertisements/numberroom/1') }}" align="center">Однокомнатные квартиры - {{$oneroom}}</a></li>
-                    <li><a href="{{ url('advertisements/numberroom/2') }}" align="center">Двухкомнатные квартиры - {{$tworooms}}</a></li>
+                    <li><a href="{{ url('property/number_of_rooms/1') }}" align="center">Однокомнатные квартиры - {{$oneroom}}</a></li>
+                    <li><a href="{{ url('property/number_of_rooms/2') }}" align="center">Двухкомнатные квартиры - {{$tworooms}}</a></li>
                   </ul>
                 </article>
               </div><!-- /.col-sm-3 -->
               <div class="col-md-4 col-sm-4">
                 <article>
                   <ul class="list-unstyled list-links" align="center">
-                    <li><a href="{{ url('advertisements/numberroom/3') }}" align="center">Трехкомнатные квартиры - {{$threerooms}}</a></li>
-                    <li><a href="{{ url('advertisements/numberroom/4') }}" align="center">Квартиры четыре+ комнаты - {{$fourplusrooms}}</a></li>
+                    <li><a href="{{ url('property/number_of_rooms/3') }}" align="center">Трехкомнатные квартиры - {{$threerooms}}</a></li>
+                    <li><a href="{{ url('property/number_of_rooms/4') }}" align="center">Квартиры четыре+ комнаты - {{$fourplusrooms}}</a></li>
                   </ul>
                 </article>
               </div><!-- /.col-sm-3 -->
               <div class="col-md-3 col-sm-4">
                 <article>
                   <ul class="list-unstyled list-links">
-                    <li><a href="{{ url('/catalogue/houses/Moskva/drugie_tip_domov') }}" align="center">Частные дома - {{$home}}</a></li>
-                    <li><a href="{{ url('/catalogue/houses/drugie_goroda') }}" align="center">Новостройки - {{$newhome}}</a></li>
+                    <li><a href="{{ url('property/type/Частные дома') }}" align="center">Частные дома - {{$home}}</a></li>
+                    <li><a href="{{ url('property/type/Новостройки') }}" align="center">Новостройки - {{$newhome}}</a></li>
                   </ul>
                 </article>
               </div><!-- /.col-sm-3 -->

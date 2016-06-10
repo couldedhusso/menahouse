@@ -12,8 +12,8 @@ set :user, 'ubuntu'
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/home/ubuntu/remote/menahouse'
 
-role :web, 'ec2-52-58-234-223.eu-central-1.compute.amazonaws.com' # Your HTTP server, Apache/etc
-role :app, 'ec2-52-58-234-223.eu-central-1.compute.amazonaws.com' # This may be the same as your `Web` server
+role :web, 'ec2-52-28-126-18.eu-central-1.compute.amazonaws.com' # Your HTTP server, Apache/etc
+role :app, 'ec2-52-28-126-18.eu-central-1.compute.amazonaws.com' # This may be the same as your `Web` server
 
 set :ssh_options, { :forward_agent => true }
 #ssh_options[:forward_agent] = true

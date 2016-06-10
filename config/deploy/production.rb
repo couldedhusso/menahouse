@@ -8,7 +8,7 @@
 # server 'db.example.com', user: 'deploy', roles: %w{db}
 
 set :user, 'ubuntu'
-server 'ec2-52-58-234-223.eu-central-1.compute.amazonaws.com', user: 'ubuntu',
+server 'ec2-52-28-126-18.eu-central-1.compute.amazonaws.com', user: 'ubuntu',
         keys:%w(/home/couldedhusso/workspace/menahouseoncloud/AWSKeys/kubenetes.pem),
         roles: %w{app, db, web}
 # ssh_options[:keys] = ['/home/couldedhusso/workspace/menahouseoncloud/menahouse-vps.pem']

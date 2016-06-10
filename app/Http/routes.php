@@ -163,7 +163,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 //====> advertisements routes
 
-Route::get('advertisement/{id}', function($id){
+Route::get('property/{id}', function($id){
 
      $house = Obivlenie::whereid($id)->with('images')->first();
      if (Auth::check()) {
@@ -192,9 +192,8 @@ Route::get('advertisement/{id}', function($id){
     return View('house.property_details', compact('house')) ;
  });
 
-
-Route::get('advertisements/numberroom/{numberroom}', function($numberroom){
-  if ($numberroom == 4) {
+Route::get('property/number_of_rooms/{numberroom}', function($numberroom){
+  if ($numberroom >= 4) {
     $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', $numberroom)->get();
   } else {
     $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', $numberroom)->get();
@@ -205,9 +204,18 @@ Route::get('advertisements/numberroom/{numberroom}', function($numberroom){
   return view('pages.properties_listing_lines', compact('houses', 'foundelemts'));
 });
 
-Route::post('advertisements', function(){
+Route::post('properties/all', function(){
 
   return view('pages.properties_listing_lines', compact('houses'));
+});
+
+Route::get('property/type/{param}', function($param){
+
+  $houses = DB::table('obivlenie')->where('type_nedvizhimosti', '=', $param)->get();
+
+  $foundelemts = count($houses);
+
+  return view('pages.properties_listing_lines', compact('houses', 'foundelemts'));
 });
 
 Route::post('house/catalogue', 'ObivlenieController@getCatalogue');
@@ -379,6 +387,28 @@ Route::get('/home', function () {
 });
 
 Route::get('/', function () {
+
+  $roleCount = Role::count() ;
+  if ( $roleCount != 3){
+      $roleadm = Role::wherename('Admin')->first();
+      // $rolemembr = Role::where('name', 'Member')->value('id');
+      if( ! $roleadm ){
+          Role::create(['name' => 'Admin']);
+      }
+
+      $rolemod = Role::wherename('Moderator')->first();
+      // $rolemembr = Role::where('name', 'Member')->value('id');
+      if( ! $rolemod ){
+          Role::create(['name' => 'Moderator']);
+      }
+
+      $rolemembr = Role::wherename('Member')->first();
+      // $rolemembr = Role::where('name', 'Member')->value('id');
+      if( ! $rolemembr ){
+          Role::create(['name' => 'Member']);
+      }
+  }
+
   $oneroom  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 1)->count();
   $tworooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 2)->count();
   $threerooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 3)->count();
