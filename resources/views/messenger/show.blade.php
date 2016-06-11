@@ -1,13 +1,13 @@
 
-@extends('templates.TemplateDashboard')
+@extends('templates.TemplateMailbox')
 
 @section('Title')
   Mena | Mailbox
 @endsection
 
 @section('active_breadcrumb')
-  <li><a href="#">Сообщения</a></li>
-  <li class="active">Входящие</li>
+  <li><a href="{{url('mailbox/inbox')}}">Сообщения</a></li>
+  <li class="active">Подробнее</li>
 @endsection
 
 @section('sidebar')
@@ -15,150 +15,70 @@
 @endsection
 
 @section('content')
-<div class="container">
-   <div class=" grid">
-     {{-- <div class="row cells8">
-         <div class="cell colspan8">
-              <h4 class="text-light">{!! $um->subject !!}</h4>
-              <hr>
-         </div>
-     </div> --}}
-
-     <div class="row cells12">
-        <div class="cell colspan8">
-            <div class="grid">
-                  <div class="row cells12">
-                     <div class="cell colspan12">
-                       <h4 class="text-light">{!! $um->subject !!}</h4>
-                       <hr>
+  <!-- Message -->
+                  <div class="col-lg-9 col-sm-9">
+                  <div class="mail-box-header">
+                      <div class="pull-right">
+                          <a href="mail_compose.html" class="btn btn-white2-sm" title="Ответить"><i class="fa fa-reply"></i> Ответить</a>
+                          <a href="#" class="btn btn-white-red"title="Добавить в избранное"><i class="fa fa-heart-o"></i> </a>
+                          <a href="mailbox.html" class="btn btn-white-grey" title="Удалить"><i class="fa fa-trash-o"></i> </a>
+                          <a href="#" class="btn btn-white-grey" title="Пожаловаться"><i class="fa fa-bug"></i> </a>
+                      </div>
+                      <h3>
+                          Подробности сообщения
+                      </h3>
+                       <?php  $sender = $usermessage->getSenderInfos($usermessage->fromid); ?>
+                      <div class="mail-tools">
+                          <h4>
+                            <span class="font-noraml">От: </span>{{$sender}}
+                          </h4>
+                          <h5>
+                              <span class="pull-right font-noraml">{{$usermessage->created_at}}</span>
+                              <span class="font-noraml">Объявление: &nbsp;</span> <a href="property-detail.html" title="Открыть объявление адресата"><i class="fa fa-map-marker"></i> ул. Шоссе Энтузиастов, д.147</i> </a>
+                          </h5>
                       </div>
                   </div>
+                  <hr>
+                      <div class="mail-box">
 
-                  <div class="row cells12">
 
-                     <?php  $sender = $um->getSenderInfos($um->fromid); ?>
-                     <div class="cell colspan1">
-                        <img src="{{ asset('storage/profil').'/'.$sender->path }}" class="img-circle sender-avatar-medium">
-                     </div>
-
-                     <div class="cell colspan11">
-                        <p> <strong> {!! $sender->familia." ".  $sender->imia !!} </strong><br>
-                          <small>Posted {!! $um->created_at->diffForHumans() !!}</small>
-                        </p>
-
-                        <div class="row cell11 cls-content-msg">
-                            <div class="cell colspan11">
-                                <p>{!! $um->body !!}</p>
-                            </div>
-                        </div>
-
-                        @if( $um->fichiers_joints)
-
-                            <div class="row cell11 cls-content-msg">
-
-                                <div class="cell colspan4">
-                                    @foreach($um->images as $pics )
-                                      <div class="cell">
-
-                                            <div class="image-container">
-                                                  <div class="frame">  <img src="{{ asset('storage/fichiers_joints').'/'.$pics->path }}" alt="" /></div>
-                                                        <a class="cls-download-img" href="{{ asset('storage/fichiers_joints').'/'.$pics->path }}" download>
-                                                           <div class="image-overlay op-taupe">
-                                                             <span>
-                                                               <i class="margin40 material-icons">&#xE2C4;</i>
-                                                               {{-- <h3> <i class="margin40 material-icons" role="presentation">file_download</i> </h3> --}}
-                                                              </span>
-                                                           </div>
-                                                        </a>
-                                            </div>
-
+                      <div class="mail-body">
+                              {{$usermessage->body}}
+                              <hr>
+                      </div>
+                          <div class="mail-attachment">
+                              <div class="attachment">
+                                      <div class="file">
+                                          <a href="#">
+                                              <div class="icon">
+                                                  <i class="fa fa-file"></i>
+                                              </div>
+                                              <div class="file-name">
+                                                  img1.jpg
+                                              </div>
+                                          </a>
                                       </div>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                        @endif
-
-
-
-                        <div class="row cell11 cls-content-msg">
-                          <div class="cell colspan11">
-                                {!! Form::open(array('route' => 'reply_msg', 'method' => 'post', 'files' => 'true')) !!}
-                                      <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
-
-                                      <input name="subject" type="hidden" value="{!! $um->subject !!}" />
-                                      <input name="sender" type="hidden" value="{!! Auth::user()->id !!}" />
-                                      <input name="receiver" type="hidden" value="{!! $sender->user_id !!}" />
-
-                                      <div class="cell colspan11">
-                                          <div class="input-control full-size textarea">
-                                              <textarea name="body" placeholder="нажмите здесь, чтобы ответить" required></textarea>
-                                          </div>
+                                      <div class="file">
+                                          <a href="#">
+                                              <div class="image">
+                                                  <img alt="image" src="assets\img\icons\Circled User Male-100.png">
+                                              </div>
+                                              <div class="file-name">
+                                                  user.png
+                                              </div>
+                                          </a>
                                       </div>
-
-                                      <div class="row cells11">
-                                        <div class="cell colspan3">
-                                            <input type="submit" value="Ответить" class="button cls-btn primary">
-                                        </div>
-
-
-                                        <div class="cell colspan6">
-                                            <div class="toolbar">
-                                                <div>
-                                                    <span data-role="hint" data-hint-background="bg-gray" data-hint-color="fg-white" data-hint-mode="2" data-hint-position="top" data-hint="|прикрепить файлы">
-                                                        <span class="toolbar-button select-file ">
-                                                            {{-- <i class="material-icons" role="presentation">attachment</i> --}}
-                                                            {{-- {!! Form::file('files[]', array('multiple'=>true, 'id'=>'file-upload')) !!} --}}
-                                                              {!! Form::file('pics[]', array('multiple'=>true, 'id'=>'file-upload')) !!}
-
-                                                              {{-- <input type="file" name="pics" id="file-upload" multiple/> --}}
-                                                        </span>
-
-
-                                                    </span>
-
-                                                    <span  data-role="hint" data-hint-background="bg-gray" data-hint-color="fg-white" data-hint-mode="2" data-hint-position="top" data-hint="|жаловаться на агента">
-
-                                                        <button class="toolbar-button"> <i class="material-icons mdl-color-text--blue-grey-400" role="presentation">report</i>
-                                                        </button>
-                                                     </span>
-                                                </div>
-                                           </div>
-
-                                        </div>
-
-
-                                      </div>
-
-                                {!! Form::close() !!}
-                           </div>
-                        </div>
+                                  <div class="clearfix"></div>
+                              </div>
+                              </div>
+                              <div class="mail-body text-right">
+                                      <a class="btn btn-white2" href="mail_compose.html"><i class="fa fa-reply"></i>&nbsp; Ответить на сообщение</a>
+                                      <a class="btn btn-white-grey" href="#"><i class="fa fa-arrow-right"></i> Заключить сделку</a>
+                              </div>
+                            </br>
+                              <div class="clearfix"></div>
 
                       </div>
-
                   </div>
-
-
-                {{-- <div class="row cells12">
-
-                  <div class="cell colpsan6">
-                    <h5></h5>
-                      <input type="submit"  value="Сохранить изменения" class="button primary">
-                  </div>
-                </div> --}}
-
-            </div>
-        </div>
-
-        <div class="cell colspan4 ">
-            <div id="image-preview">
-                {{-- <label for="image-upload" id="image-label">Choose File</label>
-                <input type="file" name="image" id="image-upload" /> --}}
-            </div>
-        </div>
-     </div>
-
-
-   </div>
-</div>
+  <!-- end Message -->
 @endsection

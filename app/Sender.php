@@ -20,7 +20,7 @@ class Sender extends Eloquent
    *
    * @var array
    */
-  protected $fillable = ['mgsid', 'userid'];
+  protected $fillable = ['msgid', 'userid'];
 
 
   public function user(){

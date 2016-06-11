@@ -7,15 +7,9 @@
     <meta name="author" content="ThemeStarz">
 
     <link href='http://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
-
-    <link href="{{ asset('static/assets/fonts/font-awesome.css') }}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/bootstrap/css/bootstrap.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/bootstrap-select.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/magnific-popup.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/jquery.slider.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/owl.carousel.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('static/assets/css/style.css') }}" type="text/css">
-
+    <link href="assets/fonts/font-awesome.css" rel="stylesheet" type="text/css">
+    
+    <link rel="stylesheet" href="{{ elixir("css/all.css") }}">
     <title>Mena | Property Detail</title>
 
 </head>

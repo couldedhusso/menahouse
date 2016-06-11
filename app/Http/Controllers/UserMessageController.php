@@ -24,7 +24,6 @@ use Intervention\Image\Facades\Image ;
 use Illuminate\Filesystem\FileNotFoundException;
 
 
-
 class UserMessageController extends Controller
 {
     /**
@@ -35,49 +34,43 @@ class UserMessageController extends Controller
     public function index()
     {
 
-
         $userid = Auth::user()->id;
-        $receivers = Receiver::wheretoid($userid)
-                              ->lists('readed', 'msgid')
-                              ->toArray();
+        // $receivers = Receiver::wheretoid($userid)
+        //                       ->lists('readed', 'msgid')
+        //                       ->toArray();
 
-        $newMessageCount = [] ;
+        // recuperer ts les msges non lus, pas dans la liste de spams et non supprimes
+        $receiverMsgId = Receiver::wheretoid($userid)
+                                  ->where('spam', '=', '0')
+                                  ->where('deleted', '=', '0')
+                                  ->pluck('msgid')
+                                  ->toArray();
 
-         $receiverMsgId =  Receiver::where('toid', $userid)->pluck('msgid');
-
-
-
-        // foreach ($receivers as $receiver) {
-        //     dd($receiver);
-        // }
-
-        $ums = UserMessage::wheretoid($userid)
+        $usermessages = UserMessage::whereIn('id', $receiverMsgId)
                                     ->orderBy('id', 'desc')
-                                    ->with('images')
                                     ->get();
 
-
-        //
         // foreach ($ums as $um) {
         //   if ($um->created_at > $receivers[$um->id]) {
         //       $newMessageCount[] = $um->id ;
         //   }
         // }
         //  $piece_jointes  = array();
-        foreach ($ums as $um) {
-          if ($um->fichiers_joints == "1") {
-            $piece_jointes[$um->id] = "true";
-          } else {
-            $piece_jointes[$um->id] = "false";
-          }
+        // foreach ($ums as $um) {
+        //   if ($um->fichiers_joints == "1") {
+        //     $piece_jointes[$um->id] = "true";
+        //   } else {
+        //     $piece_jointes[$um->id] = "false";
+        //   }
           // if (! $receivers[$um->id]) {
           //     $newMessageCount[] = $um->id ;
           // }
-        }
+        // }
 
         // dd(count($newMessageCount));
+        $mailcount = count($usermessages);
 
-        return view('sessions.inbox', compact('userid', 'ums', 'piece_jointes'));
+        return view('sessions.inbox', compact('usermessages', 'mailcount', 'userid'));
 
     }
 
@@ -101,66 +94,37 @@ class UserMessageController extends Controller
      */
     public function store(Request $request)
     {
-        $input = Input::all();
-        $sender = Auth::user()->id ;
+
+        // TODO :
+        //   1-recuperer les donees du cache de donnees
+        //   2-envoie asynchrone de messsage
+
+        $sender = Auth::user()->id;
         $receiver = User::whereid(Input::get('To'))->first();
-
-        $storage_path = public_path().'/storage/fichiers_joints/' ;
-
-        if(! File::exists($storage_path)) {
-            File::makeDirectory($storage_path);
-        }
 
         // $conversation = Conversation::create(['subject' => Input::get('subject')]);
 
         $um = UserMessage::create([
             'subject' => Input::get('subject'),
-            'fromid' => $sender,
+            'fromid' => Auth::user()->id,
             'toid' => Input::get('To'),
             'body' => Input::get('form-message')
         ]);
 
-        $receiver = new Receiver ;
+        $receiver = Receiver::create([
+          'toid' => Input::get('To'),
+          'msgid' => $um->id,
+          'last_read' => Carbon::now()
+        ]);
 
-        // $receiver->from = $Toid->id;
-
-        $receiver->toid = Input::get('To');
-        $receiver->msgid = $um->id;
-        $receiver->last_read = Carbon::now() ;
-        $receiver->save();
+        $sender = Sender::create([
+          'userid' => Auth::user()->id,
+          'msgid' =>  $um->id
+        ]);
 
 
-        $sender = new Sender;
-        $sender->userid = $sender ;
-        $sender->msgid = $um->id ;
-        $sender->save();
-
-        // joined file
-
-       $pic = Input::file('pics');
-
-       if ( $pic[0] !== null ) {
-
-       foreach(Input::file('pics')  as $imgvalue) {
-
-              $filename = date('Y-m-d')."-".str_random(8)."-".$imgvalue->getClientOriginalName();
-
-              if( $imgvalue->isValid() ){
-                    $imgvalue->move($storage_path, $filename);
-
-                    $img = new Images ;
-                    $img = $um->images()->create(array('path' => $filename));
-                    $um->images()->save($img);
-              }
-          }
-
-          $um->fichiers_joints = true ;
-          $um->save();
-
-       }
-
+       // ==== TO DO : return to list found items
        return redirect('mailbox/inbox');
-
     }
 
     /**
@@ -172,28 +136,20 @@ class UserMessageController extends Controller
     public function show($id)
     {
         try {
-            $um = UserMessage::whereid($id)->first();
+
+            $usermessage = UserMessage::whereid($id)->first();
 
         } catch (ModelNotFoundException $e) {
             Session::flash('error_message', 'The thread with ID: ' . $id . ' was not found.');
             return redirect('messages');
         }
 
-        // show current user in list if not a current participant
-        // $users = User::whereNotIn('id', $thread->participantsUserIds())->get();
-
-        // $sender = User::find($um->toid)->first();
-
-        // don't show the current user in list
-        $userId = Auth::user()->id;
-
-        $receiver = Profiles::whereuser_id($userId)->first();
-
         // $users = User::whereNotIn('id', $thread->participantsUserIds($userId))->get();
+        $userId = Auth::user()->id;
+        $receiver = Profiles::whereuser_id($userId)->first();
+        $usermessage->markAsRead($userId, $id);
 
-        $um->markAsRead($userId, $id);
-
-        return view('messenger.show', compact('um', 'receiver'));
+        return view('messenger.show', compact('usermessage'));
     }
 
     /**

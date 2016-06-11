@@ -37,9 +37,9 @@
                        </div> @include('sessions.user_img') Личный кабинет</a>
                            <ul class="child-navigation">
                                <li><a title="Копировать" href="#" class="active"><img src="assets/img/icons/Copy Link-100.png" width="15" height="15" alt=""> &nbsp; {!! Auth::user()->imia !!} &nbsp; ID: {!! Auth::user()->id  !!} </a></li>
-                               <li><a href="{{ url('messages/') }}">Сообщения <span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li>
-               <li><a href="{{ url('/dashboard/nedvizhimosts') }}">Мои объявления</a></li>
-               <li><a href="{{ url('user/settings/'.Auth::user()->id )}}">Настройки</a></li>
+                               <li><a href="{{ url('/mailbox/inbox') }}">Сообщения <span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li>
+               <li><a href="{{ url('/dashboard/advertisements') }}">Мои объявления</a></li>
+               <li><a href="{{ url('/dashboard/settings/'.Auth::user()->id )}}">Настройки</a></li>
                                <li><a href="#">Оплата</a></li>
                                <li><a href="{{ url('/auth/logout') }}">Выход</a></li>
                            </ul>

@@ -104,12 +104,13 @@
           {{-- @if(Auth::check())
 
           @endif --}}
-          <form role="form" id="form-contact-agent" method="post" class="clearfix" action="messages.store">
+          <form role="form" id="form-contact-agent" method="post" class="clearfix" action="/mailbox/message/new">
             <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
             {!! csrf_field() !!}
 
             <input type="hidden" name="subject" value="{{$typehouse}} квартира на {{ $house->status }}">
             <input type="hidden" name="To" value="{{ $house->user_id }}">
+            <input type="hidden" name="id_home" value="{{ $house->id }}">
 
             <div class="form-group">
               <label for="form-contact-agent-message">Вам понравилось? Есть вопросы? Напишите письмо<em>*</em></label>

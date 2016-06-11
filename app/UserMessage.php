@@ -43,8 +43,6 @@ class UserMessage extends Eloquent
          'fromid' => 'required',
      ];
 
-
-
     /**
      *  Notification of message
      *
@@ -109,8 +107,6 @@ class UserMessage extends Eloquent
           }
       }
 
-
-
       /**
        * See if the current thread is unread by the user
        *
@@ -121,7 +117,6 @@ class UserMessage extends Eloquent
       {
           try {
               $receiver = $this->getReceiverByUserId($userId, $msgid);
-
               if ($receiver->readed ) {
                   return true;
               }
@@ -134,6 +129,7 @@ class UserMessage extends Eloquent
 
           return false;
       }
+
 
       /**
        * favorites msg user
@@ -224,16 +220,16 @@ class UserMessage extends Eloquent
       }
 
       public function getSenderInfos($senderId){
-          // $userid = User::find($senderId)->first();
+          $sender = User::find($senderId)->first();
 
-          $sender = \DB::table('profiles')
-            ->where('user_id', '=', $senderId)
-            ->join('users', 'profiles.user_id', '=', 'users.id')
-            ->join('images', 'profiles.id', '=', 'images.imageable_id')
-            ->first();
+          // $sender = \DB::table('profiles')
+          //   ->where('user_id', '=', $senderId)
+          //   ->join('users', 'profiles.user_id', '=', 'users.id')
+          //   ->join('images', 'profiles.id', '=', 'images.imageable_id')
+          //   ->first();
 
           // $sender = Profiles::whereuser_id($senderId)->->first();
-          return $sender ;
+          return $sender->imia.' '.$sender->familia ;
       }
 
 

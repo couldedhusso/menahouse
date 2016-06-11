@@ -20,7 +20,7 @@ class Receiver extends Eloquent
    *
    * @var array
    */
-  protected $fillable = ['mgsid','last_read', 'toid'];
+  protected $fillable = ['msgid','last_read', 'toid'];
 
 
   public function user(){
