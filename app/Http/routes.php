@@ -6,6 +6,7 @@ use App\Categorie ;
 use App\Images ;
 use App\Profiles;
 use App\User;
+use App\Receiver;
 
 use App\Bookmarked;
 use App\Http\Controllers;
@@ -95,10 +96,59 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'mailbox'], function () {
           Route::get('inbox', ['as' => 'messages', 'uses' => 'UserMessageController@index']);
-          Route::get('message/new', ['as' => 'messages.create', 'uses' => 'UserMessageController@create']);
-          Route::post('message/new', ['as' => 'messages.store', 'uses' => 'UserMessageController@store']);
+          Route::get('message/compose/{id}', function($id){
+
+              $userID = Auth::user()->id ;
+              $house = Obivlenie::whereid($id)->with('images')->first();
+              $typemsg = "Новое сообщение ";
+              $To = $userID;
+              $flag ="compose";
+
+              return view('messenger.compose', compact('house', 'To','typemsg', 'flag'));
+          });
+
+          Route::get('message/reply/{fromid}/{houseid}', function($fromid, $houseid){
+              // $sender =  User::where('id', '=', Auth::user()->id )->first();
+              // $usrmsge = $msgparams->usrmsge;
+              // $receiver = $usrmsge->fromid;
+
+              $typemsg = "Ответ на сообщение";
+              $To = $fromid;
+
+              if ($fromid != Auth::user()->id ) {
+
+                $house = Obivlenie::whereid($houseid)->with('images')->first();
+                $typemsg = "Ответ на сообщение ";
+                $flag = "compose";
+                return view('messenger.compose', compact('house', 'typemsg', 'To', 'flag'));
+              }
+
+              return redirect('/mailbox/inbox');
+
+          });
+          Route::get('message/sent', ['as' => 'messages.sent', 'uses' => 'UserMessageController@sent']);
+          Route::get('message/trash', ['as' => 'messages.trash', 'uses' => 'UserMessageController@trash']);
+          Route::get('message/liked', ['as' => 'messages.liked', 'uses' => 'UserMessageController@liked']);
           Route::get('inbox/{id}', ['as' => 'messages.show', 'uses' => 'UserMessageController@show']);
+          Route::post('message/compose', ['as' => 'messages.store', 'uses' => 'UserMessageController@store']);
           Route::put('inbox/{id}', ['as' => 'messages.update', 'uses' => 'UserMessageController@update']);
+
+          Route::get('message/trash/{idmsg}', function($idmsg){
+            $receiverMsg = Receiver::wheretoid(Auth::user()->id)
+                                      ->where('msgid', '=', $idmsg)
+                                      ->update(array('deleted' => 1));
+
+            return redirect('/mailbox/inbox');
+
+          });
+
+          Route::get('message/like/{idmsg}', function($idmsg){
+            $receiverMsg = Receiver::wheretoid(Auth::user()->id)
+                                      ->where('msgid', '=', $idmsg)
+                                      ->update(array('favoris' => 1));
+
+            return redirect('/mailbox/inbox');
+          });
     });
 
 
@@ -170,25 +220,26 @@ Route::get('property/{id}', function($id){
          $userID = Auth::user()->id;
 
          if ($userID != $house->user_id) {
-           if ($house->numberclick != null) {
+           if ($house->numberclick != 0) {
              $numberclick = $house->numberclick;
              $numberclick += 1;
            } else {
              $numberclick = 1;
            }
+           $house->numberclick = $numberclick ;
          } // ne pas prendre en compte les clicks du prioprio
      } else {
-           if ($house->numberclick != null) {
+           if ($house->numberclick != 0) {
              $numberclick = $house->numberclick;
              $numberclick += 1;
            } else {
              $numberclick = 1;
            }
+
+           $house->numberclick = $numberclick ;
      }
 
-     $house->numberclick = $numberclick ;
      $house->save();
-
     return View('house.property_details', compact('house')) ;
  });
 

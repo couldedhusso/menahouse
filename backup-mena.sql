@@ -278,6 +278,7 @@ CREATE TABLE `receivers` (
   `spam` tinyint(1) NOT NULL DEFAULT '0',
   `readed` tinyint(1) NOT NULL DEFAULT '0',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `favoris` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -377,6 +378,7 @@ CREATE TABLE `usermessages` (
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `id_conversation` int(10) unsigned NOT NULL,
+  `id_obivlenie` int(10) unsigned NOT NULL,
   `subject` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `fichiers_joints` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)

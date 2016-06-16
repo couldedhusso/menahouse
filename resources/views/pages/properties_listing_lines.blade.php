@@ -18,10 +18,16 @@
                        </div>
                    </figure>
                </section>
-
+               <?php $count_ads  = 0 ; ?>
 
                <section id="properties" class="display-lines">
                  @foreach($houses as $house)
+
+                   <?php
+                        $home = new App\Obivlenie ;
+                        $typehousenumberrooms =  $home->typeHouse($house->kolitchestvo_komnat) ;
+                   ?>
+
                    @if(Auth::check() )
                       @if($house->user_id != Auth::user()->id)
                         <div class="property">
@@ -38,6 +44,7 @@
 
                           <div class="property-image">
                               {{-- <figure class="ribbon">{{$categerise}}</figure> --}}
+                              <figure class="ribbon">{{$house->status}}</figure>
                               <a href="{{ url('property/'.$house->id ) }}">
                                   <img alt="" src="{{asset('storage/thumbnail/'.$house->id.'.jpeg')}}">
                               </a>
@@ -45,13 +52,7 @@
 
                           <div class="info">
                               <header>
-                                  <?php
-                                  //    use App\Obivlenie ;
-                                  //    $newhouse = new Obivlenie();
-                                  //    $typehouse = $newhouse->typeHouse($house["_source"]["kolitchestvo_komnat"]) ;
-                                    //  $count_ads  += 1 ;
-                                  ?>
-                                  {{-- <a href="{{ url('property/'.$house["_source"]["id"]) }}"><h3>{{ $typehouse }}</h3></a>  <!-- CZ индивидуальная ссылка объявления --> --}}
+                                  <a href="{{ url('property/'.$house->id ) }}"><h3>{{$typehousenumberrooms }}</h3></a>
                                   <figure>м.{{ $house->metro }}; {{ $house->ulitsa }}</figure>
                               </header>
                               <div class="tag price">{{ $house->price }} рублей</div>
@@ -71,15 +72,15 @@
                                   </dl>
                               </aside>
 
-                              <a href="{{url('/mailbox/messages/new')}}" class="btn btn-white2" title="Написать владельцу объявления, узнать полную информацию и добавить в избранное">
-                              <figure class="fa fa-envelope"></figure>
-                              <span>&nbsp; Написать &nbsp;</span>
-                              <span class="arrow fa fa-angle-right"></span>
+                              <a href="{{url('/mailbox/message/compose/'.$house->id)}}" class="btn btn-white2" title="Написать владельцу объявления, узнать полную информацию и добавить в избранное">
+                                <figure class="fa fa-envelope"></figure>
+                                <span>&nbsp; Написать &nbsp;</span>
+                                <span class="arrow fa fa-angle-right"></span>
                               </a><!-- /.write-button -->
-                              <span class="actions">
+                              {{-- <span class="actions">
                                     <!--<a href="#" class="fa fa-print"></a>-->
                                     <a href="#" class="bookmark" data-bookmark-state="empty"><span class="title">Добавить в избранное</span><span class="title-added">Добавлено</span></a>
-                              </span>
+                              </span> --}}
                           </div>  {{-- {!! $houses->render() !!} --}}
                         </div> <!-- /.property -->
                       @endif
@@ -98,6 +99,7 @@
 
                      <div class="property-image">
                          {{-- <figure class="ribbon">{{$categerise}}</figure> --}}
+                         <figure class="ribbon">{{$house->status}}</figure>
                          <a href="{{ url('property/'.$house->id ) }}">
                              <img alt="" src="{{asset('storage/thumbnail/'.$house->id.'.jpeg')}}">
                          </a>
@@ -105,13 +107,7 @@
 
                      <div class="info">
                          <header>
-                             <?php
-                             //    use App\Obivlenie ;
-                             //    $newhouse = new Obivlenie();
-                             //    $typehouse = $newhouse->typeHouse($house["_source"]["kolitchestvo_komnat"]) ;
-                               $count_ads  = 0 ;
-                             ?>
-                             {{-- <a href="{{ url('property/'.$house["_source"]["id"]) }}"><h3>{{ $typehouse }}</h3></a>  <!-- CZ индивидуальная ссылка объявления --> --}}
+                             <a href="{{ url('property/'.$house->id ) }}"><h3>{{$typehousenumberrooms }}</h3></a>
                              <figure>м.{{ $house->metro }}; {{ $house->ulitsa }}</figure>
                          </header>
                          <div class="tag price">{{ $house->price }} рублей</div>
@@ -130,15 +126,12 @@
                                      <dd>{{ $house->ploshad_kurhni }} м<sup>2</sup></dd>
                              </dl>
                          </aside>
-                         <a href="{{url('/mailbox/messages/new')}}" class="btn btn-white2" title="Написать владельцу объявления, узнать полную информацию и добавить в избранное">
-                         <figure class="fa fa-envelope"></figure>
-                         <span>&nbsp; Написать &nbsp;</span>
-                         <span class="arrow fa fa-angle-right"></span>
+
+                         <a href="{{url('/mailbox/message/compose/'.$house->id)}}" class="btn btn-white2" title="Написать владельцу объявления, узнать полную информацию и добавить в избранное">
+                           <figure class="fa fa-envelope"></figure>
+                           <span>&nbsp; Написать &nbsp;</span>
+                           <span class="arrow fa fa-angle-right"></span>
                          </a><!-- /.write-button -->
-                         <span class="actions">
-                               <!--<a href="#" class="fa fa-print"></a>-->
-                               <a href="#" class="bookmark" data-bookmark-state="empty"><span class="title">Добавить в избранное</span><span class="title-added">Добавлено</span></a>
-                         </span>
                      </div>  {{-- {!! $houses->render() !!} --}}
                      </div> <!-- /.property -->
 

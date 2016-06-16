@@ -110,7 +110,7 @@
 
             <input type="hidden" name="subject" value="{{$typehouse}} квартира на {{ $house->status }}">
             <input type="hidden" name="To" value="{{ $house->user_id }}">
-            <input type="hidden" name="id_home" value="{{ $house->id }}">
+            <input type="hidden" name="home_id" value="{{ $house->id }}">
 
             <div class="form-group">
               <label for="form-contact-agent-message">Вам понравилось? Есть вопросы? Напишите письмо<em>*</em></label>

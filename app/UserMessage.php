@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
 use Intervention\Image\Facades\Image ;
+use App\Receiver;
+use App\Sender;
 
 use Carbon\Carbon;
 use App\Profiles;
@@ -30,7 +32,7 @@ class UserMessage extends Eloquent
      *
      * @var array
      */
-    protected $fillable = ['id', 'fromid', 'toid', 'body', 'subject', 'fchiers_joints'];
+    protected $fillable = ['id', 'fromid', 'toid', 'body', 'subject', 'fchiers_joints', 'id_conversation', 'id_obivlenie'];
 
     /**
      * Validation rules.
@@ -220,7 +222,8 @@ class UserMessage extends Eloquent
       }
 
       public function getSenderInfos($senderId){
-          $sender = User::find($senderId)->first();
+
+          $sender = User::where('id', '=', $senderId)->first();
 
           // $sender = \DB::table('profiles')
           //   ->where('user_id', '=', $senderId)

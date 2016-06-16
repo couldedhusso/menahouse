@@ -104,7 +104,6 @@ class Obivlenie extends Model
         $receiver = User::whereid($receiverId)->first();
         return $receiver ;
     }
-
     public function getMetroInfos($adId){
         $receiver = Obivlenie::whereid($adId)->first();
         return $receiver->metro ;

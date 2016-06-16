@@ -18,7 +18,7 @@
              <div class="col-lg-9 col-sm-3">
                  <div class="mail-box-header">
                      <h2>
-                         Удалёные сообщения
+                         Исходящие сообщения
                      </h2>
                      <div class="mail-tools">
                          <div class="btn-group pull-right">
@@ -30,13 +30,13 @@
                  <div class="mail-box">
                    <table class="table table-hover table-mail">
                      <tbody>
-                       @foreach($messagesDel as $umsge)
+                       @foreach($messagesSent as $umsge)
 
                            <tr class="read">
                                {{-- <td class="check-mail">
                                    <input type="checkbox" class="i-checks">
                                </td> --}}
-                               <td class="mail-contact">От : <a href="{{url("/mailbox/inbox/".$umsge->id)}}" > <?php  echo  $umsge->getSenderInfos($umsge->fromid); ?> </a></td>
+                               <td class="mail-contact">Кому : <a href="{{url("/mailbox/inbox/".$umsge->id)}}" > <?php  echo  $umsge->getSenderInfos($umsge->toid); ?> </a></td>
                                <td class="mail-subject"><a href="{{url("/mailbox/inbox/".$umsge->id)}}" >
                                  <?php
                                     $str = $umsge->body;

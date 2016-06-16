@@ -6,7 +6,7 @@
 
 @section('active_breadcrumb')
   <li><a href="#">Сообщения</a></li>
-  <li class="active">Удалёные</li>
+  <li class="active">Избранное</li>
 @endsection
 
 @section('sidebar')
@@ -18,7 +18,7 @@
              <div class="col-lg-9 col-sm-3">
                  <div class="mail-box-header">
                      <h2>
-                         Удалёные сообщения
+                         Избранные сообщения
                      </h2>
                      <div class="mail-tools">
                          <div class="btn-group pull-right">
@@ -30,7 +30,7 @@
                  <div class="mail-box">
                    <table class="table table-hover table-mail">
                      <tbody>
-                       @foreach($messagesDel as $umsge)
+                       @foreach($messagesLiked as $umsge)
 
                            <tr class="read">
                                {{-- <td class="check-mail">

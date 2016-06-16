@@ -8,6 +8,6 @@
     @if($count == 0 )
         <span>0</span>
     @else
-       <span>{!!  $count !!}</span>
+       <span>{!!$count!!}</span>
     @endif
 @endif

@@ -37,10 +37,10 @@
                                           $typephouse = $house->HouseCategorie($house->kolitchestvo_komnat) ;
                                        ?>
                                        <td class="image">
-                                           <a href="{{url('dashboard/advertisement/'.$house->id)}}"><img alt="" src="{{asset('storage/thumbnail/'.$house->id.'.jpeg')}}"></a>
+                                           <a href="{{url('/property/'.$house->id)}}"><img alt="" src="{{asset('storage/thumbnail/'.$house->id.'.jpeg')}}"></a>
                                        </td>
                                        <td><div class="inner">
-                                           <a href="{{url('dashboard/advertisement/'.$house->id)}}"><h2>{{ $typephouse.', м.'.$house->metro }}</h2></a>
+                                           <a href="{{url('/property/'.$house->id)}}"><h2>{{ $typephouse.', м.'.$house->metro }}</h2></a>
                                            <figure>{{ $house->ulitsa }}</figure>
                                            <div class="tag price">{{ $house->price }}</div>
                                        </div>
@@ -48,7 +48,7 @@
                                        <td>{{ $house->created_at->format('d.m.Y') }}</td>
                                        <td>
                                          @if($house->numberclick  == null)
-                                             0 
+                                             0
                                             @else
                                               {{ $house->numberclick }}
                                             @endif

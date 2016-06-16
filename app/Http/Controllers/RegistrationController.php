@@ -17,6 +17,7 @@ use Hash;
 use Mail;
 
 use App\User;
+use App\Role;
 use Auth;
 
 class RegistrationController extends Controller

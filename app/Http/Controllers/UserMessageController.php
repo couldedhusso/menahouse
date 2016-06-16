@@ -11,6 +11,7 @@ use App\Profiles;
 use App\UserMessage;
 use Carbon\Carbon;
 use App\Images;
+use App\Obivlenie;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -43,11 +44,12 @@ class UserMessageController extends Controller
         $receiverMsgId = Receiver::wheretoid($userid)
                                   ->where('spam', '=', '0')
                                   ->where('deleted', '=', '0')
+                                  ->where('deleted', '=', '0')
                                   ->pluck('msgid')
                                   ->toArray();
 
         $usermessages = UserMessage::whereIn('id', $receiverMsgId)
-                                    ->orderBy('id', 'desc')
+                                    ->orderBy('created_at', 'desc')
                                     ->get();
 
         // foreach ($ums as $um) {
@@ -69,9 +71,8 @@ class UserMessageController extends Controller
 
         // dd(count($newMessageCount));
         $mailcount = count($usermessages);
-
-        return view('sessions.inbox', compact('usermessages', 'mailcount', 'userid'));
-
+        $flag = "inbox";
+        return view('sessions.inbox', compact('usermessages', 'mailcount', 'userid', 'flag'));
     }
 
     /**
@@ -79,11 +80,51 @@ class UserMessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function sent()
+    {
+
+      $messagesSent = UserMessage::where('fromid', '=', Auth::user()->id)
+                                  ->orderBy('created_at', 'desc')
+                                  ->get();
+      $flag = "sent";
+      return view('messenger.sent', compact('messagesSent', 'flag'));
+    }
+
+    public function trash()
+    {
+
+      $receiverMsgId = Receiver::wheretoid(Auth::user()->id)
+                                ->where('deleted', '=', '1')
+                                ->pluck('msgid')
+                                ->toArray();
+
+      $messagesDel = UserMessage::whereIn('id', $receiverMsgId)
+                                  ->orderBy('id', 'desc')
+                                  ->get();
+      $flag = "deleted";
+      return view('messenger.deleted-msg', compact('messagesDel', 'flag'));
+    }
+
+    public function liked(){
+      $receiverMsgId = Receiver::wheretoid(Auth::user()->id)
+                                ->where('favoris', '=', '1')
+                                ->pluck('msgid')
+                                ->toArray();
+
+      $messagesLiked = UserMessage::whereIn('id', $receiverMsgId)
+                                  ->orderBy('created_at', 'desc')
+                                  ->get();
+      $flag = "liked";
+      return view('messenger.liked', compact('messagesLiked', 'flag'));
+
+    }
     public function create()
     {
         $user = User::whereid(Auth::user()->id)->first();
         $umail = $user->email ;
-        return view('messenger.newmessage', compact('umail'));
+        $flag ="new";
+        return view('messenger.compose', compact('umail', 'flag'));
     }
 
     /**
@@ -108,6 +149,8 @@ class UserMessageController extends Controller
             'subject' => Input::get('subject'),
             'fromid' => Auth::user()->id,
             'toid' => Input::get('To'),
+            'id_obivlenie' => Input::get('id_obivlenie'),
+            'id_conversation' => Input::get('id_obivlenie'),
             'body' => Input::get('form-message')
         ]);
 
@@ -145,11 +188,19 @@ class UserMessageController extends Controller
         }
 
         // $users = User::whereNotIn('id', $thread->participantsUserIds($userId))->get();
+        // $ = Profiles::whereuser_id($userId)->first();
+        $house = Obivlenie::where('id', '=', $usermessage->id_conversation)
+                                                            ->with('images')
+                                                            ->first();
         $userId = Auth::user()->id;
-        $receiver = Profiles::whereuser_id($userId)->first();
-        $usermessage->markAsRead($userId, $id);
 
-        return view('messenger.show', compact('usermessage'));
+        // si le message est destine a l user alors marquer comme lu et
+        // afficher le message
+        if ($userId == $usermessage->toid) {
+          $usermessage->markAsRead($userId, $id);
+        }
+        $flag = "show";
+        return view('messenger.show', compact('usermessage', 'house', 'flag'));
     }
 
     /**

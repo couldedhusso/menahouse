@@ -19,7 +19,7 @@
              <div class="mail-box-header">
 
                  <h2>
-                     Входящие ({{ $mailcount }})
+                     Входящие (@include('messenger.unread-count'))
                  </h2>
                  <div class="mail-tools">
                      <div class="btn-group pull-right">
@@ -63,7 +63,7 @@
                                   echo mb_strimwidth($str, 0, $lenStr/3, " ...");
                                 ?>
                              </a></td>
-                             <td class=""></td>
+                             <td class=""><i class="fa fa-paperclip"></i></td>
                              <td class="text-right mail-date">{{$umsge->created_at->format('d.m')}}</td>
                          </tr>
                        @endif

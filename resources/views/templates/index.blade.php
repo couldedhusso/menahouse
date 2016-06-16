@@ -57,7 +57,7 @@
 
                           <li class="has-child"><a href="#" title="Основное личное меню пользователя"><i class="fa fa-user fa-fw"></i>&nbsp;Личный кабинет</a>
                               <ul class="child-navigation">
-                  <li><a href="{{ url('messages/') }}" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
+                  <li><a href="{{ url('/mailbox/inbox') }}" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
                   <li><a href="{{ url('/dashboard/advertisements') }}" title="Проверить и добавить новое объявление"><i class="fa fa-th-list"></i>&nbsp; Мои объявления</a></li>
                                   <li><a href="#" title="Активировать дополнительные функции сайта"><i class="fa fa-rub"></i>&nbsp; Оплата</a></li>
                   <li><a href="{{ url('dashboard/settings/'.Auth::user()->id )}}" title="Настройки пользователя и сайта"><i class="fa fa-cog"></i>&nbsp; Настройки</a>
@@ -251,7 +251,7 @@
                             <aside class="description">
                                 <header><h3>Заголовок н3</h3></header>
                                 <p>Первая супер причина почему вы с нами! И она звучит так... С нами и только с нами</p><br>
-                                <a href="properties-listing.html" class="link-arrow">Подробнее</a>
+                                <a href="#" class="link-arrow">Подробнее</a>
 							</aside>
 							<br>
                         </div><!-- /.feature-box -->
@@ -262,7 +262,7 @@
                             <aside class="description">
                                 <header><h3>Заголовок н3</h3></header>
                                 <p>Вторая супер причина почему вы с нами! И она звучит так... А почему не с нами? Только с нами</p><br>
-                                <a href="properties-listing.html" class="link-arrow">Подробнее</a>
+                                <a href="#" class="link-arrow">Подробнее</a>
                             </aside>
 							<br>
                         </div><!-- /.feature-box -->
@@ -273,17 +273,17 @@
                             <aside class="description">
                                 <header><h3>Заголовок н3</h3></header>
                                 <p>Третья супер причина почему вы с нами! И она звучит так... Прочее бла-бла-бла </p><br>
-                                <a href="properties-listing.html" class="link-arrow">Подробнее</a>
+                                <a href="#" class="link-arrow">Подробнее</a>
                             </aside>
 							<br>
                         </div><!-- /.feature-box -->
                     </div><!-- /.col-md-4 -->
                 </div><!-- /.row -->
-				<br><br><br>
+				<br>
             </div><!-- /.container -->
         </section><!-- /#our-services -->
 
-        <section id="testimonials" class="block">
+        {{-- <section id="testimonials" class="block">
             <div class="container">
                 <header class="section-title"><h2>Отзывы</h2></header>
                 <div class="owl-carousel testimonials-carousel">
@@ -311,7 +311,7 @@
                     </blockquote>
                 </div><!-- /.testimonials-carousel -->
             </div><!-- /.container -->
-        </section><!-- /#testimonials -->
+        </section><!-- /#testimonials --> --}}
 
     </div>
     <!-- end Page Content -->
@@ -332,7 +332,7 @@
           </aside><!-- /#adveritsing-->
 
         @endif
-
+<br><br>
     <!-- Page Footer -->
     <footer id="page-footer">
         <div class="inner">
