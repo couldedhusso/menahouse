@@ -170,10 +170,10 @@ class RegistrationController extends Controller
             'confirmation_code' => null,
       ]);
 
-      $roleid = Role::where('name', '=', 'Member')->get();
-
-      $user->assignRole($roleid);
-      $user->save();
+      // $roleid = Role::where('name', '=', 'Member')->get();
+      //
+      // $user->assignRole($roleid);
+      // $user->save();
 
       // Authenticate A User Instance
     Auth::login($user);

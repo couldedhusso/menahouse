@@ -476,26 +476,27 @@ Route::get('/home', function () {
 
 Route::get('/', function () {
 
-  $roleCount = Role::count() ;
-  if ( $roleCount != 3){
-      $roleadm = Role::wherename('Admin')->first();
-      // $rolemembr = Role::where('name', 'Member')->value('id');
-      if( ! $roleadm ){
-          Role::create(['name' => 'Admin']);
-      }
-
-      $rolemod = Role::wherename('Moderator')->first();
-      // $rolemembr = Role::where('name', 'Member')->value('id');
-      if( ! $rolemod ){
-          Role::create(['name' => 'Moderator']);
-      }
-
-      $rolemembr = Role::wherename('Member')->first();
-      // $rolemembr = Role::where('name', 'Member')->value('id');
-      if( ! $rolemembr ){
-          Role::create(['name' => 'Member']);
-      }
-  }
+  // $roleCount = Role::count() ;
+  // if ( $roleCount != 3){
+  //     $roleadm = Role::wherename('Admin')->first();
+  //     // $rolemembr = Role::where('name', 'Member')->value('id');
+  //     if( ! $roleadm ){
+  //         Role::create(['name' => 'Admin']);
+  //     }
+  //
+  //     $rolemod = Role::wherename('Moderator')->first();
+  //     // $rolemembr = Role::where('name', 'Member')->value('id');
+  //     if( ! $rolemod ){
+  //         Role::create(['name' => 'Moderator']);
+  //     }
+  //
+  //     $rolemembr = Role::wherename('Member')->first();
+  //     // $rolemembr = Role::where('name', 'Member')->value('id');
+  //     if( ! $rolemembr ){
+  //         Role::create(['name' => 'Member']);
+  //     }
+  // }
+  //
   if (Auth::check()) {
       $userID = Auth::user()->id ;
       $oneroom  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 1)
