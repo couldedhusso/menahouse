@@ -13,6 +13,7 @@
 {{-- <form role="form" id="form-submit" class="form-submit" action="thank-you.html"> --}}
 {!! Form::open(array('route' => 'path_update_item', 'method' => 'post', 'files' => 'true')) !!}
   <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
+
   {!! csrf_field() !!}
 
   <div class="row">
@@ -25,14 +26,15 @@
             <div class="col-md-8">
               <div class="form-group">
                 <label for="submit-title">Заголовок</label>
-                <input type="text" class="form-control" id="submit-title" name="title" value="{{$house->title}}">
+                <input type="text" class="form-control" id="title" name="title" value="{{$house->title}}">
+                <input name="id" type="hidden" value="{!! $id !!}" />
               </div>
               <!-- /.form-group -->
             </div>
           </div>
           <div class="form-group">
             <label for="submit-description">Описание</label>
-            <textarea class="form-control" id="submit-description" rows="8" name="submit-description" value="{{$house->tekct_obivlenia}}" ></textarea>
+            <textarea class="form-control" id="tekct_obivlenia" rows="8" name="tekct_obivlenia" value="{{$house->tekct_obivlenia}}" ></textarea>
           </div>
           <!-- /.form-group -->
         </section>
@@ -46,8 +48,8 @@
                   <header>
                     <h2>Подробности</h2></header>
                   <div class="form-group">
-                    <label for="submit-location">Местоположение</label>
-                    <select name="submit-location" id="submit-location">
+                    <label for="gorod">Местоположение</label>
+                    <select name="gorod" id="gorod">
                       @if($house->gorod == 'Москва')
                         <option value="Москва" selected>Москва</option>
                         <option value="Московская область">Московская область</option>
@@ -69,8 +71,8 @@
                     <!-- /.col-md-6 -->
                     <div class="col-md-12 col-sm-12">
                       <div class="form-group">
-                        <label for="submit-property-type">Тип жилья</label>
-                        <select name="submit-property-type" id="submit-property-type">
+                        <label for="type_nedvizhimosti">Тип жилья</label>
+                        <select name="type_nedvizhimosti" id="type_nedvizhimosti">
 
                           @if($house->type_nedvizhimosti == 'Комната')
                               <option value="Комната" selected>Комната</option>
@@ -100,8 +102,8 @@
                     <!-- /.col-md-6 -->
                     <div class="col-md-6 col-sm-6">
                           <div class="form-group">
-                             <label for="submit-room">Количество комнат</label>
-                                <select name="submit-room" id="submit-room" required>
+                             <label for="kolitchestvo_komnat">Количество комнат</label>
+                                <select name="kolitchestvo_komnat" id="kolitchestvo_komnat" required>
                                    @if($house->kolitchestvo_komnat == '1')
                                        <option value="1" selected>1</option>
                                        <option value="2">2</option>
@@ -128,9 +130,9 @@
                   </div><!-- /.col-md-6 -->
                   <div class="col-md-6 col-sm-6">
                       <div class="form-group">
-                          <label for="submit-roof">Высота потолков</label>
+                          <label for="roof">Высота потолков</label>
                             <div class="input-group">
-                              <input type="text" class="form-control" id="submit-roof" name="roof" value="{{$house->roof}}" >
+                              <input type="text" class="form-control" id="roof" name="roof" value="{{$house->roof}}" >
                               <span class="input-group-addon">м</span>
                             </div>
                       </div><!-- /.form-group -->
@@ -138,9 +140,9 @@
                     <!-- /.col-md-6 -->
                     <div class="col-md-6 col-sm-6">
                       <div class="form-group">
-                        <label for="submit-etazh">Этаж</label>
+                        <label for="etazh">Этаж</label>
                         <div class="input-group">
-                          <input type="text" class="form-control" id="submit-Beds" name="submit-etazh" value="{{$house->etazh}}" >
+                          <input type="text" class="form-control" id="etazh" name="etazh" value="{{$house->etazh}}" >
                         </div>
                       </div>
                       <!-- /.form-group -->
@@ -148,9 +150,9 @@
                     <!-- /.col-md-6 -->
                     <div class="col-md-6 col-sm-6">
                       <div class="form-group">
-                        <label for="submit-etajnost_doma">Этажность дома</label>
+                        <label for="etajnost_doma">Этажность дома</label>
                         <div class="input-group">
-                          <input type="text" class="form-control" id="submit-Beds" name="submit-etajnost_doma" value="{{$house->etajnost_doma}}" >
+                          <input type="text" class="form-control" id="etajnost_doma" name="etajnost_doma" value="{{$house->etajnost_doma}}" >
                         </div>
                       </div>
                       <!-- /.form-group -->
@@ -201,7 +203,7 @@
                     <div class="col-md-6 col-sm-6">
                       <div class="form-group">
                         <label for="san_usel">Сан. узел</label>
-                        <select name="san_usel" id="submit-status">
+                        <select name="san_usel" id="san_usel">
                           @if($house->san_usel == 'Совмещенный')
                               <option value="Совмещенный" selected>Совмещенный</option>
                               <option value="Раздельный">Раздельный</option>
@@ -287,8 +289,8 @@
                 <div class="row">
                   <div class="col-md-12 col-sm-12">
                     <div class="form-group">
-                      <label for="submit-status">Статус</label>
-                      <select name="submit-status" id="submit-status">
+                      <label for="status">Статус</label>
+                      <select name="status" id="status">
                         @if($house->status == 'Совмещенный')
                             <option value="Обмен" selected>Обмен</option>
                             <option value="Обмен продажа">Обмен продажа</option>
@@ -303,8 +305,8 @@
                   <!-- /.col-md-6 -->
                   <div class="col-md-6 col-sm-6">
                     <div class="form-group">
-                      <label for="submit-status">Цель обмена</label>
-                      <select name="submit-tseli-obmena" id="submit-status">
+                      <label for="tseli_obmena">Цель обмена</label>
+                      <select name="tseli_obmena" id="tseli-obmena">
                         @if($house->tseli_obmena == 'На увеличение')
                             <option value="На увеличение" selected>На увеличение</option>
                             <option value="На уменьшение">На уменьшение</option>
@@ -318,8 +320,8 @@
                   <!-- /.col-md-6 -->
                   <div class="col-md-6 col-sm-6">
                     <div class="form-group">
-                      <label for="submit-status">Местоположение</label>
-                      <select name="mestopolozhenie_obmena" id="submit-status">
+                      <label for="mestopolozhenie_obmena">Местоположение</label>
+                      <select name="mestopolozhenie_obmena" id="mestopolozhenie_obmena">
                         @if($house->tseli_obmena == 'В том же районе')
                           <option value="В том же районе" selected>В том же районе</option>
                           <option value="В другом районе">В другом районе</option>
@@ -337,7 +339,7 @@
                       <label for="submit-price">Предположительная цена объекта</label><i class="fa fa-question-circle tool-tip" data-toggle="tooltip" data-placement="right" title="Мы можем помочь в определении рыночной цены объекта"></i>
                       <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-rub"></i></span>
-                        <input type="text" class="form-control" id="submit-price" name="predpolozhitelnaya_tsena" value="{{$house->price}}" >
+                        <input type="text" class="form-control" id="submit-price" name="price" value="{{$house->price}}" >
                       </div>
                     </div>
                     <!-- /.form-group -->

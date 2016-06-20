@@ -66,73 +66,74 @@
                   <section id="sidebar">
                     <aside id="edit-search">
                             <header><h3>Поиск</h3></header>
-                            <form role="form" id="form-sidebar" class="form-search" action="properties-listing.html">
+                            <form role="form" id="form-sidebar" class="form-search" method="post" action="/property/catalogue">
+                                <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
+                                {!! csrf_field() !!}
                                 <div class="form-group">
-                                    <select name="district">
-										<option value="0">Обмен</option>
-                                        <option value="1">Обмен/продажа</option>
+                                    <select name="form-sale-deal">
+                                      <option value="Обмен">Обмен</option>
+                                      <option value="Обмен_продажа">Обмен/продажа</option>
                                     </select>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
-                                    <select name="city">
+                                    <select name="form-sale-city">
                                         <option value="">Город</option>
-                                        <option value="1">Москва</option>
-                                        <option value="2">Московская область</option>
-                                        <option value="3">Новая Москва</option>
+                                        <option value="Москва">Москва</option>
+                                        <option value="Московская_область">Московская область</option>
+                                        <option value="Новая_Москва">Новая Москва</option>
                                     </select>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
-                                    <select name="district">
+                                    <select name="form-sale-district">
                                         <option value="">Район</option>
-										<option value="0">Все районы</option>
-                                        <option value="1">ЦАО</option>
-                                        <option value="2">ЗАО</option>
-                                        <option value="3">ЮАО</option>
-                                        <option value="4">ВАО</option>
-                                        <option value="5">САО</option>
+                                        <option value="0">Все районы</option>
+                                        <option value="ЦАО">ЦАО</option>
+                                        <option value="ЗАО">ЗАО</option>
+                                        <option value="ЮАО">ЮАО</option>
+                                        <option value="ВАО">ВАО</option>
+                                        <option value="САО">САО</option>
                                     </select>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
-                                    <select name="property-type">
+                                    <select name="form-sale-property-type">
                                         <option value="">Тип жилья</option>
-                                        <option value="1">Квартира</option>
-                                        <option value="2">Комната</option>
-                                        <option value="3">Частный дом</option>
-                                        <option value="4">Новостройки</option>
+                                        <option value="Квартира">Квартира</option>
+                                        <option value="Комната">Комната</option>
+                                        <option value="Частный дом">Частный дом</option>
+                                        <option value="Новостройки">Новостройки</option>
                                     </select>
                                 </div><!-- /.form-group -->
-								<div class="form-group">
-                                    <select name="form-sale-room">
+                <div class="form-group">
+                                    <select name="form-sale-number-room">
                                         <option value="">Кол-во комнат</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
                                         <option value="4">4</option>
-                                        <option value="5">5+</option>
                                     </select>
                                 </div><!-- /.form-group -->
-								<div class="form-group">
-                                    <select name="form-sale-area">
+                <div class="form-group">
+                                    <select name="form-sale-surface">
                                         <option value="">Площадь</option>
-                                        <option value="1">30-70 +</option>
-                                        <option value="2">70-90 +</option>
-                                        <option value="3">90-110 +</option>
-                                        <option value="4">110 +</option>
+                                        <option value="1">30-70</option>
+                                        <option value="2">70-90</option>
+                                        <option value="3">90-110</option>
+                                        <option value="4">110+</option>
                                     </select>
                                 </div><!-- /.form-group -->
-								<p>Критерии обмена</P>
-								<div class="form-group">
-                                    <select name="form-sale-area">
+                <p>Критерии обмена</P>
+                <div class="form-group">
+                                    <select name="form-sale-exchange">
                                         <option value="">Обмен на</option>
-                                        <option value="1">На увеличение</option>
-                                        <option value="2">На уменьшение</option>
+                                        <option value="На_увеличение">На увеличение</option>
+                                        <option value="На_уменьшение">На уменьшение</option>
                                     </select>
                                 </div><!-- /.form-group -->
-								<div class="form-group">
-                                    <select name="form-sale-area">
+                <div class="form-group">
+                                    <select name="form-sale-exchange-place">
                                         <option value="">Район обмена</option>
-                                        <option value="1">В другом районе</option>
-                                        <option value="2">В своём районе</option>
+                                        <option value="В_другом_районе">В другом районе</option>
+                                        <option value="В_своём_районе">В своём районе</option>
                                     </select>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
@@ -144,19 +145,19 @@
                       <aside id="featured-properties">
                           <header><h3>Спецпредложения</h3></header>
                           <div class="property small">
-                              <a href="property-detail.html">
+                              <a href="#">
                                   <div class="property-image">
                                       <img alt="" src="{{asset('static/assets/img/properties/property-06.jpg')}}">
                                   </div>
                               </a>
                               <div class="info">
-                                  <a href="property-detail.html"><h4>2х комн.</h4></a>  <!-- CZ индивидуальная ссылка объявления -->
+                                  <a href=="#"><h4>2х комн.</h4></a>  <!-- CZ индивидуальная ссылка объявления -->
                                   <figure>м.Маяковская </figure>
                                   <div class="tag price">7 000 000</div>
                               </div>
                           </div><!-- /.property -->
                           <div class="property small">
-                              <a href="property-detail.html">
+                              <a href="#">
                                   <div class="property-image">
                                       <img alt="" src="{{asset('static/assets/img/properties/property-09.jpg')}}">
                                   </div>
@@ -283,11 +284,11 @@
 */
 
 $(function () {
-    $("div.porperties-load").slice(0, 4).show();
+    $("div.property").slice(0, 4).show();
     $("#loadMore").on('click', function (e) {
         e.preventDefault();
-        $("div.porperties-load:hidden").slice(0, 4).slideDown();
-        if ($("div.porperties-load:hidden").length == 0) {
+        $("div.property:hidden").slice(0, 4).slideDown();
+        if ($("div.property:hidden").length == 0) {
             $("#load").fadeOut('slow');
         }
         $('html,body').animate({
@@ -310,6 +311,27 @@ $(window).scroll(function () {
         $('.totop a').fadeOut();
     }
 });
+
+// $('#form-sidebar').submit(function(event){
+//   event.preventDefault();
+//   paramsearch = $('#form-sidebar').serialize();
+//   $.ajax({
+//       url: '/sort/result',
+//       type: "POST",
+//       data:paramsearch
+//      })
+//      .done(function(res) {
+//         console.log(res);
+//     });
+// });
+
+$('#sorting').change(function(evt){
+      evt.preventDefault();
+      $(this).closest('#formdata').submit();
+  });
+
+
+
 </script>
 
 </body>

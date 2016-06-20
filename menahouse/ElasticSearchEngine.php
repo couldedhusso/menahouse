@@ -38,52 +38,69 @@ class ElasticSearchEngine
       return $reponse ;
   }
 
+  public function updateIndexedElement($params){
+
+
+        $params = [
+          'index' => 'menahouse',
+          'type' => 'obivlenie',
+          'id' => $params['id'],
+          'body' => [
+            'doc' => $params
+          ]
+      ];
+      $response = $this->client->update($params);
+      return $response;
+  }
+
   public function getIndexedElements($paramSearch){
 
-  $paramTerm = $paramSearch["term"];
-  $must = [];
-  if (isset($paramSearch["range"])) {
-    $paramRange = $paramSearch["range"];
-  }
-  if (count($paramTerm) == 1) {
-       $searchConditons["bool"]["must"] = ["match"
-                                => ["gorod" => $paramTerm["gorod"]]];
-       if ( isset($paramRange) ) {
+      $paramTerm = $paramSearch["term"];
+      $must = [];
+      if (isset($paramSearch["range"])) {
+        $paramRange = $paramSearch["range"];
+      }
+      if (count($paramTerm) == 1) {
+           $searchConditons["bool"]["must"] = ["match"
+                                    => ["gorod" => $paramTerm["gorod"]]];
+           if ( isset($paramRange) ) {
 
-          array_push($searchConditons["bool"]["must"],
-                      ["range" => ["obshaya_ploshad"
-                       => $this ->createRangeQuery($paramRange)]]);
-       }
-  } else {
+              array_push($searchConditons["bool"]["must"],
+                          ["range" => ["obshaya_ploshad"
+                           => $this->createRangeQuery($paramRange)]]);
+           }
+      } else {
 
-      foreach (array_keys($paramTerm) as $key) {
-        array_push($must, ["match" => [$key => $paramTerm[$key]]]);
+          foreach (array_keys($paramTerm) as $key) {
+            array_push($must, ["match" => [$key => $paramTerm[$key]]]);
+          }
+
+          $searchConditons = [ "bool" => [ "must" => $must ]];
+          if ( isset($paramRange) ) {
+
+             array_push($searchConditons["bool"]["must"],
+                         ["range" => ["obshaya_ploshad"
+                          => $this->createRangeQuery($paramRange)]]);
+          }
+
       }
 
-      $searchConditons = [ "bool" => [ "must" => $must ]];
-      if ( isset($paramRange) ) {
+      $params = [
+          "index" => "menahouse",
+          "type" => "obivlenie",
+          "body" => [
+              "query" => [
+                  "filtered" => [
+                      "query" => ["match_all" => []],
+                      "filter" => $searchConditons
+                   ]
+              ]
+        ]];
 
-         array_push($searchConditons["bool"]["must"],
-                     ["range" => ["obshaya_ploshad"
-                      => $this ->createRangeQuery($paramRange)]]);
-      }
+        //  dd($params) ;
 
-  }
-
-  $params = [
-      "index" => "obivlenie",
-      "type" => "obivlenie",
-      "body" => [
-          "query" => [
-              "filtered" => [
-                  "query" => ["match_all" => []],
-                  "filter" => $searchConditons
-               ]
-          ]
-    ]];
-
-    $results = $this->client->search($params);   // Execute the search
-    return $this->buildCollection($results) ;
+        $results = $this->client->search($params);   // Execute the search
+        return $this->buildCollection($results) ;
   }
 
 

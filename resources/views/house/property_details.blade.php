@@ -14,15 +14,21 @@
 
       <?php
          $typehouse = $house->typeHouse($house->kolitchestvo_komnat) ;
+         $retVal = ($house->status == "Обмен") ? "Обмен" : "Обмен-продаж" ;
       ?>
-      <h1>{{$typehouse}} квартира на {{ $house->status }}</h1>
+      <h1>{{$typehouse}} квартира на {{ $retVal }}</h1>
       <!-- CZ изменяемый статус на "обмен"/"продажу" -->
       <figure> м.{{ $house->metro }}; {{ $house->ulitsa }} </figure>
       <!-- CZ адрес -->
 
       <span class="actions">
         <!--<a href="#" class="fa fa-print"></a>-->
-        <a href="#" class="bookmark" data-bookmark-state="empty"><span class="title-add">Добавить в избранное</span><span class="title-added">Добавлено</span></a>
+        @if(Auth::check())
+          <a href="{{url("/dashboard/bookmarked/".$id)}}" class="bookmark" data-bookmark-state="empty"><span class="title-add">Добавить в избранное</span><span class="title-added">Добавлено</span></a>
+        @else
+          <a href="#" class="bookmark" data-bookmark-state="empty"><span class="title-add">Добавить в избранное</span><span class="title-added">Добавлено</span></a>
+        @endif
+
       </span>
   </header>
   <section id="property-gallery">
@@ -47,11 +53,22 @@
           <dt>Тип:</dt>
           <dd>{{$typehouse}} квартира</dd>
           <dt>Статус:</dt>
-          <dd>{{ $house->status }}</dd>
+          @if($house->status == "Обмен")
+            <dd>{{ $house->status }}</dd>
+          @else
+              <dd>Обмен продажа</dd>
+          @endif
+
           <dt>Город:</dt>
-          <dd>Москва</dd>
+          @if($house->gorod == "Москва")
+            <dd>{{ $house->gorod}}</dd>
+          @elseif($house->gorod == "Московская_область")
+            <dd> Московская область</dd>
+          @else
+            <dd> Новая Москва</dd>
+          @endif
           <dt>Адрес:</dt>
-          <dd>ул.{{ $house->ulitsa }}, {{ $house->dom }}</dd>
+          <dd>{{ $house->ulitsa }}, {{ $house->dom }}</dd>
           <dt>Метро:</dt>
           <dd>{{ $house->metro }}</dd>
           <dt>Площадь:</dt>
@@ -63,7 +80,7 @@
           <dt>Сан.узел:</dt>
           <dd>{{ $house->san_usel }}</dd>
           <dt>Цена:</dt>
-          <dd><span class="tag price">{{ $house->price }}</span></dd>
+          <dd><span class="tag price"> <?php echo number_format($house->price, 2, ',', ' ')." "; ?>&#x20bd</span></dd>
           <dt>Рейтинг:</dt>
           <dd>
             <div class="rating rating-overall" data-score="4"></div>

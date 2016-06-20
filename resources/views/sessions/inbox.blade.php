@@ -23,8 +23,8 @@
                  </h2>
                  <div class="mail-tools">
                      <div class="btn-group pull-right">
-                         <button class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i></button>
-                         <button class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i></button>
+                         <button id="arrow-left" class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i></button>
+                         <button id="arrow-right" class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i></button>
                      </div>
                  </div>
              </div>

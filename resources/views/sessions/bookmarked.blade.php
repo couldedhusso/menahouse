@@ -1,4 +1,5 @@
 @extends('templates.TemplateDashboard')
+use App\Obivlenie;
 @section('Title')
   Mena | Bookmarked Properties
 @endsection
@@ -30,22 +31,47 @@
                                    @foreach($houses as $house)
                                    <tr>
                                        <?php
-                                          $typephouse = $house->HouseCategorie($house->kolitchestvo_komnat) ;
+                                          switch ($house->kolitchestvo_komnat) {
+                                            case '1':
+
+                                              $tpRoom = "однокомнатная ";
+                                              break;
+                                            case '2':
+
+                                              $tpRoom = "2х комнатная ";
+                                              break;
+                                            case '3':
+
+                                              $tpRoom = "3х комнатная ";
+                                              break;
+                                           case '4':
+
+                                                $tpRoom = "4х комнатная ";
+                                                break;
+
+                                            default:
+
+                                              $tpRoom = "Студия";
+                                              break;
+                                          }
                                        ?>
                                        <td class="image">
                                            <a href="{{url('dashboard/advertisement/'.$house->id)}}"><img alt="" src="{{asset('storage/thumbnail/'.$house->id.'.jpeg')}}"></a>
                                        </td>
                                        <td><div class="inner">
-                                           <a href="property-detail.html"><h2>{{ $typephouse.', м.'.$house->metro }}</h2></a>
+                                           <a href="{{url("property/".$house->id)}}"><h2>{{ $tpRoom.', м.'.$house->metro }}</h2></a>
                                            <figure>{{ $house->ulitsa }}</figure>
                                            <div class="tag price">{{ $house->price }}</div>
                                        </div>
                                        </td>
-                                       <td>{{ $house->created_at->format('d.m.Y') }}</td>
-                                       <td>236</td>
+                                       <td><?php
+                                            $date = date_create($house->bkm_date);
+                                            echo date_format($date,"d.m.Y");
+                                       ?></td>
+
                                        <td class="actions">
-                                           <a href="#" class="edit"><i class="fa fa-pencil" title="Редактировать объявление"></i>Редактировать</a>
-                                           <a href="#"><i class="delete fa fa-trash-o" title="Удалить объявлени"></i></a>
+                                          <a href="{{url("property/".$house->id)}}" class="edit"><i class="fa fa-link" title="Перейти к объявлению"></i>Перейти</a>
+                                          <a href="{{url("dashboard/bookmarked/delete/".$house->bkm_id)}}"><i class="delete fa fa-trash-o" title="Удалить объявление"></i></a>
                                        </td>
                                    </tr>
                                     @endforeach

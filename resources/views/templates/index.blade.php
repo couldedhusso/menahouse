@@ -220,7 +220,7 @@
               <div class="col-md-3 col-sm-4">
                 <article>
                   <ul class="list-unstyled list-links">
-                    <li><a href="{{ url('property/type/Частные дома') }}" align="center">Частные дома - {{$home}}</a></li>
+                    <li><a href="{{ url('property/type/Частный дом') }}" align="center">Частные дома - {{$home}}</a></li>
                     <li><a href="{{ url('property/type/Новостройки') }}" align="center">Новостройки - {{$newhome}}</a></li>
                   </ul>
                 </article>

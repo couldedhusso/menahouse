@@ -56,26 +56,44 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard/advertisement/delete/{id}', ['as' => 'path_delete_item',
                         'uses' => 'ObivlenieController@destroy']);
 
+    Route::get('dashboard/bookmarked/delete/{id}', 'ObivlenieController@destroyObj');
+
     Route::get('dashboard/advertisement/edit/{id}', function ($id)    {
         $house = DB::table('obivlenie')->whereid($id)->first();
-        return View('sessions.update-item', compact('house')) ;
+        return View('sessions.update-item', compact('house', 'id')) ;
     });
 
     Route::get('dashboard/advertisement/edit', ['as' => 'path_update_item',
                         'uses' => 'ObivlenieController@update']);
 
+    Route::post('dashboard/advertisement/edit', 'ObivlenieController@update');
 
+    Route::get('dashboard/bookmarked/{id}', function($id){
+
+        $user_id = Auth::user()->id;
+        $bkm =  Bookmarked::whereuser_id($user_id)
+                            ->where('obivlenie_id', '=', $id)
+                            ->first();
+
+        if ($bkm == null ) {
+            $favoris = Bookmarked::create([
+              'user_id' => $user_id,
+              'obivlenie_id' => $id
+            ]);
+        }
+
+        return redirect()->back();
+    });
     Route::get('dashboard/bookmarked', function (){
 
         $userId = Auth::user()->id ;
         $flag = 'bookmarked';
 
-        $indx = DB::table('bookmarked')->select('obivlenie_id')
-                                       ->where('user_id','=', $userId)
-                                       ->where('deleted','=', 'false')
-                                       ->get();
-
-        $houses = DB::table('obivlenie')->whereIn('obivlenie_id', $indx)->get();
+        $houses = DB::table('bookmarked')
+            ->join('obivlenie', 'bookmarked.obivlenie_id', '=', 'obivlenie.id')
+            ->join('users', 'users.id', '=', 'bookmarked.user_id')
+            ->select('obivlenie.*', 'bookmarked.id as bkm_id', 'bookmarked.created_at as bkm_date')
+            ->get();
 
         return View('sessions.bookmarked', compact('flag', 'houses'));
     });
@@ -182,7 +200,9 @@ Route::group(['middleware' => 'auth'], function () {
         $user = User::whereid($id)->first();
 
         try {
-             $userprofile = Profiles::whereuser_id($user->id)->firstOrfail();
+             $userprofile = Profiles::whereuser_id($user->id)
+                                     ->with('images')
+                                     ->firstOrfail();
 
         } catch (ModelNotFoundException $e) {
              $userprofile = Profiles::create(['user_id' => $id]);
@@ -240,36 +260,60 @@ Route::get('property/{id}', function($id){
      }
 
      $house->save();
-    return View('house.property_details', compact('house')) ;
+    return View('house.property_details', compact('house', 'id')) ;
  });
 
 Route::get('property/number_of_rooms/{numberroom}', function($numberroom){
-  if ($numberroom >= 4) {
-    $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', $numberroom)->get();
-  } else {
-    $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', $numberroom)->get();
+
+  $paramSearch = array('number_of_rooms' => $numberroom);
+  if (Auth::check()) {
+    $userID = Auth::user()->id;
+    if ($numberroom >= 4) {
+      $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', $numberroom)
+                                      ->where('user_id', '!=', $userID)->get();
+    } else {
+      $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', $numberroom)
+                                      ->where('user_id', '!=', $userID)->get();
+    }
+  }else {
+
+    if ($numberroom >= 4) {
+      $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', $numberroom)->get();
+    } else {
+      $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', $numberroom)->get();
+    }
+
   }
 
   $foundelemts = count($houses);
 
-  return view('pages.properties_listing_lines', compact('houses', 'foundelemts'));
+  return view('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
 });
 
 Route::post('properties/all', function(){
 
-  return view('pages.properties_listing_lines', compact('houses'));
+  return view('pages.properties_listing_lines', compact('houses', 'paramSearch'));
 });
 
 Route::get('property/type/{param}', function($param){
+  $paramSearch = array('type' => $param);
+  if (Auth::check()) {
+    $userID = Auth::user()->id;
+    $houses = DB::table('obivlenie')->where('type_nedvizhimosti', '=', $param)
+                                    ->where('user_id', '!=', $userID)->get();
 
-  $houses = DB::table('obivlenie')->where('type_nedvizhimosti', '=', $param)->get();
+  }else {
+
+    $houses = DB::table('obivlenie')->where('type_nedvizhimosti', '=', $param)->get();
+
+  }
 
   $foundelemts = count($houses);
 
-  return view('pages.properties_listing_lines', compact('houses', 'foundelemts'));
+  return view('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
 });
 
-Route::post('house/catalogue', 'ObivlenieController@getCatalogue');
+Route::post('property/catalogue', 'ObivlenieController@searchEngine');
 Route::post('properties/all', 'ObivlenieController@getCatalogue');
 
 
@@ -282,6 +326,8 @@ Route::post('properties/all', 'ObivlenieController@getCatalogue');
 Route::get('join', function(){
   return view('registration.plan');
 });
+
+Route::post('/sorted/properties', 'ObivlenieController@sortResult');
 
 Route::post('signup', function(){
   $plan = Input::get('plan');
@@ -450,13 +496,42 @@ Route::get('/', function () {
           Role::create(['name' => 'Member']);
       }
   }
+  if (Auth::check()) {
+      $userID = Auth::user()->id ;
+      $oneroom  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 1)
+                                        ->where('user_id', '!=', $userID)
+                                        ->count();
 
-  $oneroom  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 1)->count();
-  $tworooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 2)->count();
-  $threerooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 3)->count();
-  $fourplusrooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', 4)->count();
-  $home  = DB::table('obivlenie')->where('type_nedvizhimosti', '=', 'Частный дом')->count();
-  $newhome  = DB::table('obivlenie')->where('type_nedvizhimosti', '=', 'Новостройки')->count();
+      $tworooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 2)
+                                         ->where('user_id', '!=', $userID)
+                                         ->count();
+
+      $threerooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 3)
+                                           ->where('user_id', '!=', $userID)
+                                           ->count();
+
+      $fourplusrooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', 4)
+                                              ->where('user_id', '!=', $userID)
+                                              ->count();
+
+      $home  = DB::table('obivlenie')->where('type_nedvizhimosti', '=', 'Частный дом')
+                                     ->where('user_id', '!=', $userID)
+                                     ->count();
+
+      $newhome  = DB::table('obivlenie')->where('type_nedvizhimosti', '=', 'Новостройки')
+                                        ->where('user_id', '!=', $userID)
+                                        ->count();
+
+  } else {
+      $oneroom  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 1)->count();
+      $tworooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 2)->count();
+      $threerooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 3)->count();
+      $fourplusrooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', 4)->count();
+      $home  = DB::table('obivlenie')->where('type_nedvizhimosti', '=', 'Частный дом')->count();
+      $newhome  = DB::table('obivlenie')->where('type_nedvizhimosti', '=', 'Новостройки')->count();
+  }
+
+
 
   return view('welcome', compact('oneroom', 'tworooms', 'threerooms',
                                  'fourplusrooms', 'home', 'newhome'));

@@ -48,8 +48,8 @@
                     <label for="submit-location">Местоположение</label>
                     <select name="submit-location" id="submit-location">
                       <option value="Москва">Москва</option>
-                      <option value="Московская область">Московская область</option>
-                      <option value="Новая Москва">Новая Москва</option>
+                      <option value="Московская_область">Московская область</option>
+                      <option value="Новая_Москва">Новая Москва</option>
                     </select>
                   </div>
 
@@ -84,7 +84,7 @@
                       <div class="form-group">
                           <label for="submit-roof">Высота потолков</label>
                             <div class="input-group">
-                              <input type="text" class="form-control" id="submit-roof" name="roof" pattern="\d*">
+                              <input type="text" class="form-control" id="submit-roof" name="roof">
                               <span class="input-group-addon">м</span>
                             </div>
                       </div><!-- /.form-group -->
@@ -154,8 +154,8 @@
                     <!-- /.col-md-6 -->
                     <div class="col-md-6 col-sm-6">
                       <div class="form-group">
-                        <label for="san_usel">Сан. узел</label>
-                        <select name="san_usel" id="submit-status">
+                        <label for="submit-san-usel">Сан. узел</label>
+                        <select name="submit-san-usel" id="submit-san-usel">
                           <option value="Совмещенный">Совмещенный</option>
                           <option value="Раздельный">Раздельный</option>
                         </select>
@@ -239,7 +239,7 @@
                       <label for="submit-status">Статус</label>
                       <select name="submit-status" id="submit-status">
                         <option value="Обмен">Обмен</option>
-                        <option value="Обмен продажа">Обмен продажа</option>
+                        <option value="Обмен_продажа">Обмен продажа</option>
                       </select>
                     </div>
                     <!-- /.form-group -->
@@ -249,8 +249,8 @@
                     <div class="form-group">
                       <label for="submit-status">Цель обмена</label>
                       <select name="submit-tseli-obmena" id="submit-status">
-                        <option value="На увеличение">На увеличение</option>
-                        <option value="На уменьшение">На уменьшение</option>
+                        <option value="На_увеличение">На увеличение</option>
+                        <option value="На_уменьшение">На уменьшение</option>
                       </select>
                     </div>
                   </div>
@@ -259,8 +259,8 @@
                     <div class="form-group">
                       <label for="submit-status">Местоположение</label>
                       <select name="mestopolozhenie_obmena" id="submit-status">
-                        <option value="В том же районе">В том же районе</option>
-                        <option value="В другом районе">В другом районе</option>
+                        <option value="В_том_же_районе">В том же районе</option>
+                        <option value="В_другом_районе">В другом районе</option>
                       </select>
                     </div>
                   </div>

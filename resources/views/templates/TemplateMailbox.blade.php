@@ -126,5 +126,37 @@
 <script type="text/javascript" src="{{asset('assets/js/ie.js')}}"></script>
 <![endif]-->
 
+<script type="text/javascript">
+$(function () {
+    $("div.table").slice(0, 1).show();
+    $("#arrow-right").on('click', function (e) {
+        e.preventDefault();
+        $("div.table:hidden").slice(0, 1).slideDown();
+        if ($("div.table:hidden").length == 0) {
+            $("#load").fadeOut('slow');
+        }
+        $('html,body').animate({
+            scrollTop: $(this).offset().top
+        }, 1500);
+    });
+});
+
+
+$(function () {
+    $("div.mail-box").slice(0, 4).show();
+    $("#loadMore").on('click', function (e) {
+        e.preventDefault();
+        $("div.property:hidden").slice(0, 4).slideDown();
+        if ($("div.property:hidden").length == 0) {
+            $("#load").fadeOut('slow');
+        }
+        $('html,body').animate({
+            scrollTop: $(this).offset().top
+        }, 1500);
+    });
+});
+
+</script>
+
 </body>
 </html>

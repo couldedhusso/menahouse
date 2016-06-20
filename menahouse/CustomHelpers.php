@@ -89,7 +89,7 @@
         File::makeDirectory($DirectoryName);
         return true;
     }
-    public function getStorageDirectory($userId)
+    public function getStorageDirectory()
     {
 
       $storagePath = public_path().'/storage/pictures';

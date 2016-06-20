@@ -19,19 +19,25 @@
 
       <div class="account-profile">
         <div class="row">
-          <div class="col-md-3 col-sm-3">
-            <img alt="" class="image" src="{{asset('assets/img/agent-01.jpg')}}">
-            <div class="center">
-              <div class="form-group">
-                <input id="file-upload" type="file" class="file" multiple="true" data-show-upload="false" data-show-caption="false" data-show-remove="false" accept="image/jpeg,image/png" data-browse-class="btn btn-default-small" data-browse-label="Выбрать файл">
-                <figure class="note"><strong>Совет: </strong>Загрузите изображение формата jpeg или png!</figure>
+          {!! Form::open(array('route' => 'dashboard.settings', 'method' => 'post', 'files' => 'true')) !!}
+              <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
+              <input name="user_id" type="hidden" value="{!! $user->id !!}" />
+              <div class="col-md-3 col-sm-3">
+                @if(!empty($userprofile->images->path))
+                    <img alt="" class="image" src="{{asset('storage/thumbnail/'.$userprofile->images->path)}}">
+                @else
+                  <img alt="" class="image" src="{{asset('assets/img/user-02.jpg')}}">
+                @endif
+
+                <div class="center">
+                  <div class="form-group">
+                    <input id="file-upload" name="file" type="file" class="file" multiple="true" data-show-upload="false" data-show-caption="false" data-show-remove="false" accept="image/jpeg,image/png" data-browse-class="btn btn-default-small" data-browse-label="Выбрать файл">
+                    <figure class="note"><strong>Совет: </strong>Загрузите изображение формата jpeg или png!</figure>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="col-md-9 col-sm-9">
-            {!! Form::open(array('route' => 'dashboard.settings', 'method' => 'post')) !!}
-                <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
-                <input name="user_id" type="hidden" value="{!! $user->id !!}" />
+              <div class="col-md-9 col-sm-9">
+
 
               <section id="contact">
                 <h3>Контакты</h3>
@@ -39,7 +45,7 @@
                   <dt><label for="imia">Ваше имя:</label></dt>
                   <dd>
                     <div class="form-group">
-                      <input type="text" class="form-control" id="imia" name="imia" required value="{{$user->imia.' '.$user->familia }}">
+                      <input type="text" class="form-control" id="imia" name="fio" required value="{{$user->imia.' '.$user->familia }}">
                     </div>
                     <!-- /.form-group -->
                   </dd>
@@ -53,7 +59,7 @@
                   <dt><label for="form-account-email">Email:</label></dt>
                   <dd>
                     <div class="form-group">
-                      <input type="text" class="form-control" id="form-account-email" name="form-account-phone" value="{{$user->email}}">
+                      <input type="text" class="form-control" id="form-account-email" name="form-account-email" value="{{$user->email}}">
                     </div>
                     <!-- /.form-group -->
                   </dd>

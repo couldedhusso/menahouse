@@ -1,6 +1,6 @@
 @extends('templates.TemplatePropertiesListing')
 
-@section('result-search')
+@section('search-results')
   <section id="results" >
                     <header><h1>Предложения по вашему запросу</h1></header>
                     <section id="search-filter">

@@ -16,6 +16,7 @@ use Intervention\Image\Facades\Image ;
 use App\Images;
 use App\User;
 use App\Profiles;
+use Menahouse\CustomHelper;
 
 use Storage;
 
@@ -74,6 +75,10 @@ class ProfilController extends Controller
     public function edit()
     {
         $CloudStorage = Storage::disk('s3');
+
+        $Helper = new CustomHelper;
+        $StoragePath = $Helper->getStorageDirectory();
+
         $id = Input::get('user_id');
         $user = User::find($id);
         $profile = Profiles::whereuser_id($id)->first();
@@ -82,58 +87,81 @@ class ProfilController extends Controller
         //dd(Input::get('bio'));
 
         $profile->fill($InputProfile)->save();
-        return Redirect('/dashboard/settings/'.$id);
+
 
         // $user->profile()->save(new Profiles);
         // $imgprofi = Images::whereimageable_id($profil->user_id)->get();
 
       if ($this->isCurrent($id) ) {
-          if (Input::get('imia') !="" ) {
-              $user->imia = Input::get('imia');
+
+        $name = explode(" ", Input::get('fio'));
+        switch (count($name)) {
+          case 1:
+
+            $user->familia = $name[0];
+            $user->save();
+            break;
+
+          case 2:
+              $user->familia = $name[0];
+              $user->imia = $name[1];
               $user->save();
+            break;
+
+          default:
+            $user->familia = $name[0];
+            $user->imia = $name[1];
+            $user->otchestvo = $name[2];
+            $user->save();
+            break;
+        }
+
+          $phonenumber = Input::get('form-account-phone');
+          $email = Input::get('form-account-email');
+
+          if (!empty($phonenumber)) {
+            $user->phonenumber = $phonenumber;
+            $user->save();
           }
 
-          if (Input::get('familia') !="") {
-              $user->familia =  Input::get('familia');
-              $user->save();
+          if (!empty($email)) {
+            $user->email = $email;
+            $user->save();
           }
 
-          try {
-              $profile = Profiles::whereuser_id($user->id)->firstOrfail();
+          $pic = Input::file('file');
 
-          } catch (ModelNotFoundException $e) {
-               $profile = Profiles::create(['user_id' => $id]);
-          }
-
-          if (Input::get('gorod') !="") {
-              $profile->location = Input::get('gorod');
-          }
-
-          $pic = Input::file('image');
           if ($pic->isValid()) {
 
                 $filename = str_random(8)."-".$pic->getClientOriginalName();
-                if (! $profile->hasprofile ) {
+                // if (! $profile->hasprofile ) {
+                //     $profile->hasprofile = 1 ;
+                // } else {
+                //
+                //     $old_imag_path = $profile->images->path ;
+                //     $profile->images()->delete();
+                //     $profile->save();
+                // //    $delFilePath = 'dev/profileimg/' .$old_imag_path ;
+                //     // $CloudStorage->delete($delFilePath);
+                // }
 
-                    $profile->hasprofile = 1 ;
-
-                } else {
-
-                    $old_imag_path = $profile->images->path ;
-                    $profile->images()->delete();
-                    $delFilePath = 'dev/profileimg/' .$old_imag_path ;
-                    $CloudStorage->delete($delFilePath);
-                }
-
+                $old_imag_path = $profile->images->path ;
+                $profile->images()->delete();
+                $profile->save();
 
                 $img = new Images ;
-
                 $img = $profile->images()->create(array('path' => $filename));
+                $pic->move($StoragePath["thumbs"], $filename);
                 $profile->images()->save($img);
 
-                $filePath = 'dev/profileimg/' .$filename;
-                $CloudStorage->put($filePath, file_get_contents($pic), 'public');
+               //  $imgvalue->move(public_path().'/storage/pictures' , $filename);
+
+
+              //  $filePath = 'dev/profileimg/' .$filename;
+              //  $CloudStorage->put($filePath, file_get_contents($pic), 'public');
             }
+
+            return Redirect('/dashboard/settings/'.$id);
 
       }
 

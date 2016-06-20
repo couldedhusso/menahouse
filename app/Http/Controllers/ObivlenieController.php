@@ -14,7 +14,7 @@ use Intervention\Image\Facades\Image;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Http\Request;
+use Request;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -66,14 +66,8 @@ class ObivlenieController extends Controller
         $user_id = Auth::user()->id ;
         $indexmodel = new ElasticSearchEngine;
         $Helper = new CustomHelper;
-        $StoragePath = $Helper->getStorageDirectory($user_id);
+        $StoragePath = $Helper->getStorageDirectory();
         $address =  Input::get('address');
-
-
-      //  dd(Input::get('submit-room'));
-       //  dd($StoragePath["storage"]);
-
-       //dd($request->file('file-upload'));
 
         $geo = $Helper->yandexGeocoding($address);
 
@@ -106,7 +100,7 @@ class ObivlenieController extends Controller
             'rayon' => $district,
             'roof' => Input::get('roof'),
             'etazh' => Input::get('submit-etazh'),
-            'san_usel' => Input::get('san_usel'),
+            'san_usel' => Input::get('submit-san-usel'),
             'title' => Input::get('title'),
             'price' => Input::get('predpolozhitelnaya_tsena') ,
             'opicanie' => Input::get('submit-description'),
@@ -119,10 +113,9 @@ class ObivlenieController extends Controller
             'user_id' => $user_id,
         ]);
 
-
         // $thumbnailName = $obivlenie->id ;
         $madeThumnail = false ;
-        foreach($request->file('file-upload') as $imgvalue) {
+        foreach(Request::file('file-upload') as $imgvalue) {
 
                $filename = Str::random(32).'.'.$imgvalue->guessClientExtension();
               // $filePath = 'dev/images/pics/' .$filename;
@@ -161,19 +154,18 @@ class ObivlenieController extends Controller
           }
 
           // indexer  la publication dans elasticsearch
-/*          $params = [
+         $params = [
               'index' => 'menahouse',
               'type' => 'obivlenie',
               'id' => $obivlenie->id,
               'body' =>[
+                'id' => $obivlenie->id,
                 'metro' => $obivlenie->metro,
                 'gorod' =>  $obivlenie->gorod,
                 'ulitsa' => $obivlenie->ulitsa,
-                'dom' => $obivlenie->dom,
-                'stroenie' => $obivlenie->stroenie,
                 'type_nedvizhimosti' => $obivlenie->type_nedvizhimosti,
                 'rayon' => $obivlenie->rayon,
-                'tekct_obivlenia' => $obivlenie->opicanie,
+                'tekct_obivlenia' => $obivlenie->tekct_obivlenia,
                 'kolitchestvo_komnat' => $obivlenie->kolitchestvo_komnat,
                 'etajnost_doma' => $obivlenie->etajnost_doma,
                 'zhilaya_ploshad' => $obivlenie->zhilaya_ploshad,
@@ -182,14 +174,19 @@ class ObivlenieController extends Controller
                 'etazh' => $obivlenie->etazh,
                 'san_usel' => $obivlenie->san_usel,
                 'price' => $obivlenie->price,
-                'opicanie' => $obivlenie->opicanie,
-                'status' => 'availabe',
+                // 'opicanie' => $obivlenie->opicanie,
+                // 'status' => 'availabe',
                 'user_id' => $user_id,
-                'categorie' => $obivlenie->getCategoriesByName($obivlenie->categorie_id)
+                'roof' => $obivlenie->roof,
+                'title' => $obivlenie->title,
+                'status' => $obivlenie->status,
+                'tseli_obmena' => $obivlenie->tseli_obmena,
+                'mestopolozhenie_obmena' => $obivlenie->mestopolozhenie_obmena,
+                'doplata' => $obivlenie->doplata
               ]
-          ]; */
+          ];
 
-      //===    $indexmodel->ModelMapping($params);
+         $indexmodel->ModelMapping($params);
 
           // tout est ok nous retourner une a la page des publications
           return Redirect('dashboard/advertisements');
@@ -205,7 +202,53 @@ class ObivlenieController extends Controller
 
     }
 
-    public function search(Request $request){
+    public function sortResult(){
+
+      $paramSearch = Input::all();
+      $sorting = Input::get('sorting');
+      switch ($sorting) {
+          case 2:
+            $form_sorting = 'obshaya_ploshad';
+            break;
+          case 3:
+              $form_sorting = 'created_at';
+              break;
+          default:
+            $form_sorting = 'price';
+            break;
+      }
+
+      if (!empty(Input::get('type'))) {
+        $houses = Obivlenie::where('type_nedvizhimosti', '=', Input::get('type'))
+                      ->orderBy($form_sorting, 'desc')
+                      ->get();
+
+      } elseif (!empty(Input::get('number_of_rooms'))) {
+        $houses = Obivlenie::where('kolitchestvo_komnat', '=', Input::get('number_of_rooms'))
+                      ->orderBy($form_sorting, 'desc')
+                      ->get();
+
+      } else {
+          $form_sale_city = Input::get('form-sale-city');
+          $form_sale_property_type = Input::get('form-sale-property-type');
+          if (!empty($form_sale_property_type)) {
+              $houses = Obivlenie::where('gorod', '=', $form_sale_city)
+                            ->where('type_nedvizhimosti', '=', $form_sale_property_type)
+                            ->orderBy($form_sorting, 'desc')
+                            ->get();
+          } else {
+            $houses = Obivlenie::where('gorod', '=', $form_sale_city)
+                          ->orderBy($form_sorting, 'desc')
+                          ->get();
+          }
+      }
+
+      $foundelemts = $houses->count();
+      return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
+
+    }
+
+    public function searchEngine(Request $request){
 
       //create a new instance of Elasticsearch to performing search
       $elasticsearcher = new ElasticSearchEngine ;
@@ -215,6 +258,11 @@ class ObivlenieController extends Controller
       $form_sale_property_type  = Input::get('form-sale-property-type') ;
       $form_sale_number_room = Input::get('form-sale-number-room');
       $form_sale_surface = Input::get('form-sale-surface');
+
+      $form_sale_exchange = Input::get('form-sale-exchange') ;
+      $form_sale_exchange_place = Input::get('form-sale-exchange-place');
+      $form_sale_deal = Input::get('form-sale-deal');
+
 
       $term = [];
       $range = [];
@@ -232,9 +280,11 @@ class ObivlenieController extends Controller
 
       // verify if parameters are not empty
       if (!empty($form_sale_district)) {
-          //
-          $term += ["rayon" => $form_sale_district ];
-          array_push($param, $form_sale_district);
+          if ($form_sale_district != "0") {
+            //
+            $term += ["rayon" => $form_sale_district ];
+            array_push($param, $form_sale_district);
+          }
       }
 
       if (!empty($form_sale_property_type)) {
@@ -249,21 +299,38 @@ class ObivlenieController extends Controller
           array_push($param, $form_sale_number_room );
       }
 
-      // $term and $range
+      if (!empty($form_sale_exchange)) {
+        //
+          $term += ["tseli_obmena" => $form_sale_exchange ];
+          array_push($param, $form_sale_exchange );
+      }
 
+      if (!empty($form_sale_exchange_place)) {
+        //
+          $term += ["mestopolozhenie_obmena" => $form_sale_exchange_place ];
+          array_push($param, $form_sale_exchange_place );
+      }
+
+      if (!empty($form_sale_deal)) {
+        //
+          $term += ["status" => $form_sale_deal];
+          array_push($param, $form_sale_deal );
+      }
+
+      // $term and $range
       if (!empty($form_sale_surface)) {
         switch ($form_sale_surface) {
           case '2':
-            $range = ["gte" => 70, "lte"=> 90];
+            $range = ["gte" => 70, "lt"=> 90];
             break;
           case '3':
-            $range = ["gte" => 90 , "lte"=> 110];
+            $range = ["gte" => 90 , "lt"=> 110];
             break;
           case '4':
-            $range = ["gt" => 110];
+            $range = ["gte" => 110];
             break;
           default:
-            $range = ["gte" =>30 , "lte"=> 70 ];
+            $range = ["gte" =>30 , "lt"=> 70 ];
             break;
         }
       }
@@ -275,20 +342,11 @@ class ObivlenieController extends Controller
       }
 
       $houses = $elasticsearcher->getIndexedElements($paramSearch);
-      $total_items = count($houses);
+      $foundelemts = count($houses);
 
-      return View('house.catalogue', compact('houses', 'total_items'));
+      return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
 
     }
-
-    // public function setParams(){
-    //   if count($this->searchresults) >= 1 {
-    //
-    //   }
-    //
-    //   return
-    //   $retVal = (condition) ? a : b ;
-    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -296,9 +354,91 @@ class ObivlenieController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function update(Request $request)
     {
-        //
+      $indexmodel = new ElasticSearchEngine;
+      $Helper = new CustomHelper;
+      $StoragePath = $Helper->getStorageDirectory();
+
+      $excludeKeyValues = array("address", "file-upload", "_token");
+
+      $address =  Input::get('address');
+      $updateparams = [];
+
+      if (!empty($address)) {
+          $geo = $Helper->yandexGeocoding($address);
+          $updateparams = array('rayon' => $Helper->getDistritcs($geo['address'][0]) );
+          $ar = explode(" ", $geo['metro'][0]);
+          $metro = '';
+          foreach ($ar as $key => $value) {
+            if ($ar[$key] != 'метро') {
+              $metro = $metro.' '.$value;
+            }
+          }
+          $updateparams += array('metro' => trim($metro) );
+      }
+
+      $inputall = Input::all();
+
+      foreach ($inputall as $key => $value) {
+        if (!in_array($key, $excludeKeyValues) AND (!empty($value))) {
+          $updateparams += array( $key => $value );
+        }
+      }
+
+      $house = Obivlenie::where('id', '=', $updateparams['id'])->first();
+
+      foreach ($updateparams as $key => $value) {
+        $house[$key] = $value ;
+      }
+      $house->save();
+
+      // $house = Obivlenie::where('id', '=', $updateparams['id'])->first();
+      // $house->update($updateparams);
+
+      $madeThumnail = false ;
+      $pictures = Request::file('file-upload');
+
+      if (count($pictures) > 1) {
+        $affectedRows = Images::where('imageable_id', '=', $updateparams['id'])->delete();
+        foreach(Request::file('file-upload') as $imgvalue) {
+
+               $filename = Str::random(32).'.'.$imgvalue->guessClientExtension();
+              // $filePath = 'dev/images/pics/' .$filename;
+
+               if( $imgvalue->isValid() ){
+                // dd($imgvalue);
+
+                   $img = new Images ;
+                   $img = $house->images()->create(array('path' => $filename));
+
+                   $imgvalue->move($StoragePath["storage"] , $filename);
+                   $house->images()->save($img);
+
+                   if (! $madeThumnail){
+                       $thumbnailName = $updateparams['id'].'.'.$imgvalue->guessClientExtension();
+
+                       $ThumbNail = ThumbNail::where('obivlenie_id', '=', $updateparams['id'])->delete();
+                       $ThumbNail = ThumbNail::create([
+                         'obivlenie_id' => $updateparams['id']
+                       ]);
+
+                       $thumbImag = new Images;
+                       $thumbImag = $ThumbNail->images()->create(array('path' => $thumbnailName));
+
+                       File::copy($StoragePath["storage"].'/'.$filename, $StoragePath["thumbs"].'/'.$thumbnailName);
+                       $ThumbNail->images()->save($thumbImag);
+
+                       $madeThumnail = true ;
+                   }
+               }
+          }
+      }
+
+      $response = $indexmodel->updateIndexedElement($updateparams);
+
+      // tout est ok nous retourner une a la page des publications
+      return Redirect('dashboard/advertisements');
     }
 
     /**
@@ -310,28 +450,38 @@ class ObivlenieController extends Controller
      */
     public function getCatalogue(Request  $request)
     {
-        $form_sale_city = Input::get('form-sale-city');
-        $form_sale_property_type = Input::get('form-sale-property-type');
 
-        if ((!empty($form_sale_city)) and (empty($form_sale_property_type) )) {
-              $houses = Obivlenie::where('gorod', '=', $form_sale_city)->get();
 
-        } elseif ((empty($form_sale_city)) and (!empty($form_sale_property_type) )) {
-              $houses = Obivlenie::where('type_nedvizhimosti', '=', $form_sale_property_type)
-                                              ->get();
+        if (Request::ajax()) {
+            $paramSearch = Input::all();
+          return $paramSearch ;
 
-        } elseif( (!empty($form_sale_city)) and (!empty($form_sale_property_type) ) ){
-              $houses = Obivlenie::where('gorod', '=', $form_sale_city)
-                                  ->where('type_nedvizhimosti', '=', $form_sale_property_type)
-                                  ->get();
-        } else {
-             $houses = Obivlenie::where('gorod', '=', 'Москва')->get();
+        }else {
+          $paramSearch = Input::all();
+
+          $form_sale_city = Input::get('form-sale-city');
+          $form_sale_property_type = Input::get('form-sale-property-type');
+
+          if ((!empty($form_sale_city)) and (empty($form_sale_property_type) )) {
+                $houses = Obivlenie::where('gorod', '=', $form_sale_city)->get();
+
+          } elseif ((empty($form_sale_city)) and (!empty($form_sale_property_type) )) {
+                $houses = Obivlenie::where('type_nedvizhimosti', '=', $form_sale_property_type)
+                                                ->get();
+
+          } elseif( (!empty($form_sale_city)) and (!empty($form_sale_property_type) ) ){
+                $houses = Obivlenie::where('gorod', '=', $form_sale_city)
+                                    ->where('type_nedvizhimosti', '=', $form_sale_property_type)
+                                    ->get();
+          } else {
+               $houses = Obivlenie::where('gorod', '=', 'Москва')->get();
+
+          }
 
         }
-
         $foundelemts = $houses->count();
 
-        return View('pages.properties_listing_lines', compact('houses', 'foundelemts'));
+        return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
     }
 
     /**
@@ -348,9 +498,22 @@ class ObivlenieController extends Controller
 
     public function destroy($id)
     {
-        Obivlenie::destroy($id);
-        return Redirect('/dashboard/advertisements');
+      $obj = Obivlenie::whereid($id)->first();
+      if (Auth::user()->id = $obj->user_id) {
+          Obivlenie::destroy($id);
+      }
+      return Redirect('/dashboard/advertisements');
     }
+
+    public function destroyObj($id)
+    {
+      $obj = Bookmarked::whereid($id)->first();
+      if (Auth::user()->id = $obj->user_id) {
+          Bookmarked::destroy($id);
+      }
+      return Redirect()->back();
+    }
+
 
     public function deleteItemFromFavoris($id)
     {
@@ -366,8 +529,8 @@ class ObivlenieController extends Controller
       return $allcategorie[0]->id ;
     }
 
-    public function uploadtoCloudStorage(){
-
+    public function deleteImg($img){
+      $img->delete;
     }
 
     public function uploadThumbImagtoCloudStorage($thumbnail, $thumbnailName){
