@@ -266,13 +266,13 @@ class ObivlenieController extends Controller
 
       $term = [];
       $range = [];
-      $param = [];
+      $paramSearch = [];
 
 
       if ( !empty($gorod) ) {
       //   $gorod = Input::get('form-sale-city');
          $term["gorod"] = $gorod;
-         array_push($param, $gorod);
+         array_push($paramSearch, $gorod);
       } else{
       //   $gorod = "Москва";
          $term["gorod"] = "Москва";
@@ -283,38 +283,38 @@ class ObivlenieController extends Controller
           if ($form_sale_district != "0") {
             //
             $term += ["rayon" => $form_sale_district ];
-            array_push($param, $form_sale_district);
+            array_push($paramSearch, $form_sale_district);
           }
       }
 
       if (!empty($form_sale_property_type)) {
         //
           $term += ["type_nedvizhimosti" => $form_sale_property_type ];
-          array_push($param, $form_sale_property_type );
+          array_push($paramSearch, $form_sale_property_type );
       }
 
       if (!empty($form_sale_number_room)) {
         //
           $term += ["kolitchestvo_komnat" => $form_sale_number_room ];
-          array_push($param, $form_sale_number_room );
+          array_push($paramSearch, $form_sale_number_room );
       }
 
       if (!empty($form_sale_exchange)) {
         //
           $term += ["tseli_obmena" => $form_sale_exchange ];
-          array_push($param, $form_sale_exchange );
+          array_push($paramSearch, $form_sale_exchange );
       }
 
       if (!empty($form_sale_exchange_place)) {
         //
           $term += ["mestopolozhenie_obmena" => $form_sale_exchange_place ];
-          array_push($param, $form_sale_exchange_place );
+          array_push($paramSearch, $form_sale_exchange_place );
       }
 
       if (!empty($form_sale_deal)) {
         //
           $term += ["status" => $form_sale_deal];
-          array_push($param, $form_sale_deal );
+          array_push($paramSearch, $form_sale_deal );
       }
 
       // $term and $range
@@ -336,13 +336,18 @@ class ObivlenieController extends Controller
       }
 
       if (count($range) >= 1) {
-        $paramSearch = ["term" => $term, "range" => $range ];
+        $paramSearchEngine = ["term" => $term, "range" => $range ];
       } else {
-        $paramSearch = ["term" => $term];
+        $paramSearchEngine = ["term" => $term];
       }
 
-      $houses = $elasticsearcher->getIndexedElements($paramSearch);
+      $houses = $elasticsearcher->getIndexedElements($paramSearchEngine);
       $foundelemts = count($houses);
+    
+      // foreach ($paramSearch as $key => $value) {
+      //   $params += array($key => $value);
+      // }
+      // $paramSearch = $params;
 
       return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
 

@@ -11,8 +11,8 @@
                              <div class="form-group">
                                <form  id="formdata" method="post"  action="/sorted/properties">
                                  <input type="hidden" name="_token" value="{!! csrf_token() !!}">
-                                   @foreach($paramSearch as $key => $value)
-                                         <input type="hidden" name="{{$key}}" value="{{$value}}">
+                                   @foreach($paramSearch as $key => $value )
+                                        <input type="hidden" name="{{$key}}" value="{{$value}}">
                                    @endforeach
                                   <select name="sorting" id="sorting">
                                       <option value="">Сортировать</option>
