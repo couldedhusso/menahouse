@@ -70,13 +70,14 @@
                                 <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
                                 {!! csrf_field() !!}
                                 <div class="form-group">
-                                    <select name="form-sale-deal">
+                                    <select name="status">
+                                      {{-- <option value="">Статус</option> --}}
                                       <option value="Обмен">Обмен</option>
                                       <option value="Обмен_продажа">Обмен/продажа</option>
                                     </select>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
-                                    <select name="form-sale-city">
+                                    <select name="gorod">
                                         <option value="">Город</option>
                                         <option value="Москва">Москва</option>
                                         <option value="Московская_область">Московская область</option>
@@ -84,7 +85,7 @@
                                     </select>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
-                                    <select name="form-sale-district">
+                                    <select name="rayon">
                                         <option value="">Район</option>
                                         <option value="0">Все районы</option>
                                         <option value="ЦАО">ЦАО</option>
@@ -95,7 +96,7 @@
                                     </select>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
-                                    <select name="form-sale-property-type">
+                                    <select name="type_nedvizhimosti">
                                         <option value="">Тип жилья</option>
                                         <option value="Квартира">Квартира</option>
                                         <option value="Комната">Комната</option>
@@ -104,7 +105,7 @@
                                     </select>
                                 </div><!-- /.form-group -->
                 <div class="form-group">
-                                    <select name="form-sale-number-room">
+                                    <select name="kolitchestvo_komnat">
                                         <option value="">Кол-во комнат</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -113,7 +114,7 @@
                                     </select>
                                 </div><!-- /.form-group -->
                 <div class="form-group">
-                                    <select name="form-sale-surface">
+                                    <select name="obshaya_ploshad">
                                         <option value="">Площадь</option>
                                         <option value="1">30-70</option>
                                         <option value="2">70-90</option>
@@ -121,7 +122,7 @@
                                         <option value="4">110+</option>
                                     </select>
                                 </div><!-- /.form-group -->
-              
+
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-default">Искать</button>
                                 </div><!-- /.form-group -->

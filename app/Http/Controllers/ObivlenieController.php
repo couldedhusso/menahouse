@@ -55,7 +55,7 @@ class ObivlenieController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+
         /*
           la class contien differentes fucntion
           par exemple la creation de repertoires getStorageDirectory
@@ -204,70 +204,68 @@ class ObivlenieController extends Controller
 
     public function sortResult(){
 
-      $paramSearch = Input::all();
+      $paramSearch = Input::except('_token');
+      $foundNotEmptyValue = false;
 
-      dd($paramSearch);
+      $setOrderBy = [
+              '1' => 'price',
+              '2' => 'obshaya_ploshad',
+              '3' => 'created_at'
+      ];
 
+      $setRange = [
+               '1' => 'BETWEEN 30 AND 70',
+               '2' => 'BETWEEN 70 AND 90',
+               '3' => 'BETWEEN 90 AND 110',
+               '4' => '> 110'
+      ];
 
-      $sorting = Input::get('sorting');
-      switch ($sorting) {
-          case 2:
-            $form_sorting = 'obshaya_ploshad';
-            break;
-          case 3:
-              $form_sorting = 'created_at';
+      $sort = $paramSearch['sorting'];
+
+      foreach ($paramSearch as $key => $value) {
+        if (!empty($value) AND $key !== 'sorting') {
+            if ( $key  !== 'obshaya_ploshad') {
+              $strParam = $key;
+              $foundNotEmptyValue = true;
               break;
-          default:
-            $form_sorting = 'price';
-            break;
+            }
+            else {
+              $qb = "SELECT * FROM obivlenie WHERE $key $setrange[$value]";
+              $qb = $qb." ORDER BY ".$setOrderBy[$sort]." DESC";
+            }
+        }
+
       }
 
-      $term = [];
-      foreach ($paramSearch as $key => $value) {
-        if (($key !== 'obshaya_ploshad') AND ($key !== '_token') ){
-            $term +=  [$key => $value ];
-        }
+      if ($foundNotEmptyValue) {
+
+        $statval = $paramSearch['status'];
+        $qb = "SELECT * FROM obivlenie WHERE $strParam = :$strParam";
+
+        $params = ['status' => $paramSearch['status'] ];
+        foreach ($paramSearch as $key => $value) {
+          if ((!in_array($key, [$strParam, 'sorting'])) AND (!empty($paramSearch[$key]))) {
+            if ($key == "obshaya_ploshad") {
+                $qb = $qb." AND ".$key." ".$setrange[$value];
+                $flag = $value;
+            }
+            else {
+                $qb = $qb ." AND ".$key."= :".$key;
+                $params += [ $key => $value];
+              }
+        }}
+          $qb = $qb." ORDER BY ".$setOrderBy[$sort]." DESC";
+          $houses = DB::select(DB::raw($qb), $params);
+      }
+      else {
+          $houses = DB::select(DB::raw($qb));
       }
 
       if (!empty($paramSearch['obshaya_ploshad'])) {
-        $paramSearchEngine = ["term" => $term, "range" => $paramSearch['obshaya_ploshad'] ];
-      } else {
-        $paramSearchEngine = ["term" => $term];
+          $paramSearch['obshaya_ploshad'] = $flag ;
       }
 
-      dd($paramSearchEngine);
-
-      // $houses = DB::table('obivlenie');
-
-
-
-
-      if (!empty(Input::get('type'))) {
-        $houses = Obivlenie::where('type_nedvizhimosti', '=', Input::get('type'))
-                      ->orderBy($form_sorting, 'desc')
-                      ->get();
-
-      } elseif (!empty(Input::get('number_of_rooms'))) {
-        $houses = Obivlenie::where('kolitchestvo_komnat', '=', Input::get('number_of_rooms'))
-                      ->orderBy($form_sorting, 'desc')
-                      ->get();
-
-      } else {
-          $form_sale_city = Input::get('form-sale-city');
-          $form_sale_property_type = Input::get('form-sale-property-type');
-          if (!empty($form_sale_property_type)) {
-              $houses = Obivlenie::where('gorod', '=', $form_sale_city)
-                            ->where('type_nedvizhimosti', '=', $form_sale_property_type)
-                            ->orderBy($form_sorting, 'desc')
-                            ->get();
-          } else {
-            $houses = Obivlenie::where('gorod', '=', $form_sale_city)
-                          ->orderBy($form_sorting, 'desc')
-                          ->get();
-          }
-      }
-
-      $foundelemts = $houses->count();
+      $foundelemts = count($houses);
       return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
 
     }
@@ -277,114 +275,140 @@ class ObivlenieController extends Controller
       //create a new instance of Elasticsearch to performing search
       $elasticsearcher = new ElasticSearchEngine ;
 
-      $gorod = Input::get('form-sale-city') ;
-      $form_sale_district = Input::get('form-sale-district') ;
-      $form_sale_property_type  = Input::get('form-sale-property-type') ;
-      $form_sale_number_room = Input::get('form-sale-number-room');
-      $form_sale_surface = Input::get('form-sale-surface');
+      $paramSearch = Input::except('_token');
 
-      $form_sale_exchange = Input::get('form-sale-exchange') ;
-      $form_sale_exchange_place = Input::get('form-sale-exchange-place');
-      $form_sale_deal = Input::get('form-sale-deal');
+      // dd($paramSearch['status']);
 
-
-      $term = [];
-      $range = [];
-      $paramSearch = [];
-
-
-      if ( !empty($gorod) ) {
-      //   $gorod = Input::get('form-sale-city');
-         $term["gorod"] = $gorod;
-        //  array_push($paramSearch, $gorod);
-         $paramSearch["gorod"] = $gorod;
-      } else{
-      //   $gorod = "Москва";
-         $term["gorod"] = "Москва";
-         $paramSearch["gorod"] = "Москва";
-      }
-
-      // verify if parameters are not empty
-      if (!empty($form_sale_district)) {
-          if ($form_sale_district !== "0") {
-            //
-            $term += ["rayon" => $form_sale_district ];
-            $paramSearch["rayon"] = $form_sale_district;
-            // array_push($paramSearch, $form_sale_district);
-          }
-      }
-
-      if (!empty($form_sale_property_type)) {
-        //
-          $term += ["type_nedvizhimosti" => $form_sale_property_type ];
-          $paramSearch["type_nedvizhimosti"] = $form_sale_property_type;
-          // array_push($paramSearch, $form_sale_property_type );
-      }
-
-      if (!empty($form_sale_number_room)) {
-        //
-          $term += ["kolitchestvo_komnat" => $form_sale_number_room ];
-          $paramSearch["kolitchestvo_komnat"] = $form_sale_number_room;
-          // array_push($paramSearch, $form_sale_number_room );
-      }
-
-      // if (!empty($form_sale_district)) {
-      //   //
-      //     $term += ["tseli_obmena" => $form_sale_exchange ];
-      //     $paramSearch["tseli_obmena"] = $form_sale_exchange;
-      //     // array_push($paramSearch, $form_sale_exchange );
+      // $gorod = Input::get('form-sale-city') ;
+      // $form_sale_district = Input::get('form-sale-district') ;
+      // $form_sale_property_type  = Input::get('form-sale-property-type') ;
+      // $form_sale_number_room = Input::get('form-sale-number-room');
+      // $form_sale_surface = Input::get('form-sale-surface');
+      //
+      // $form_sale_exchange = Input::get('form-sale-exchange') ;
+      // $form_sale_exchange_place = Input::get('form-sale-exchange-place');
+      // $form_sale_deal = Input::get('form-sale-deal');
+      //
+      //
+      // $term = [];
+      // $range = [];
+      // $paramSearch = [];
+      //
+      //
+      // if ( !empty($gorod) ) {
+      // //   $gorod = Input::get('form-sale-city');
+      //    $term["gorod"] = $gorod;
+      //   //  array_push($paramSearch, $gorod);
+      //    $paramSearch["gorod"] = $gorod;
+      // } else{
+      // //   $gorod = "Москва";
+      //    $term["gorod"] = "Москва";
+      //    $paramSearch["gorod"] = "Москва";
       // }
       //
-      // if (!empty($form_sale_exchange_place)) {
+      // // verify if parameters are not empty
+      // if (!empty($form_sale_district)) {
+      //     if ($form_sale_district !== "0") {
+      //       //
+      //       $term += ["rayon" => $form_sale_district ];
+      //       $paramSearch["rayon"] = $form_sale_district;
+      //       // array_push($paramSearch, $form_sale_district);
+      //     }
+      // }
+      //
+      // if (!empty($form_sale_property_type)) {
       //   //
-      //     $term += ["mestopolozhenie_obmena" => $form_sale_exchange_place];
-      //     $paramSearch["mestopolozhenie_obmena"] = $form_sale_exchange_place;
-      //     // array_push($paramSearch, $form_sale_exchange_place );
+      //     $term += ["type_nedvizhimosti" => $form_sale_property_type ];
+      //     $paramSearch["type_nedvizhimosti"] = $form_sale_property_type;
+      //     // array_push($paramSearch, $form_sale_property_type );
+      // }
+      //
+      // if (!empty($form_sale_number_room)) {
+      //   //
+      //     $term += ["kolitchestvo_komnat" => $form_sale_number_room ];
+      //     $paramSearch["kolitchestvo_komnat"] = $form_sale_number_room;
+      //     // array_push($paramSearch, $form_sale_number_room );
+      // }
+      //
+      // // if (!empty($form_sale_district)) {
+      // //   //
+      // //     $term += ["tseli_obmena" => $form_sale_exchange ];
+      // //     $paramSearch["tseli_obmena"] = $form_sale_exchange;
+      // //     // array_push($paramSearch, $form_sale_exchange );
+      // // }
+      // //
+      // // if (!empty($form_sale_exchange_place)) {
+      // //   //
+      // //     $term += ["mestopolozhenie_obmena" => $form_sale_exchange_place];
+      // //     $paramSearch["mestopolozhenie_obmena"] = $form_sale_exchange_place;
+      // //     // array_push($paramSearch, $form_sale_exchange_place );
+      // // }
+      //
+      // if (!empty($form_sale_deal)) {
+      //   //
+      //     $term += ["status" => $form_sale_deal];
+      //     $paramSearch["status"] = $form_sale_deal;
+      //     // array_push($paramSearch, $form_sale_deal );
+      // }
+      //
+      //
+      // // $term and $range
+      // if (!empty($form_sale_surface)) {
+      //   switch ($form_sale_surface) {
+      //     case '2':
+      //       $range = ["gt" => 70, "lt"=> 90];
+      //       break;
+      //     case '3':
+      //       $range = ["gt" => 90 , "lt"=> 110];
+      //       break;
+      //     case '4':
+      //       $range = ["gt" => 110];
+      //       break;
+      //     default:
+      //       $range = ["gt" =>30 , "lt"=> 70 ];
+      //       break;
+      //   }
+      //
+      //   $paramSearch["obshaya_ploshad"] = $range;
+      // }
+      //
+      // if (count($range) >= 1) {
+      //   $paramSearchEngine = ["term" => $term, "range" => $range ];
+      // } else {
+      //   $paramSearchEngine = ["term" => $term];
       // }
 
-      if (!empty($form_sale_deal)) {
-        //
-          $term += ["status" => $form_sale_deal];
-          $paramSearch["status"] = $form_sale_deal;
-          // array_push($paramSearch, $form_sale_deal );
+      $setrange = [
+         '1' => 'BETWEEN 30 AND 70',
+         '2' => 'BETWEEN 70 AND 90',
+         '3' => 'BETWEEN 90 AND 110',
+         '4' => '> 110'
+      ];
+
+      $statval = $paramSearch['status'];
+      $qb = "SELECT * FROM obivlenie WHERE status = :status";
+
+      $params = ['status' => $paramSearch['status'] ];
+      foreach ($paramSearch as $key => $value) {
+        if ((!in_array($key, ['_token', 'status'])) AND (!empty($paramSearch[$key]))) {
+          if ($key == "obshaya_ploshad") {
+              $qb = $qb." AND ".$key." ".$setrange[$value];
+              $flag = $value;
+          }
+          else {
+              $qb = $qb ." AND ".$key."= :".$key;
+              $params += [ $key => $value];
+            }
+      }}
+
+      $houses = DB::select(DB::raw($qb), $params);
+
+      if (!empty($paramSearch['obshaya_ploshad'])) {
+          $paramSearch['obshaya_ploshad'] = $flag ;
       }
 
-
-      // $term and $range
-      if (!empty($form_sale_surface)) {
-        switch ($form_sale_surface) {
-          case '2':
-            $range = ["gt" => 70, "lt"=> 90];
-            break;
-          case '3':
-            $range = ["gt" => 90 , "lt"=> 110];
-            break;
-          case '4':
-            $range = ["gt" => 110];
-            break;
-          default:
-            $range = ["gt" =>30 , "lt"=> 70 ];
-            break;
-        }
-
-        $paramSearch["obshaya_ploshad"] = $range;
-      }
-
-      if (count($range) >= 1) {
-        $paramSearchEngine = ["term" => $term, "range" => $range ];
-      } else {
-        $paramSearchEngine = ["term" => $term];
-      }
-
-      $houses = $elasticsearcher->getIndexedElements($paramSearchEngine);
+      // $houses = $elasticsearcher->getIndexedElements($paramSearchEngine);
       $foundelemts = count($houses);
-
-      // foreach ($paramSearch as $key => $value) {
-      //   $params += array($key => $value);
-      // }
-      // $paramSearch = $params;
-
-      // dd($paramSearch);
 
       return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
 

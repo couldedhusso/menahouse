@@ -142,6 +142,10 @@ class UserMessageController extends Controller
         $sender = Auth::user()->id;
         $receiver = User::whereid(Input::get('To'))->first();
 
+        if ($sender == $receiver->id) {
+           return redirect()->back();
+        }
+
         // $conversation = Conversation::create(['subject' => Input::get('subject')]);
 
         $um = UserMessage::create([

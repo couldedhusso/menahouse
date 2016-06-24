@@ -56,7 +56,7 @@
 
                           <li class="has-child"><a href="#" title="Основное личное меню пользователя"><i class="fa fa-user fa-fw"></i>&nbsp;Личный кабинет</a>
                               <ul class="child-navigation">
-                  <li><a href="{{ url('messages/') }}" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
+                  <li><a href="{{ url('mailbox/inbox/') }}" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
                   <li><a href="{{ url('/dashboard/advertisements') }}" title="Проверить и добавить новое объявление"><i class="fa fa-th-list"></i>&nbsp; Мои объявления</a></li>
                                   <li><a href="#" title="Активировать дополнительные функции сайта"><i class="fa fa-rub"></i>&nbsp; Оплата</a></li>
                   <li><a href="{{ url('dashboard/settings/'.Auth::user()->id )}}" title="Настройки пользователя и сайта"><i class="fa fa-cog"></i>&nbsp; Настройки</a>
@@ -105,13 +105,14 @@
                               <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
                               {!! csrf_field() !!}
                               <div class="form-group">
-                                  <select name="form-sale-deal">
+                                  <select name="status">
+                                    {{-- <option value="">Статус</option> --}}
                                     <option value="Обмен">Обмен</option>
                                     <option value="Обмен_продажа">Обмен/продажа</option>
                                   </select>
                               </div><!-- /.form-group -->
                               <div class="form-group">
-                                  <select name="form-sale-city">
+                                  <select name="gorod">
                                       <option value="">Город</option>
                                       <option value="Москва">Москва</option>
                                       <option value="Московская_область">Московская область</option>
@@ -119,7 +120,7 @@
                                   </select>
                               </div><!-- /.form-group -->
                               <div class="form-group">
-                                  <select name="form-sale-district">
+                                  <select name="rayon">
                                       <option value="">Район</option>
                                       <option value="0">Все районы</option>
                                       <option value="ЦАО">ЦАО</option>
@@ -130,7 +131,7 @@
                                   </select>
                               </div><!-- /.form-group -->
                               <div class="form-group">
-                                  <select name="form-sale-property-type">
+                                  <select name="type_nedvizhimosti">
                                       <option value="">Тип жилья</option>
                                       <option value="Квартира">Квартира</option>
                                       <option value="Комната">Комната</option>
@@ -139,7 +140,7 @@
                                   </select>
                               </div><!-- /.form-group -->
               <div class="form-group">
-                                  <select name="form-sale-number-room">
+                                  <select name="kolitchestvo_komnat">
                                       <option value="">Кол-во комнат</option>
                                       <option value="1">1</option>
                                       <option value="2">2</option>
@@ -148,7 +149,7 @@
                                   </select>
                               </div><!-- /.form-group -->
               <div class="form-group">
-                                  <select name="form-sale-surface">
+                                  <select name="obshaya_ploshad">
                                       <option value="">Площадь</option>
                                       <option value="1">30-70</option>
                                       <option value="2">70-90</option>
@@ -156,25 +157,11 @@
                                       <option value="4">110+</option>
                                   </select>
                               </div><!-- /.form-group -->
-              <p>Критерии обмена</P>
-              <div class="form-group">
-                                  <select name="form-sale-exchange">
-                                      <option value="">Обмен на</option>
-                                      <option value="На_увеличение">На увеличение</option>
-                                      <option value="На_уменьшение">На уменьшение</option>
-                                  </select>
-                              </div><!-- /.form-group -->
-              <div class="form-group">
-                                  <select name="form-sale-exchange-place">
-                                      <option value="">Район обмена</option>
-                                      <option value="В_другом_районе">В другом районе</option>
-                                      <option value="В_своём_районе">В своём районе</option>
-                                  </select>
-                              </div><!-- /.form-group -->
+
                               <div class="form-group">
                                   <button type="submit" class="btn btn-default">Искать</button>
                               </div><!-- /.form-group -->
-                            </form><!-- /#form-map -->
+                          </form><!-- /#form-map -->
                         </aside><!-- /#edit-search -->
                         <aside id="featured-properties">
                             <header><h3>Спецпредложения</h3></header>
