@@ -11,7 +11,7 @@
     <link href="{{ asset('static/assets/fonts/font-awesome.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ elixir("css/all.css") }}">
 
-    <title>Mena | Registration</title>
+    <title>@yield('Title')</title>
 
 </head>
 

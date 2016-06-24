@@ -74,7 +74,6 @@ class ProfilController extends Controller
      */
     public function edit()
     {
-        $CloudStorage = Storage::disk('s3');
 
         $Helper = new CustomHelper;
         $StoragePath = $Helper->getStorageDirectory();
@@ -83,14 +82,6 @@ class ProfilController extends Controller
         $user = User::find($id);
         $profile = Profiles::whereuser_id($id)->first();
 
-        $InputProfile = Input::only('bio', 'vk','ok', 'fb', 'twitter');
-        //dd(Input::get('bio'));
-
-        $profile->fill($InputProfile)->save();
-
-
-        // $user->profile()->save(new Profiles);
-        // $imgprofi = Images::whereimageable_id($profil->user_id)->get();
 
       if ($this->isCurrent($id) ) {
 
@@ -129,39 +120,7 @@ class ProfilController extends Controller
             $user->save();
           }
 
-          $pic = Input::file('file');
-
-          if ($pic->isValid()) {
-
-                $filename = str_random(8)."-".$pic->getClientOriginalName();
-                // if (! $profile->hasprofile ) {
-                //     $profile->hasprofile = 1 ;
-                // } else {
-                //
-                //     $old_imag_path = $profile->images->path ;
-                //     $profile->images()->delete();
-                //     $profile->save();
-                // //    $delFilePath = 'dev/profileimg/' .$old_imag_path ;
-                //     // $CloudStorage->delete($delFilePath);
-                // }
-
-                $old_imag_path = $profile->images->path ;
-                $profile->images()->delete();
-                $profile->save();
-
-                $img = new Images ;
-                $img = $profile->images()->create(array('path' => $filename));
-                $pic->move($StoragePath["thumbs"], $filename);
-                $profile->images()->save($img);
-
-               //  $imgvalue->move(public_path().'/storage/pictures' , $filename);
-
-
-              //  $filePath = 'dev/profileimg/' .$filename;
-              //  $CloudStorage->put($filePath, file_get_contents($pic), 'public');
-            }
-
-            return Redirect('/dashboard/settings/'.$id);
+          return Redirect('/dashboard/settings/'.$id);
 
       }
 

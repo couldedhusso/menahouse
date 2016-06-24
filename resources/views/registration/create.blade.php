@@ -1,5 +1,9 @@
 @extends('templates.TemplateAccountUser')
 
+@section('Title')
+  Mena | Registration
+@endsection
+
 @section('active_breadcrumb')
   <li class="active">Регистрация</li>
 @endsection
@@ -41,13 +45,12 @@
                 <input type="password" class="form-control" name="password_confirmation" id="form-create-account-confirm-password" title="Подтвердите введёный пароль" required>
             </div><!-- /.form-group -->
 
-            <div class="checkbox pull-left">
-                <label>
-                    <input type="checkbox" id="account-type-accept" name="account-accept"> Согласен с правилами
-                </label>
-            </div>
-
             <div class="form-group clearfix">
+                <div class="checkbox pull-left">
+                    <label>
+                        <input type="checkbox" id="account-type-accept" name="account-accept">Согласен с правилами
+                    </label>
+                </div>
                 <button type="submit" class="btn pull-right btn-success" id="account-submit" title="Зарегистрироваться на сайте">&nbsp; &nbsp; Регистрация &nbsp; &nbsp;</button> <!-- CZ регистрация -->
             </div><!-- /.form-group -->
 

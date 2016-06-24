@@ -27,14 +27,6 @@
                     <figure><strong>Тел.:</strong>+7 999-123-4567</figure>
                     <figure><strong>Email:</strong>mena@yandex.ru</figure>
                 </div>
-                <div class="user-area">
-                    <div class="actions">
-                      @if(Auth::check())
-                         <a href="{{ url('/dashboard/advertisement/add') }}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
-                      @else
-                         <a href="{{ url('/sign-in')}}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
-                      @endif                    </div>
-                </div>
             </div>
         </div>
         <div class="container">
@@ -66,23 +58,13 @@
                           </li>
 
                         @else
-                          <li><a href="{{ url('/sign-in') }}" title="Войти с помощью Вашего аккаунта">Войти &nbsp; </a>
-                          </li>
-                          <li class="activ"><a href="{{ url('/join') }}" title="Пройти быструю регистрацию"><strong>&nbsp;Регистрация</strong></a>
-                          </li>
+
+                  <li><a href="{{ url('/sign-in') }}" title="Войти на сайт или пройти быструю регистрацию" style="margin-top: -3px; margin-right: 15px"><p><i class="fa fa-sign-in" aria-hidden="true">&nbsp; Войти </i></p></a></li>
+                  <a href="{{ url('/pricing') }}" class="btn btn-white-green" title="Разместить объявление своей квартиры бесплатно!"><i class="fa fa-plus"></i>&nbsp; Разместить объявление</a>
                         @endif
 
                     </ul>
                 </nav><!-- /.navbar collapse-->
-                <div class="add-your-property">
-
-                  @if(Auth::check())
-                      <a href="{{ url('/dashboard/advertisement/add') }}" class="btn btn-green"><i class="fa fa-plus"></i><span class="text">Разместить объявление</span></a>
-                  @else
-                      <a href="{{ url('/auth/login') }}" class="btn btn-green"><i class="fa fa-plus"></i><span class="text">Разместить объявление</span></a>
-                  @endif
-
-                </div>
             </header><!-- /.navbar -->
         </div><!-- /.container -->
     </div><!-- /.navigation -->
@@ -247,33 +229,37 @@
 					<br>
                     <div class="col-md-4 col-sm-4">
                         <div class="feature-box equal-height">
-                            <figure class="icon"><i class="fa fa-folder"></i></figure>
+                            <figure class="icon"><i class="fa fa-bug" aria-hidden="true"></i></figure>
                             <aside class="description">
-                                <header><h3>Заголовок н3</h3></header>
-                                <p>Первая супер причина почему вы с нами! И она звучит так... С нами и только с нами</p><br>
-                                <a href="#" class="link-arrow">Подробнее</a>
+                                <header><h3>Безопасно</h3></header>
+                                <p>Без риэлторов, посредников и прочих! <br>
+                                Вы общаетесь исключительно с собственниками напрямую</p><br>
+                                <a href="{{url('properties/all')}}" class="link-arrow">Подробнее</a>
 							</aside>
 							<br>
                         </div><!-- /.feature-box -->
                     </div><!-- /.col-md-4 -->
                     <div class="col-md-4 col-sm-4">
                         <div class="feature-box equal-height">
-                            <figure class="icon"><i class="fa fa-folder"></i></figure>
+                            <figure class="icon"><i class="fa fa-check-square-o" aria-hidden="true"></i></figure>
                             <aside class="description">
-                                <header><h3>Заголовок н3</h3></header>
-                                <p>Вторая супер причина почему вы с нами! И она звучит так... А почему не с нами? Только с нами</p><br>
-                                <a href="#" class="link-arrow">Подробнее</a>
+                                <header><h3>Самостоятельно</h3></header>
+                                <p>Нашли, посмотрели, договорились. Мы поможем со всеми документами Без переплат и скрытых условий!</p><br>
+                                <a href="{{url('properties/all')}}" class="link-arrow">Подробнее</a>
+              </aside>
                             </aside>
 							<br>
                         </div><!-- /.feature-box -->
                     </div><!-- /.col-md-4 -->
                     <div class="col-md-4 col-sm-4">
                         <div class="feature-box equal-height">
-                            <figure class="icon"><i class="fa fa-folder"></i></figure>
+                            <figure class="icon"><i class="fa fa-users" aria-hidden="true"></i></figure>
                             <aside class="description">
-                                <header><h3>Заголовок н3</h3></header>
-                                <p>Третья супер причина почему вы с нами! И она звучит так... Прочее бла-бла-бла </p><br>
-                                <a href="#" class="link-arrow">Подробнее</a>
+                                <header><h3>С каждым днём больше</h3></header>
+                                <p>Расскажите Вашим Друзьям, и Друзьям Друзей<br>
+                                 Больше Объявлений позволят найти лучший вариант</p><br>
+                                 <a href="{{url('properties/all')}}" class="link-arrow">Подробнее</a>
+               </aside>
                             </aside>
 							<br>
                         </div><!-- /.feature-box -->

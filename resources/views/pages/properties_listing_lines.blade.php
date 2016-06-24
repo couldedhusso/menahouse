@@ -6,7 +6,7 @@
                <section id="search-filter">
                    <figure><h3><i class="fa fa-search"></i>Результатов поиска:</h3>
                        <span class="search-count">{{ $foundelemts }}</span>
-                       @if($foundelemts != 0)
+                       {{-- @if($foundelemts != 0)
                          <div class="sorting">
                              <div class="form-group">
                                <form  id="formdata" method="post"  action="/sorted/properties">
@@ -24,7 +24,32 @@
 
                              </div><!-- /.form-group -->
                          </div>
-                       @endif
+                       @endif --}}
+
+                       <div class="sorting">
+                           <div class="form-group">
+                             <form  id="formdata" method="post"  action="/sorted/properties">
+                               <input type="hidden" name="_token" value="{!! csrf_token() !!}">
+                                 @foreach($paramSearch as $key => $value )
+                                   @if($key == 'obshaya_ploshad')
+                                     @foreach($paramSearch[$key] as $keyp => $valuep)
+                                       <input type="hidden" name="{{$keyp}}" value="{{$valuep}}">
+                                     @endforeach
+                                   @else
+                                      <input type="hidden" name="{{$key}}" value="{{$value}}">
+                                   @endif
+
+                                 @endforeach
+                                <select name="sorting" id="sorting">
+                                    <option value="">Сортировать</option>
+                                    <option value="1">По цене убывания</option>
+                                    <option value="2">По метражу</option>
+                                    <option value="3">По дате добавления</option>
+                                </select>
+                            </form>
+
+                           </div><!-- /.form-group -->
+                       </div>
                    </figure>
                </section>
                <?php $count_ads  = 0 ; ?>

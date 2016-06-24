@@ -205,6 +205,10 @@ class ObivlenieController extends Controller
     public function sortResult(){
 
       $paramSearch = Input::all();
+
+      dd($paramSearch);
+
+
       $sorting = Input::get('sorting');
       switch ($sorting) {
           case 2:
@@ -217,6 +221,26 @@ class ObivlenieController extends Controller
             $form_sorting = 'price';
             break;
       }
+
+      $term = [];
+      foreach ($paramSearch as $key => $value) {
+        if (($key !== 'obshaya_ploshad') AND ($key !== '_token') ){
+            $term +=  [$key => $value ];
+        }
+      }
+
+      if (!empty($paramSearch['obshaya_ploshad'])) {
+        $paramSearchEngine = ["term" => $term, "range" => $paramSearch['obshaya_ploshad'] ];
+      } else {
+        $paramSearchEngine = ["term" => $term];
+      }
+
+      dd($paramSearchEngine);
+
+      // $houses = DB::table('obivlenie');
+
+
+
 
       if (!empty(Input::get('type'))) {
         $houses = Obivlenie::where('type_nedvizhimosti', '=', Input::get('type'))
@@ -272,67 +296,78 @@ class ObivlenieController extends Controller
       if ( !empty($gorod) ) {
       //   $gorod = Input::get('form-sale-city');
          $term["gorod"] = $gorod;
-         array_push($paramSearch, $gorod);
+        //  array_push($paramSearch, $gorod);
+         $paramSearch["gorod"] = $gorod;
       } else{
       //   $gorod = "Москва";
          $term["gorod"] = "Москва";
+         $paramSearch["gorod"] = "Москва";
       }
 
       // verify if parameters are not empty
       if (!empty($form_sale_district)) {
-          if ($form_sale_district != "0") {
+          if ($form_sale_district !== "0") {
             //
             $term += ["rayon" => $form_sale_district ];
-            array_push($paramSearch, $form_sale_district);
+            $paramSearch["rayon"] = $form_sale_district;
+            // array_push($paramSearch, $form_sale_district);
           }
       }
 
       if (!empty($form_sale_property_type)) {
         //
           $term += ["type_nedvizhimosti" => $form_sale_property_type ];
-          array_push($paramSearch, $form_sale_property_type );
+          $paramSearch["type_nedvizhimosti"] = $form_sale_property_type;
+          // array_push($paramSearch, $form_sale_property_type );
       }
 
       if (!empty($form_sale_number_room)) {
         //
           $term += ["kolitchestvo_komnat" => $form_sale_number_room ];
-          array_push($paramSearch, $form_sale_number_room );
+          $paramSearch["kolitchestvo_komnat"] = $form_sale_number_room;
+          // array_push($paramSearch, $form_sale_number_room );
       }
 
-      if (!empty($form_sale_exchange)) {
-        //
-          $term += ["tseli_obmena" => $form_sale_exchange ];
-          array_push($paramSearch, $form_sale_exchange );
-      }
-
-      if (!empty($form_sale_exchange_place)) {
-        //
-          $term += ["mestopolozhenie_obmena" => $form_sale_exchange_place ];
-          array_push($paramSearch, $form_sale_exchange_place );
-      }
+      // if (!empty($form_sale_district)) {
+      //   //
+      //     $term += ["tseli_obmena" => $form_sale_exchange ];
+      //     $paramSearch["tseli_obmena"] = $form_sale_exchange;
+      //     // array_push($paramSearch, $form_sale_exchange );
+      // }
+      //
+      // if (!empty($form_sale_exchange_place)) {
+      //   //
+      //     $term += ["mestopolozhenie_obmena" => $form_sale_exchange_place];
+      //     $paramSearch["mestopolozhenie_obmena"] = $form_sale_exchange_place;
+      //     // array_push($paramSearch, $form_sale_exchange_place );
+      // }
 
       if (!empty($form_sale_deal)) {
         //
           $term += ["status" => $form_sale_deal];
-          array_push($paramSearch, $form_sale_deal );
+          $paramSearch["status"] = $form_sale_deal;
+          // array_push($paramSearch, $form_sale_deal );
       }
+
 
       // $term and $range
       if (!empty($form_sale_surface)) {
         switch ($form_sale_surface) {
           case '2':
-            $range = ["gte" => 70, "lt"=> 90];
+            $range = ["gt" => 70, "lt"=> 90];
             break;
           case '3':
-            $range = ["gte" => 90 , "lt"=> 110];
+            $range = ["gt" => 90 , "lt"=> 110];
             break;
           case '4':
-            $range = ["gte" => 110];
+            $range = ["gt" => 110];
             break;
           default:
-            $range = ["gte" =>30 , "lt"=> 70 ];
+            $range = ["gt" =>30 , "lt"=> 70 ];
             break;
         }
+
+        $paramSearch["obshaya_ploshad"] = $range;
       }
 
       if (count($range) >= 1) {
@@ -343,11 +378,13 @@ class ObivlenieController extends Controller
 
       $houses = $elasticsearcher->getIndexedElements($paramSearchEngine);
       $foundelemts = count($houses);
-    
+
       // foreach ($paramSearch as $key => $value) {
       //   $params += array($key => $value);
       // }
       // $paramSearch = $params;
+
+      // dd($paramSearch);
 
       return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
 
@@ -445,6 +482,16 @@ class ObivlenieController extends Controller
       // tout est ok nous retourner une a la page des publications
       return Redirect('dashboard/advertisements');
     }
+    public function getAllProperties(){
+
+        $paramSearch = array('gorod' => 'Москва');
+        $houses = Obivlenie::where('gorod', '=', 'Москва')->get();
+
+    $foundelemts = $houses->count();
+
+    return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
+
+    }
 
     /**
      * get all resources in storage.
@@ -456,13 +503,7 @@ class ObivlenieController extends Controller
     public function getCatalogue(Request  $request)
     {
 
-
-        if (Request::ajax()) {
-            $paramSearch = Input::all();
-          return $paramSearch ;
-
-        }else {
-          $paramSearch = Input::all();
+        $paramSearch = Input::all();
 
           $form_sale_city = Input::get('form-sale-city');
           $form_sale_property_type = Input::get('form-sale-property-type');
@@ -483,7 +524,6 @@ class ObivlenieController extends Controller
 
           }
 
-        }
         $foundelemts = $houses->count();
 
         return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
@@ -504,7 +544,7 @@ class ObivlenieController extends Controller
     public function destroy($id)
     {
       $obj = Obivlenie::whereid($id)->first();
-      if (Auth::user()->id = $obj->user_id) {
+      if (Auth::user()->id == $obj->user_id) {
           Obivlenie::destroy($id);
       }
       return Redirect('/dashboard/advertisements');
@@ -513,7 +553,7 @@ class ObivlenieController extends Controller
     public function destroyObj($id)
     {
       $obj = Bookmarked::whereid($id)->first();
-      if (Auth::user()->id = $obj->user_id) {
+      if (Auth::user()->id == $obj->user_id) {
           Bookmarked::destroy($id);
       }
       return Redirect()->back();

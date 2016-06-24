@@ -1,5 +1,7 @@
 @extends('templates.TemplateAccountUser')
-
+@section('Title')
+Mena | Sign in
+@endsection
 
 @section('active_breadcrumb')
   <li class="active">Войти</li>

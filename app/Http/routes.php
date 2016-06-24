@@ -119,7 +119,7 @@ Route::group(['middleware' => 'auth'], function () {
               $userID = Auth::user()->id ;
               $house = Obivlenie::whereid($id)->with('images')->first();
               $typemsg = "Новое сообщение ";
-              $To = $userID;
+              $To = $house->user_id;
               $flag ="compose";
 
               return view('messenger.compose', compact('house', 'To','typemsg', 'flag'));
@@ -236,6 +236,7 @@ Route::group(['middleware' => 'auth'], function () {
 Route::get('property/{id}', function($id){
 
      $house = Obivlenie::whereid($id)->with('images')->first();
+
      if (Auth::check()) {
          $userID = Auth::user()->id;
 
@@ -249,7 +250,7 @@ Route::get('property/{id}', function($id){
            $house->numberclick = $numberclick ;
          } // ne pas prendre en compte les clicks du prioprio
      } else {
-           if ($house->numberclick != 0) {
+           if (($house->numberclick != null ) OR ($house->numberclick != 0)) {
              $numberclick = $house->numberclick;
              $numberclick += 1;
            } else {
@@ -315,7 +316,7 @@ Route::get('property/type/{param}', function($param){
 
 Route::post('property/catalogue', 'ObivlenieController@searchEngine');
 Route::post('properties/all', 'ObivlenieController@getCatalogue');
-
+Route::get('properties/all', 'ObivlenieController@getAllProperties');
 
 // Route::post('house/catalogue', 'ObivlenieController@search');
 // Route::get('dashboard',  'DashboardController@show');
@@ -323,7 +324,7 @@ Route::post('properties/all', 'ObivlenieController@getCatalogue');
 /*
 * register
 */
-Route::get('join', function(){
+Route::get('pricing', function(){
   return view('registration.plan');
 });
 

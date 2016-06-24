@@ -121,21 +121,7 @@
                                         <option value="4">110+</option>
                                     </select>
                                 </div><!-- /.form-group -->
-                <p>Критерии обмена</P>
-                <div class="form-group">
-                                    <select name="form-sale-exchange">
-                                        <option value="">Обмен на</option>
-                                        <option value="На_увеличение">На увеличение</option>
-                                        <option value="На_уменьшение">На уменьшение</option>
-                                    </select>
-                                </div><!-- /.form-group -->
-                <div class="form-group">
-                                    <select name="form-sale-exchange-place">
-                                        <option value="">Район обмена</option>
-                                        <option value="В_другом_районе">В другом районе</option>
-                                        <option value="В_своём_районе">В своём районе</option>
-                                    </select>
-                                </div><!-- /.form-group -->
+              
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-default">Искать</button>
                                 </div><!-- /.form-group -->

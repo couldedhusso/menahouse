@@ -44,7 +44,6 @@ class UserMessageController extends Controller
         $receiverMsgId = Receiver::wheretoid($userid)
                                   ->where('spam', '=', '0')
                                   ->where('deleted', '=', '0')
-                                  ->where('deleted', '=', '0')
                                   ->pluck('msgid')
                                   ->toArray();
 

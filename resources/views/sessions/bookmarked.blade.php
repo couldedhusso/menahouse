@@ -1,5 +1,5 @@
 @extends('templates.TemplateDashboard')
-use App\Obivlenie;
+
 @section('Title')
   Mena | Bookmarked Properties
 @endsection
@@ -10,7 +10,7 @@ use App\Obivlenie;
 @endsection
 
 @section('sidebar')
-  @include('layouts.partials.sidebar-properties')
+  @include('layouts.partials.sidebar-bookmarked')
 @endsection
 
 @section('content')

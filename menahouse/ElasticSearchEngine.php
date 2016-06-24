@@ -97,10 +97,33 @@ class ElasticSearchEngine
               ]
         ]];
 
-        //  dd($params) ;
+      // dd($params) ;
 
         $results = $this->client->search($params);   // Execute the search
         return $this->buildCollection($results) ;
+  }
+
+  public function getSortedIndexedElements($paramSearch, $paramSort){
+
+    $params = [
+        "index" => "menahouse",
+        "type" => "obivlenie",
+        "body" => [
+            "query" => [
+                "filtered" => [
+                    "query" => ["match_all" => []],
+                    "filter" => $searchConditons
+                 ]
+            ],
+            "sort" => [
+                $paramSort => ["order" => "desc"]
+            ]
+      ]];
+
+      //  dd($params) ;
+
+      $results = $this->client->search($params);   // Execute the search
+      return $this->buildCollection($results) ;
   }
 
 
