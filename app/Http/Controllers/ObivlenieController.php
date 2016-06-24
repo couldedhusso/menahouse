@@ -55,7 +55,7 @@ class ObivlenieController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-
+    {
         /*
           la class contien differentes fucntion
           par exemple la creation de repertoires getStorageDirectory
@@ -239,10 +239,10 @@ class ObivlenieController extends Controller
 
       if ($foundNotEmptyValue) {
 
-        $statval = $paramSearch['status'];
+
         $qb = "SELECT * FROM obivlenie WHERE $strParam = :$strParam";
 
-        $params = ['status' => $paramSearch['status'] ];
+        $params = [$strParam => $paramSearch[$strParam] ];
         foreach ($paramSearch as $key => $value) {
           if ((!in_array($key, [$strParam, 'sorting'])) AND (!empty($paramSearch[$key]))) {
             if ($key == "obshaya_ploshad") {
@@ -254,16 +254,24 @@ class ObivlenieController extends Controller
                 $params += [ $key => $value];
               }
         }}
+          if (Auth::check()) {
+              $qb = $qb. " AND user_id <> ".Auth::user()->id;
+          }
           $qb = $qb." ORDER BY ".$setOrderBy[$sort]." DESC";
           $houses = DB::select(DB::raw($qb), $params);
       }
       else {
+
+          if (Auth::check()) {
+              $qb = $qb. " AND user_id <> ".Auth::user()->id;
+          }
           $houses = DB::select(DB::raw($qb));
       }
 
       if (!empty($paramSearch['obshaya_ploshad'])) {
           $paramSearch['obshaya_ploshad'] = $flag ;
       }
+
 
       $foundelemts = count($houses);
       return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
@@ -401,6 +409,10 @@ class ObivlenieController extends Controller
             }
       }}
 
+      if (Auth::check()) {
+          $qb = $qb. " AND user_id <> ".Auth::user()->id;
+      }
+
       $houses = DB::select(DB::raw($qb), $params);
 
       if (!empty($paramSearch['obshaya_ploshad'])) {
@@ -509,7 +521,13 @@ class ObivlenieController extends Controller
     public function getAllProperties(){
 
         $paramSearch = array('gorod' => 'Москва');
+        if (Auth::check()) {
+            $houses = Obivlenie::where('gorod', '=', 'Москва')
+            ->where('user_id', '<>', Auth::user()->id )
+            ->get();
+        }
         $houses = Obivlenie::where('gorod', '=', 'Москва')->get();
+
 
     $foundelemts = $houses->count();
 
@@ -527,28 +545,61 @@ class ObivlenieController extends Controller
     public function getCatalogue(Request  $request)
     {
 
-        $paramSearch = Input::all();
+        // $paramSearch = Input::all();
+        //
+        //   $form_sale_city = Input::get('form-sale-city');
+        //   $form_sale_property_type = Input::get('form-sale-property-type');
+        //
+        //   if ((!empty($form_sale_city)) and (empty($form_sale_property_type) )) {
+        //         $houses = Obivlenie::where('gorod', '=', $form_sale_city)->get();
+        //
+        //   } elseif ((empty($form_sale_city)) and (!empty($form_sale_property_type) )) {
+        //         $houses = Obivlenie::where('type_nedvizhimosti', '=', $form_sale_property_type)
+        //                                         ->get();
+        //
+        //   } elseif( (!empty($form_sale_city)) and (!empty($form_sale_property_type) ) ){
+        //         $houses = Obivlenie::where('gorod', '=', $form_sale_city)
+        //                             ->where('type_nedvizhimosti', '=', $form_sale_property_type)
+        //                             ->get();
+        //   } else {
+        //        $houses = Obivlenie::where('gorod', '=', 'Москва')->get();
+        //
+        //   }
 
-          $form_sale_city = Input::get('form-sale-city');
-          $form_sale_property_type = Input::get('form-sale-property-type');
 
-          if ((!empty($form_sale_city)) and (empty($form_sale_property_type) )) {
-                $houses = Obivlenie::where('gorod', '=', $form_sale_city)->get();
 
-          } elseif ((empty($form_sale_city)) and (!empty($form_sale_property_type) )) {
-                $houses = Obivlenie::where('type_nedvizhimosti', '=', $form_sale_property_type)
-                                                ->get();
+          $paramSearch = Input::except('_token');
+          $foundNotEmptyValue = false;
 
-          } elseif( (!empty($form_sale_city)) and (!empty($form_sale_property_type) ) ){
-                $houses = Obivlenie::where('gorod', '=', $form_sale_city)
-                                    ->where('type_nedvizhimosti', '=', $form_sale_property_type)
-                                    ->get();
-          } else {
-               $houses = Obivlenie::where('gorod', '=', 'Москва')->get();
-
+          foreach ($paramSearch as $key => $value) {
+            if (!empty($value)) {
+                  $strParam = $key;
+                  $foundNotEmptyValue = true;
+                  break;
+            }
           }
 
-        $foundelemts = $houses->count();
+          if ($foundNotEmptyValue) {
+
+
+            $qb = "SELECT * FROM obivlenie WHERE $strParam = :$strParam";
+
+            $params = [$strParam => $paramSearch[$strParam] ];
+            foreach ($paramSearch as $key => $value) {
+            if ((!in_array($key, [$strParam])) AND (!empty($paramSearch[$key]))) {
+                    $qb = $qb ." AND ".$key."= :".$key;
+                    $params += [ $key => $value];
+                  }
+            }
+            if (Auth::check()) {
+                $qb = $qb. " AND user_id <> ".Auth::user()->id;
+            }
+            // $qb = $qb." ORDER BY ".$setOrderBy[$sort]." DESC";
+            $houses = DB::select(DB::raw($qb), $params);
+          }
+
+
+        $foundelemts =count($houses);
 
         return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
     }

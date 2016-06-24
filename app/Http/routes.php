@@ -266,7 +266,7 @@ Route::get('property/{id}', function($id){
 
 Route::get('property/number_of_rooms/{numberroom}', function($numberroom){
 
-  $paramSearch = array('number_of_rooms' => $numberroom);
+  $paramSearch = array('kolitchestvo_komnat' => $numberroom);
   if (Auth::check()) {
     $userID = Auth::user()->id;
     if ($numberroom >= 4) {
@@ -297,7 +297,7 @@ Route::post('properties/all', function(){
 });
 
 Route::get('property/type/{param}', function($param){
-  $paramSearch = array('type' => $param);
+  $paramSearch = array('type_nedvizhimosti' => $param);
   if (Auth::check()) {
     $userID = Auth::user()->id;
     $houses = DB::table('obivlenie')->where('type_nedvizhimosti', '=', $param)

@@ -133,7 +133,7 @@
                           </div>
                             <div class="col-md-3 col-sm-4">
                                 <div class="form-group">
-                                    <select name="form-sale-city">
+                                    <select name="gorod">
                                         <option value="Москва">Москва</option>
                                         <option value="Московская область">Московская область</option>
                                         <option value="Новая Москва">Новая Москва</option>
@@ -143,7 +143,7 @@
 
                             <div class="col-md-4 col-sm-4">
                                 <div class="form-group">
-                                    <select name="form-sale-property-type">
+                                    <select name="type_nedvizhimosti">
                                         <option value="">Тип жилья</option>
                                         <option value="Комната">Комната</option>
                                         <option value="Квартира">Квартира</option>
