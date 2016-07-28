@@ -42,12 +42,12 @@
 
                        <?php
                             $home = new App\Obivlenie ;
-                            $typehousenumberrooms =  $home->typeHouse($house->kolitchestvo_komnat) ;
+                            $typehousenumberrooms =  $home->typeHouse($house->kolitchestvo_komnat, $house->type_nedvizhimosti) ;
                        ?>
 
                          <div class="property">
                          {{-- <figure class="tag status">Спецпредложение</figure> --}}
-                         @if($house->type_nedvizhimosti == 'Квартира' or $house->type_nedvizhimosti =='Комната')
+                         {{-- @if($house->type_nedvizhimosti == 'Квартира' or $house->type_nedvizhimosti =='Комната')
                            <figure class="type" title="Apartment"><img src="{{ asset('static/assets/img/property-types/apartment.png')}}" alt=""></figure>
                          @elseif($house->type_nedvizhimosti == 'Частный дом')
                            <figure class="type" title="Apartment"><img src="{{ asset('static/assets/img/property-types/single-family.png')}}" alt=""></figure>
@@ -55,7 +55,11 @@
                            <figure class="type" title="Apartment"><img src="{{ asset('static/assets/img/property-types/cottage.png')}}" alt=""></figure>
                          @else
                            <figure class="type" title="Apartment"><img src="{{ asset('static/assets/img/property-types/empty.png')}}" alt=""></figure>
-                         @endif
+                         @endif --}}
+                         <span class="actions pull-right">
+                              <!--<a href="#" class="fa fa-print"></a>-->
+                              <a href="#" class="bookmark" data-bookmark-state="empty"><span class="title-add">В избранное</span><span class="title-added">Добавлено</span></a>
+                          </span>
 
                          <div class="property-image">
                              {{-- <figure class="ribbon">{{$categerise}}</figure> --}}
@@ -93,7 +97,7 @@
                                  </dl>
                              </aside>
 
-                             <a href="{{url('/mailbox/message/compose/'.$house->id)}}" class="btn btn-white2" title="Написать владельцу объявления, узнать полную информацию и добавить в избранное">
+                             <a href="{{url('/mailbox/message/compose/'.$house->id)}}" class="btn btn-white-grey-3 btn-m-3" title="Открыть объявление, узнать полную информацию и написать владельцу">
                                <figure class="fa fa-envelope"></figure>
                                <span>&nbsp; Написать &nbsp;</span>
                                <span class="arrow fa fa-angle-right"></span>
@@ -111,12 +115,12 @@
 
                      <?php
                           $home = new App\Obivlenie ;
-                          $typehousenumberrooms =  $home->typeHouse($house->kolitchestvo_komnat) ;
+                          $typehousenumberrooms =  $home->typeHouse($house->kolitchestvo_komnat, $house->type_nedvizhimosti) ;
                      ?>
 
                        <div class="property">
                        {{-- <figure class="tag status">Спецпредложение</figure> --}}
-                       @if($house->type_nedvizhimosti == 'Квартира' or $house->type_nedvizhimosti =='Комната')
+                       {{-- @if($house->type_nedvizhimosti == 'Квартира' or $house->type_nedvizhimosti =='Комната')
                          <figure class="type" title="Apartment"><img src="{{ asset('static/assets/img/property-types/apartment.png')}}" alt=""></figure>
                        @elseif($house->type_nedvizhimosti == 'Частный дом')
                          <figure class="type" title="Apartment"><img src="{{ asset('static/assets/img/property-types/single-family.png')}}" alt=""></figure>
@@ -124,7 +128,12 @@
                          <figure class="type" title="Apartment"><img src="{{ asset('static/assets/img/property-types/cottage.png')}}" alt=""></figure>
                        @else
                          <figure class="type" title="Apartment"><img src="{{ asset('static/assets/img/property-types/empty.png')}}" alt=""></figure>
-                       @endif
+                       @endif --}}
+
+                       <span class="actions pull-right">
+                              <!--<a href="#" class="fa fa-print"></a>-->
+                              <a href="#" class="bookmark" data-bookmark-state="empty"><span class="title-add">В избранное</span><span class="title-added">Добавлено</span></a>
+                       </span>
 
                        <div class="property-image">
                            {{-- <figure class="ribbon">{{$categerise}}</figure> --}}
@@ -162,7 +171,7 @@
                                </dl>
                            </aside>
 
-                           <a href="{{url('/mailbox/message/compose/'.$house->id)}}" class="btn btn-white2" title="Написать владельцу объявления, узнать полную информацию и добавить в избранное">
+                           <a href="{{url('/mailbox/message/compose/'.$house->id)}}" class="btn btn-white-grey-3 btn-m-3" title="Открыть объявление, узнать полную информацию и написать владельцу">
                              <figure class="fa fa-envelope"></figure>
                              <span>&nbsp; Написать &nbsp;</span>
                              <span class="arrow fa fa-angle-right"></span>

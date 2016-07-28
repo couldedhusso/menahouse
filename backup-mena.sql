@@ -15,35 +15,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `Nedvizhimosts`
---
-
-DROP TABLE IF EXISTS `Nedvizhimosts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Nedvizhimosts` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `adressa` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `gorod` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `kolitchestvo_komnat` int(11) NOT NULL,
-  `etajnost_doma` int(11) NOT NULL,
-  `zhilaya_ploshad` int(11) NOT NULL,
-  `obshaya_ploshad` int(11) NOT NULL,
-  `ploshad_kurhnia` int(11) NOT NULL,
-  `etazh` int(11) NOT NULL,
-  `price` int(11) NOT NULL,
-  `status` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `opicanie` text COLLATE utf8_unicode_ci NOT NULL,
-  `categorie_id` int(10) unsigned DEFAULT NULL,
-  `user_id` int(10) unsigned DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-
 
 --
 -- Table structure for table `attachments`
@@ -61,25 +32,6 @@ CREATE TABLE `attachments` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
-
---
--- Table structure for table `categories`
---
-
-DROP TABLE IF EXISTS `categories`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `categories` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `categories_name_unique` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
 
 --
 -- Table structure for table `conversations`
@@ -178,13 +130,13 @@ CREATE TABLE `obivlenie` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `metro` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `ulitsa` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `dom` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `stroenie` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `dom` varchar(255) COLLATE utf8_unicode_ci  NULL,
+  `stroenie` varchar(255) COLLATE utf8_unicode_ci  NULL,
   `gorod` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `type_nedvizhimosti` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `rayon` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `rayon` varchar(255) COLLATE utf8_unicode_ci  NULL,
   `tekct_obivlenia` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `kolitchestvo_komnat` int(11) NOT NULL,
+  `kolitchestvo_komnat` int(11)  NULL,
   `etajnost_doma` int(11) NOT NULL,
   `zhilaya_ploshad` int(11) NOT NULL,
   `obshaya_ploshad` int(11) NOT NULL,
@@ -193,32 +145,12 @@ CREATE TABLE `obivlenie` (
   `price` int(11) NOT NULL,
   `status` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `categorie_id` int(10) unsigned DEFAULT NULL,
-  `user_id` int(10) unsigned DEFAULT NULL,
+  `user_id` int(10) unsigned DEFAULT NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `san_usel` int(10) unsigned NOT NULL,
+  `san_usel` int(10) varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-
---
--- Table structure for table `participants`
---
-
-DROP TABLE IF EXISTS `participants`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `participants` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `thread_id` int(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  `last_read` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `deleted_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -299,16 +231,6 @@ CREATE TABLE `role_user` (
   CONSTRAINT `role_user_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `role_user`
---
-
-LOCK TABLES `role_user` WRITE;
-/*!40000 ALTER TABLE `role_user` DISABLE KEYS */;
-INSERT INTO `role_user` VALUES (2,8),(2,12);
-/*!40000 ALTER TABLE `role_user` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `roles`

@@ -18,20 +18,11 @@
     <div class="col-md-9 col-sm-9">
       <section id="submit-form">
         <section id="basic-information">
-          <header>
-            <h2>Карточка объекта</h2></header>
-          <div class="row">
-            <div class="col-md-8">
-              <div class="form-group">
-                <label for="submit-title">Заголовок</label>
-                <input type="text" class="form-control" id="submit-title" name="title" placeholder="Введите заголовок видимый только Вам" required>
-              </div>
-              <!-- /.form-group -->
-            </div>
-          </div>
+          <header><h2>Карточка объекта</h2></header>
+
           <div class="form-group">
             <label for="submit-description">Описание</label>
-            <textarea class="form-control" id="submit-description" rows="8" name="submit-description" placeholder="Краткое описание объекта" required></textarea>
+            <textarea class="form-control" id="submit-description" rows="8" name="submit-description" placeholder="Введите краткое описание объекта. Всё самое необходимое, что Вам кажется важным" required></textarea>
           </div>
           <!-- /.form-group -->
         </section>
@@ -42,166 +33,161 @@
             <div class="block clearfix">
               <div class="col-md-6 col-sm-6">
                 <section id="summary">
-                  <header>
-                    <h2>Подробности</h2></header>
-                  <div class="form-group">
-                    <label for="submit-location">Местоположение</label>
-                    <select name="submit-location" id="submit-location">
-                      <option value="Москва">Москва</option>
-                      <option value="Московская_область">Московская область</option>
-                      <option value="Новая_Москва">Новая Москва</option>
-                    </select>
-                  </div>
-
+                  <header><h2>Подробности</h2></header>
                   <div class="row">
-
-                    <!-- /.col-md-6 -->
                     <div class="col-md-12 col-sm-12">
-                      <div class="form-group">
-                        <label for="submit-property-type">Тип жилья</label>
-                        <select name="submit-property-type" id="submit-property-type">
-                          <option value="Комната">Комната</option>
-                          <option value="Квартира">Квартира</option>
-                          <option value="Частный дом">Частный дом</option>
-                          <option value="Новостройки">Новостройки</option>
-                        </select>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <!-- /.col-md-6 -->
-                    <div class="col-md-6 col-sm-6">
-                          <div class="form-group">
-                             <label for="submit-room">Количество комнат</label>
-                                <select name="submit-room" id="submit-room" required>
-                                   <option value="1">1</option>
-                                   <option value="2">2</option>
-                                   <option value="3">3</option>
-                                   <option value="4">4+</option>
-                               </select>
-                    		</div>
-                  </div><!-- /.col-md-6 -->
-                  <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                          <label for="submit-roof">Высота потолков</label>
-                            <div class="input-group">
-                              <input type="text" class="form-control" id="submit-roof" name="roof">
-                              <span class="input-group-addon">м</span>
-                            </div>
-                      </div><!-- /.form-group -->
-                   </div><!-- /.col-md-6 -->
-                    <!-- /.col-md-6 -->
-                    <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                        <label for="submit-etazh">Этаж</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="submit-Beds" name="submit-etazh" pattern="\d*" required>
-                        </div>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <!-- /.col-md-6 -->
-                    <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                        <label for="submit-etajnost_doma">Этажность дома</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="submit-Beds" name="submit-etajnost_doma" pattern="\d*" required>
-                        </div>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <!-- /.col-md-6 -->
+                              <div class="form-group" title="Укажите какой тип вашего жилья">
+                                  <label for="submit-property-type">Тип жилья</label>
+                                  <select name="property-type" id="submit-property-type">
+                                      <option value="" title="Какой вид недвижимости?" style="display:none" >Тип жилья</option>
+                                      <option value="1" id="Komnata">Квартира</option>
+                                      <option value="2" id="Kvartira">Комната</option>
+                                      <option value="3" id="Dom">Частный дом</option>
+                                      <option value="4" id="Novostroyka">Новостройки</option>
+                                  </select>
+                              </div><!-- /.form-group -->
+                          </div><!-- /.col-md-6 -->
+                          <div class="col-md-6 col-sm-6">
+                              <div class="form-group" required>
+                                  <label for="submit-room">Количество комнат</label>
+                                  <select name="room" id="submit-room">
+                                      <option value="" title="Сколько у Вас комнат?">Кол-во комнат</option>
+                                      <option value="1" id="1room">1</option>
+                                      <option value="2" id="2rooms">2</option>
+                                      <option value="3" id="3rooms">3</option>
+                                      <option value="4" id="4rooms">4+</option>
+                                      <option value="5" id="Studio">Студия</option>
+                                  </select>
+                              </div>
+                          </div><!-- /.col-md-6 -->
+                                          <div class="col-md-6 col-sm-6">
+                                              <div class="form-group">
+                                                  <label for="submit-roof">Высота потолков</label>
+                                                  <div class="input-group">
+                                                      <input type="text" class="form-control" id="submit-roof" name="roof-size" title="Обязательно измерьте "placeholder="" >
+                                                      <span class="input-group-addon">м</span>
+                                                  </div>
+                                              </div><!-- /.form-group -->
+                                          </div><!-- /.col-md-6 -->
+                                          <div class="col-md-6 col-sm-6">
+                                              <div class="form-group">
+                                                  <label for="ssubmit-etazh">Ваш этаж</label>
+                                                  <div class="input-group">
+                                                      <input type="text" class="form-control" id="submit-etazh" name="submit-etazh" title="Какой у Вас этаж?" pattern="\d*">
+                                                      <span class="input-group-addon"><i class="fa fa-building-o" aria-hidden="true"></i></span>
+                                                  </div>
+                                              </div><!-- /.form-group -->
+                                          </div><!-- /.col-md-6 -->
+                                          <div class="col-md-6 col-sm-6">
+                                              <div class="form-group">
+                                                  <label for="submit-etajnost_doma">Этажность дома</label>
+                                                  <div class="input-group">
+                                                      <input type="text" class="form-control" id="submit-roof" name="submit-etajnost_doma" title="Сколько этажей в доме?"pattern="\d*">
+                                                      <span class="input-group-addon"><i class="fa fa-building" aria-hidden="true"></i></span>
+                                                  </div>
+                                              </div><!-- /.form-group -->
+                                          </div><!-- /.col-md-6 -->
+                                      </div><!-- /.row -->
+                                      </br>
+                                      <h3> Площадь: <a href="#"><i class="fa fa-question-circle tool-tip"  data-toggle="tooltip" data-placement="right" title="Возникли затруднения с измерением? Попросите помощь в чате поддержки прямо сейчас!"></i></a></h3>
+                                      <div class="row">
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="submit-area" title="Какова общая площадь квартиры?">Общая</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="submit-area" name="obshaya_ploshad" title="Какова общая площадь квартиры?" pattern="\d*" required>
+                                                        <span class="input-group-addon">м<sup>2</sup></span>
+                                                    </div>
+                                                </div><!-- /.form-group -->
+                                            </div><!-- /.col-md-6 -->
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="submit-beds" title="Площадь жилой зоне очень важный параметр">Жилая</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="submit-Beds" name="zhilaya_ploshad" title="Площадь жилой зоне очень важный параметр" pattern="\d*" required>
+                                                        <span class="input-group-addon">м<sup>2</sup></span>
+                                                    </div>
+                                                </div><!-- /.form-group -->
+                                            </div><!-- /.col-md-6 -->
+                                        </div><!-- /.row -->
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="submit-kitchen" title="Все хотят знать насколько большая кухня, укажите">Кухня</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="submit-kitchen" name="ploshad_kurhni" title="Все хотят знать насколько большая кухня, укажите" pattern="\d*" required>
+                                                        <span class="input-group-addon">м<sup>2</sup></span>
+                                                    </div>
+                                                </div><!-- /.form-group -->
+                                            </div><!-- /.col-md-6 -->
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="submit-Baths" title="Туалет/Ванная">Сан. узел</label>
+                                                    <select name="submit-Baths" id="submit-Baths">
+                                                        <option value="Совмещенный">Совмещенный</option>
+                                                        <option value="Раздельный">Раздельный</option>
+                                                        <option value="Два и более">Два и более</option>
+                                                    </select>
+                                                </div>
+                                            </div><!-- /.col-md-6 -->
+                                        </div> <!-- /.row -->
+                </section><!-- /#summary -->
+              </div><!-- /.col-md-6 -->
+              <div class="row">
+                                <div class="col-md-6 col-sm-6">
+                                    <section id="place-on-map">
+                                        <header class="section-title"><h2>На карте</h2></header>
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="submit-location">Местоположение</label>
+                                                <select name="city" id="submit-location">
+                                                    <option value="">Город</option>
+                                                    <option value="1" style="display:none">Все города</option>
+                                                    <option value="2">Москва</option>
+                                                    <option value="3">Московская область</option>
+                                                    <option value="4">Новая Москва</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="submit-district">Округ/район</label>
+                                                <select name="district" id="submit-district">
+                                                    <option value="">Округ</option>
+                                                    <option value="" data-city="2" style="display:none">Все округа</option>
+                                                    <option value="1" data-city="2">Центральный</option>
+                                                    <option value="2" data-city="2">Северный</option>
+                                                    <option value="3" data-city="2">Северо-Восточный</option>
+                                                    <option value="4" data-city="2">Восточный</option>
+                                                    <option value="5" data-city="2">Юго-Восточный</option>
+                                                    <option value="6" data-city="2">Южный</option>
+                                                    <option value="7" data-city="2">Юго-Западный</option>
+                                                    <option value="8" data-city="2">Западный</option>
+                                                    <option value="9" data-city="2">Северо-Западный</option>
+                                                    <option value="10" data-city="2">Зеленоградский</option>
+                                                    <option value="11" data-city="3">Все районы</option>
+                                                    <option value="12" data-city="4">Новомосковский АО</option>
+                                                    <option value="13" data-city="4">Троицкий АО</option>
+                                                </select>
+                                            </div><!-- /.form-group -->
+                                            <div class="form-group">
+                                                <label for="metro">Ближайшее метро</label>
+                                                <input type="text" class="form-control" id="metro" name="submit-metro" placeholder="Укажите название станции метро рядом с Вами" required>
+                                            </div><!-- /.form-group -->
+                                            <div class="form-group">
+                                                <label for="address-map">Улица</label>
+                                                <input type="text" class="form-control" id="address-map" name="submit-address" placeholder="Введите адрес в свободной форме" required>
+                                            </div><!-- /.form-group -->
 
-                  </div>
-                  <!-- /.row -->
-                  </br>
-                  <p> Площадь: </p>
-                  <div class="row">
-                    <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                        <label for="obshaya_ploshad">Общая</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="submit-Beds" name="obshaya_ploshad" pattern="\d*" required>
-                          <span class="input-group-addon">м<sup>2</sup></span>
-                        </div>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <!-- /.col-md-6 -->
-                    <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                        <label for="zhilaya_ploshad">Жилая</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="submit-Baths" name="zhilaya_ploshad" pattern="\d*" required>
-                          <span class="input-group-addon">м<sup>2</sup></span>
-                        </div>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <!-- /.col-md-6 -->
-                  </div>
-                  <!-- /.row -->
-                  <div class="row">
-                    <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                        <label for="ploshad_kurhni">Кухня</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="submit-area" name="ploshad_kurhni" pattern="\d*" required>
-                          <span class="input-group-addon">м<sup>2</sup></span>
-                        </div>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <!-- /.col-md-6 -->
-                    <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                        <label for="submit-san-usel">Сан. узел</label>
-                        <select name="submit-san-usel" id="submit-san-usel">
-                          <option value="Совмещенный">Совмещенный</option>
-                          <option value="Раздельный">Раздельный</option>
-                        </select>
-                      </div>
-                    </div>
-                    <!-- /.col-md-6 -->
-                  </div>
-                  <!-- /.row -->
-                </section>
-                <!-- /#summary -->
-              </div>
-              <!-- /.col-md-6 -->
-
-              <div class="col-md-6 col-sm-6">
-                <section id="place-on-map">
-                  <header class="section-title">
-                    <h2>На карте</h2>
-                    <!-- <span class="link-arrow geo-location">Найти автоматически</span> -->
-                  </header>
-                  <div class="form-group">
-                    <label for="address-map">Адрес</label>
-                    <input type="text" class="form-control" id="address-map" name="address" placeholder="Введите адрес в свободной форме" >
-                  </div>
-                  <!-- /.form-group -->
-                  <label for="address-map">Перенесите метку на карте к вашему дому</label>
-                  <div id="submit-map"></div>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <input type="text" class="form-control" title="Координаты широты" id="latitude" name="latitude" readonly>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <input type="text" class="form-control" title="Координаты долготы" id="longitude" name="longitude" readonly>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                  </div>
-                </section>
-                <!-- /#place-on-map -->
-              </div>
-              <!-- /.col-md-6 -->
-            </div>
-            <!-- /.block -->
+                                            <div class="row">
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <iframe src="https://static-maps.yandex.ru/1.x/?ll=37.620070,55.753630&spn=0.003,0.003& \
+&size=393,320&z=13&l=map&pt=37.620070,55.753630,pmwtm1" width="100%" height="320" frameborder="0"></iframe>
+                                                    </div><!-- /.form-group -->
+                                                </div>
+                                            </div>
+                                        </div><!-- /.col-md-12 -->
+                                    </div>
+                                </div><!-- /.block -->
           </div>
           <!-- /.row -->
         </section>
@@ -214,8 +200,8 @@
       <aside class="submit-step">
         <figure class="step-number">1</figure>
         <div class="description">
-          <h4>Укажите информацию по объекту</h4>
-          <p>Укажите точную информацию о вашей квартире или доме в полном соответствии с действительностью. Будьте внимательны. Все объявления проверяются модераторами вручную!
+            <h4>Укажите информацию по объекту</h4>
+            <p>Укажите точную информацию о вашей квартире или доме в полном соответствии с действительностью. Будьте внимательны. Все объявления проверяются модераторами вручную!
           </p>
         </div>
       </aside>
@@ -318,10 +304,10 @@
         <aside class="submit-step">
           <figure class="step-number">2</figure>
           <div class="description">
-            <h4>Укажите информацию по объекту</h4>
-            <p>Укажите точную информацию о вашей квартире или доме в полном соответствии с действительностью. Будьте внимательны. Все объявления проверяются модераторами вручную!
-            </p>
-          </div>
+                                          <h4>Укажите какие цели обмена?</h4>
+                                          <p>Укажите большую или меньшую жильё вы хотите получить. Предположительную цену объекта и желаемую сумму доплаты, если Вы идёте на уменьшение. Будьте внимательны. От правильности заполнения зависит подбор автоматически обучаемого поиска!
+                                          </p>
+                                      </div>
         </aside>
         <!-- /.submit-step -->
       </div>
@@ -354,9 +340,8 @@
         <aside class="submit-step">
           <figure class="step-number">3</figure>
           <div class="description">
-            <h4>Загрузите фотографии</h4>
-            <p>Загрузите несколько красивых фотографий вашего объекта, чтобы составить хорошее впечатление
-            </p>
+              <h4>Загрузите фотографии</h4>
+              <p>Загрузите несколько красивых фотографий вашего объекта. От качества фотографий зависит какое впечатление составят об объекте.  </p>
           </div>
         </aside>
         <!-- /.submit-step -->
@@ -381,8 +366,8 @@
         <aside class="submit-step">
           <figure class="step-number">4</figure>
           <div class="description">
-            <h4>Проверьте информацию и нажмите "Отправить"</h4>
-            <p>Проверьте введённую Вами информацию и только после этого нажмите продолжить.
+              <h4>Проверьте информацию и нажмите "Отправить"</h4>
+              <p>Проверьте введённую Вами информацию и только после этого нажмите продолжить. Вы всегда сможете отредактировать объявление в личном кабинете.
             </p>
           </div>
         </aside>

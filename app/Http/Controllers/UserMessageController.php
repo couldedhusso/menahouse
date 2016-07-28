@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image ;
 use Illuminate\Filesystem\FileNotFoundException;
 
+use Menahouse\CustomHelper;
+
 
 class UserMessageController extends Controller
 {
@@ -34,7 +36,7 @@ class UserMessageController extends Controller
      */
     public function index()
     {
-
+        $show_link = false;
         $userid = Auth::user()->id;
         // $receivers = Receiver::wheretoid($userid)
         //                       ->lists('readed', 'msgid')
@@ -71,7 +73,7 @@ class UserMessageController extends Controller
         // dd(count($newMessageCount));
         $mailcount = count($usermessages);
         $flag = "inbox";
-        return view('sessions.inbox', compact('usermessages', 'mailcount', 'userid', 'flag'));
+        return view('sessions.inbox', compact('usermessages', 'mailcount', 'userid', 'flag', 'show_link'));
     }
 
     /**
@@ -139,34 +141,49 @@ class UserMessageController extends Controller
         //   1-recuperer les donees du cache de donnees
         //   2-envoie asynchrone de messsage
 
+        $To = Input::get('To');
+
         $sender = Auth::user()->id;
         $receiver = User::whereid(Input::get('To'))->first();
+
 
         if ($sender == $receiver->id) {
            return redirect()->back();
         }
 
-        // $conversation = Conversation::create(['subject' => Input::get('subject')]);
 
-        $um = UserMessage::create([
-            'subject' => Input::get('subject'),
-            'fromid' => Auth::user()->id,
-            'toid' => Input::get('To'),
-            'id_obivlenie' => Input::get('id_obivlenie'),
-            'id_conversation' => Input::get('id_obivlenie'),
-            'body' => Input::get('form-message')
-        ]);
+        try
+        {
+            $haveHouse = Obivlenie::whereid($To)->firstOrFail();
 
-        $receiver = Receiver::create([
-          'toid' => Input::get('To'),
-          'msgid' => $um->id,
-          'last_read' => Carbon::now()
-        ]);
+            // $conversation = Conversation::create(['subject' => Input::get('subject')]);
 
-        $sender = Sender::create([
-          'userid' => Auth::user()->id,
-          'msgid' =>  $um->id
-        ]);
+            $um = UserMessage::create([
+                'subject' => Input::get('subject'),
+                'fromid' => Auth::user()->id,
+                'toid' => $To,
+                'id_obivlenie' => Input::get('id_obivlenie'),
+                'id_conversation' => Input::get('id_obivlenie'),
+                'body' => Input::get('form-message')
+            ]);
+
+            $receiver = Receiver::create([
+              'toid' => Input::get('To'),
+              'msgid' => $um->id,
+              'last_read' => Carbon::now()
+            ]);
+
+            $sender = Sender::create([
+              'userid' => Auth::user()->id,
+              'msgid' =>  $um->id
+            ]);
+        }
+        catch (ModelNotFoundException $e){
+            Session::flash('flash_message', 'Чтобы писать владельцу
+                                            надо иметь квартиру.');
+
+            return redirect()->back();
+        }
 
 
        // ==== TO DO : return to list found items
@@ -181,8 +198,15 @@ class UserMessageController extends Controller
      */
     public function show($id)
     {
-        try {
 
+        $user = Auth::user();
+
+        $ch = new CustomHelper ;
+
+        if ($ch->getUserPlanPass($user)) {
+
+
+        try {
             $usermessage = UserMessage::whereid($id)->first();
 
         } catch (ModelNotFoundException $e) {
@@ -195,7 +219,7 @@ class UserMessageController extends Controller
         $house = Obivlenie::where('id', '=', $usermessage->id_conversation)
                                                             ->with('images')
                                                             ->first();
-        $userId = Auth::user()->id;
+
 
         // si le message est destine a l user alors marquer comme lu et
         // afficher le message
@@ -204,6 +228,9 @@ class UserMessageController extends Controller
         }
         $flag = "show";
         return view('messenger.show', compact('usermessage', 'house', 'flag'));
+      }
+
+      return redirect()->back();
     }
 
     /**

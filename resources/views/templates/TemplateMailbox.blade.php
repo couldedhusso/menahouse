@@ -28,11 +28,13 @@
                 </div>
                 <div class="user-area">
                     <div class="actions">
-                      @if(Auth::check())
+                      {{-- @if(!Auth::check())
                          <a href="{{ url('dashboard/advertisement/add') }}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
                       @else
-                         <a href="{{ url('/sign-in')}}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
-                      @endif
+                        @if($show_link)
+                          <a href="{{ url('/sign-in')}}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
+                        @endif
+                      @endif --}}
                     </div>
                 </div>
             </div>
@@ -50,17 +52,23 @@
                         <a href="{{url('/')}}"> <img src="{{asset('static/assets/img/logo.png')}}" alt="Менахаус" title="Менахаус"></a>
                     </div>
                 </div>
+
                 <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
                     <ul class="nav navbar-nav">
-                        <li class="has-child"><a href="#" title="Раздел помощи"> Помощь</a>
-                            <ul class="child-navigation">
-                                <li><a href="landingpage.html">Почему мы?</a></li><!-- Почему работать с нами? -->
-								<li><a href="terms-conditions.html">Правила сайта</a></li>
-								<li><a href="faq.html">Справка</a></li>
-                            </ul>
-                        </li>
+
+                          <li class="has-child"><a href="#" title="Основное личное меню пользователя"><i class="fa fa-user fa-fw"></i>&nbsp;Личный кабинет</a>
+                              <ul class="child-navigation">
+                                    <li><a href="{{ url('/mailbox/inbox') }}" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
+                                    <li><a href="{{ url('/dashboard/advertisements') }}" title="Проверить и добавить новое объявление"><i class="fa fa-th-list"></i>&nbsp; Мои объявления</a></li>
+                                    {{-- <li><a href="#" title="Активировать дополнительные функции сайта"><i class="fa fa-rub"></i>&nbsp; Оплата</a></li> --}}
+                                    <li><a href="{{ url('dashboard/settings/'.Auth::user()->id )}}" title="Настройки пользователя и сайта"><i class="fa fa-cog"></i>&nbsp; Настройки</a>
+                                    <li><a href="{{ url('/auth/logout') }}" title="Обязательно зайдите завтра проверить новые сообщения!"><i class="fa fa-sign-out"></i>&nbsp;Выход</a></li>
+                              </ul>
+                          </li>
+            
                     </ul>
                 </nav><!-- /.navbar collapse-->
+
             </header><!-- /.navbar -->
         </div><!-- /.container -->
     </div><!-- /.navigation -->
@@ -79,6 +87,12 @@
         <div class="container">
             <div class="row">
               <!-- sidebar -->
+              @if(Session::has('flash_message'))
+                <div class="alert alert-info text-center">
+                  <strong>Внимание! </strong> {{ Session::get('flash_message') }}&nbsp;
+                <a href="{{url('dashboard/advertisement/add')}}">Разместить объявление</a>
+               </div>
+              @endif
                 <div class="col-md-3 col-sm-2">
                     <section id="sidebar">
                         <header><h3>Личный кабинет</h3></header>
@@ -87,6 +101,7 @@
                     </section><!-- /#sidebar -->
                 </div><!-- /.col-md-3 -->
               <!-- end Sidebar -->
+
                 <div>
                     @yield('content')
                 </div><!-- /.col-md-9 -->

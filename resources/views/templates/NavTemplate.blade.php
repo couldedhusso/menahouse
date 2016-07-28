@@ -14,38 +14,31 @@
         <ul class="nav navbar-nav">
 
             @if(Auth::check())
-              {{-- <li class="has-child"><a href="#"> <div style="width:25px; height:25px;">
-
-              </div> @include('sessions.user_img') Личный кабинет</a>
-                  <ul class="child-navigation">
-                      <li><a title="Копировать" href="#" class="active"><img src="assets/img/icons/Copy Link-100.png" width="15" height="15" alt=""> &nbsp; {!! Auth::user()->imia !!} &nbsp; ID: {!! Auth::user()->id  !!} </a></li>
-                      <li><a href="{{ url('messages/') }}">Сообщения <span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li>
-                      <li><a href="{{ url('/dashboard/nedvizhimosts') }}">Мои объявления</a></li>
-                      <li><a href="{{ url('user/settings/'.Auth::user()->id )}}">Настройки</a></li>
-                      <li><a href="#">Оплата</a></li>
-                      <li><a href="{{ url('/auth/logout') }}">Выход</a></li>
-                  </ul>
-              </li> --}}
 
               <li class="has-child"><a href="#" title="Основное личное меню пользователя"><i class="fa fa-user fa-fw"></i>&nbsp;Личный кабинет</a>
                   <ul class="child-navigation">
-      <li><a href="{{ url('messages/') }}" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
-      <li><a href="{{ url('/dashboard/nedvizhimosts') }}" title="Проверить и добавить новое объявление"><i class="fa fa-th-list"></i>&nbsp; Мои объявления</a></li>
-                      <li><a href="#" title="Активировать дополнительные функции сайта"><i class="fa fa-rub"></i>&nbsp; Оплата</a></li>
-      <li><a href="{{ url('user/settings/'.Auth::user()->id )}}" title="Настройки пользователя и сайта"><i class="fa fa-cog"></i>&nbsp; Настройки</a>
+                      <li><a href="{{ url('/mailbox/inbox') }}" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
+                      <li><a href="{{ url('/dashboard/advertisements') }}" title="Проверить и добавить новое объявление"><i class="fa fa-th-list"></i>&nbsp; Мои объявления</a></li>
+                      {{-- <li><a href="#" title="Активировать дополнительные функции сайта"><i class="fa fa-rub"></i>&nbsp; Оплата</a></li> --}}
+                      <li><a href="{{ url('dashboard/settings/'.Auth::user()->id )}}" title="Настройки пользователя и сайта"><i class="fa fa-cog"></i>&nbsp; Настройки</a>
                       <li><a href="{{ url('/auth/logout') }}" title="Обязательно зайдите завтра проверить новые сообщения!"><i class="fa fa-sign-out"></i>&nbsp;Выход</a></li>
                   </ul>
               </li>
+              {{-- <li>
+                <a href="{{ url('/dashboard/advertisement/add') }}" class="btn btn-white-green" title="Разместить объявление своей квартиры бесплатно!"><i class="fa fa-plus"></i>&nbsp; Разместить объявление</a>
+              </li> --}}
+              <li>&nbsp;&nbsp;&nbsp;</li>
+              <a href="{{ url('/dashboard/advertisement/add') }}"  class="btn btn-white-green" title="Разместить объявление своей квартиры бесплатно!"><i class="fa fa-plus"></i>&nbsp; Разместить объявление</a>
 
             @else
-              <li><a href="{{ url('/sign-in') }}" title="Войти с помощью Вашего аккаунта">Войти &nbsp; </a>
-              </li>
-              <li class="activ"><a href="{{ url('sign-up') }}" title="Пройти быструю регистрацию"><strong>&nbsp;Регистрация</strong></a>
-              </li>
+
+      <li><a href="{{ url('/sign-in') }}" title="Войти на сайт или пройти быструю регистрацию" style="margin-top: -3px; margin-right: 15px"><p><i class="fa fa-sign-in" aria-hidden="true">&nbsp; Войти </i></p></a></li>
+      <a href="{{ url('/sign-in') }}" class="btn btn-white-green" title="Разместить объявление своей квартиры бесплатно!"><i class="fa fa-pencil-square-o"></i>&nbsp; Разместить объявление</a>
             @endif
+
         </ul>
     </nav><!-- /.navbar collapse-->
-    <div class="add-your-property">
+    {{-- <div class="add-your-property">
 
       @if(Auth::check())
           <a href="{{ url('/dashboard/nedvizhimosts') }}" class="btn btn-green"><i class="fa fa-plus"></i><span class="text">Разместить объявление</span></a>
@@ -53,5 +46,5 @@
           <a href="{{ url('/auth/login') }}" class="btn btn-green"><i class="fa fa-plus"></i><span class="text">Разместить объявление</span></a>
       @endif
 
-    </div>
+    </div> --}}
 </header><!-- /.navbar -->

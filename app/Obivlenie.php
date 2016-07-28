@@ -44,32 +44,51 @@ class Obivlenie extends Model
       return $allcategorie[0]->name ;
     }
 
-    public function typeHouse($numberOfRomm ){
-      switch ($numberOfRomm) {
-        case '1':
+    public function typeHouse($number_room , $type_nedvizhimosti){
 
-          $tpRoom = "однокомнатная ";
-          break;
-        case '2':
+        $TYPE_OBJECT = ['Комната', 'Частный дом'];
 
-          $tpRoom = "2х комнатная ";
-          break;
-        case '3':
+        $room = function() use($number_room){
+          switch ($number_room) {
+            case '1':
 
-          $tpRoom = "3х комнатная ";
-          break;
-       case '4':
+              $tpRoom = "однокомнатная ";
+              break;
+            case '2':
 
-            $tpRoom = "4х комнатная ";
-            break;
+              $tpRoom = "2х комнатная ";
+              break;
+            case '3':
 
-        default:
+              $tpRoom = "3х комнатная ";
+              break;
+           case '4':
 
-          $tpRoom = "Студия";
-          break;
-      }
+                $tpRoom = "4х комнатная ";
+                break;
 
-      return $tpRoom ;
+            default:
+
+              $tpRoom = "Студия";
+              break;
+          }
+
+          return $tpRoom;
+        };
+        $isStudio = function() use($number_room, $room){
+             return ($room($number_room) != "Студия") ? false : true ;
+        };
+        
+        if (in_array($type_nedvizhimosti, $TYPE_OBJECT)) {
+            return  ($type_nedvizhimosti  == "Комната") ? "Комната" : "Дом" ;
+        }
+
+        $rm_object = $room($number_room);
+
+        return  ($type_nedvizhimosti  == "Новостройки") ?
+          (!$isStudio($number_room)) ? $rm_object."квартира в новостроике" : "Студия в новостроике"  :
+          (!$isStudio($number_room)) ? $rm_object."квартира" : "Студия" ;
+
     }
 
     public function HouseCategorie($numberOfRomm ){

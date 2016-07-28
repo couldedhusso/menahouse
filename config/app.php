@@ -135,9 +135,10 @@ return [
         Cmgmyr\Messenger\MessengerServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         'Collective\Html\HtmlServiceProvider',
-        //'Barryvdh\Debugbar\ServiceProvider',
+        // 'Barryvdh\Debugbar\ServiceProvider',
         // 'Intervention\Image\ImageServiceProvider',
         'Laracasts\Flash\FlashServiceProvider',
+        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
 
 
         /*
@@ -201,6 +202,9 @@ return [
         'Form'      => 'Collective\Html\FormFacade',
         'Html'      => 'Collective\Html\HtmlFacade',
         'Debugbar'  => 'Barryvdh\Debugbar\Facade',
+        'JWTAuth'   => Tymon\JWTAuthFacades\JWTAuth::class,
+        'JWTFactory' => Tymon\JWTAuthFacades\JWTFactory::class
+
 
         // 'Flash'     => 'Laracasts\Flash\Flash'
         // 'Image' => 'Intervention\Image\Facades\Image'

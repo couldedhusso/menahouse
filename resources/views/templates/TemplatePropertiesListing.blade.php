@@ -15,7 +15,7 @@
 
 </head>
 
-<body class="page-sub-page page-create-account page-account" id="page-top" >
+<body class="page-sub-page page-create-account page-account" id="page-top" ng-app="mainApp" ng-controller="mainController">
 <!-- Wrapper -->
 <div class="wrapper">
 
@@ -27,13 +27,13 @@
                     <figure><strong>Email:</strong>mena@yandex.ru</figure>
                 </div>
                 <div class="user-area">
-                    <div class="actions">
+                    {{-- <div class="actions">
                       @if(Auth::check())
                          <a href="{{ url('/dashboard/nedvizhimosts') }}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
                       @else
                          <a href="{{ url('/sign-in')}}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
                       @endif
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -77,51 +77,86 @@
                                     </select>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
-                                    <select name="gorod">
+                                    <select name="city">
                                         <option value="">Город</option>
-                                        <option value="Москва">Москва</option>
-                                        <option value="Московская_область">Московская область</option>
-                                        <option value="Новая_Москва">Новая Москва</option>
+                                        <option value="1">Все города</option>
+                                        <option value="2">Москва</option>
+                                        <option value="3">Московская область</option>
+                                        <option value="4">Новая Москва</option>
                                     </select>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
-                                    <select name="rayon">
-                                        <option value="">Район</option>
-                                        <option value="0">Все районы</option>
-                                        <option value="ЦАО">ЦАО</option>
-                                        <option value="ЗАО">ЗАО</option>
-                                        <option value="ЮАО">ЮАО</option>
-                                        <option value="ВАО">ВАО</option>
-                                        <option value="САО">САО</option>
+                                    <select name="district">
+                                        <option value="">Округ</option>
+                                        <option value="0" data-city="2">Все округа</option>
+                                        <option value="1" data-city="2">Центральный</option>
+                                        <option value="2" data-city="2">Северный</option>
+                                        <option value="3" data-city="2">Северо-Восточный</option>
+                                        <option value="4" data-city="2">Восточный</option>
+                                        <option value="5" data-city="2">Юго-Восточный</option>
+                                        <option value="6" data-city="2">Южный</option>
+                                        <option value="7" data-city="2">Юго-Западный</option>
+                                        <option value="8" data-city="2">Западный</option>
+                                        <option value="9" data-city="2">Северо-Западный</option>
+                                        <option value="10" data-city="2">Зеленоградский</option>
+                                        <option value="11" data-city="3 4">Все районы</option>
+                                        <option value="12" data-city="4">Троицкий</option>
                                     </select>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
-                                    <select name="type_nedvizhimosti">
+                                    <select name="property-type">
                                         <option value="">Тип жилья</option>
-                                        <option value="Квартира">Квартира</option>
-                                        <option value="Комната">Комната</option>
-                                        <option value="Частный дом">Частный дом</option>
-                                        <option value="Новостройки">Новостройки</option>
+                                        <option value="1">Квартира</option>
+                                        <option value="2">Комната</option>
+                                        <option value="3">Частный дом</option>
+                                        <option value="4">Новостройки</option>
                                     </select>
                                 </div><!-- /.form-group -->
                 <div class="form-group">
-                                    <select name="kolitchestvo_komnat">
+                                    <select name="room">
                                         <option value="">Кол-во комнат</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
-                                        <option value="4">4</option>
+                                        <option value="4">4+</option>
+                                        <option value="5">Студия</option>
                                     </select>
                                 </div><!-- /.form-group -->
-                <div class="form-group">
-                                    <select name="obshaya_ploshad">
-                                        <option value="">Площадь</option>
-                                        <option value="1">30-70</option>
-                                        <option value="2">70-90</option>
-                                        <option value="3">90-110</option>
-                                        <option value="4">110+</option>
-                                    </select>
-                                </div><!-- /.form-group -->
+                                <div>
+                              <div class="slider" style="margin-top: 8px; border: 1px solid #d2d2d2">
+                                  <span style="font-weight:bold; margin-left: 8px;" >Площадь</span>
+                                  <div range-slider min="1" attach-handle-values="true" max="200" model-min="range.min" model-max="range.max"></div>
+                                  <div style="margin:1em; display:table;">
+                                      <div class="slider-control">
+                                          <span>От:</span>
+                                          <input style="height:25px" type="number" class="" name="rangeMin" ng-model="range.min">
+                                          <label>м2</label>
+                                      </div>
+                                      <div class="slider-control">
+                                          <span>До:</span>
+                                          <input type="number" class="" name="rangeMax" ng-model="range.max">
+                                          <label>м2</label>
+                                      </div>
+                                  </div>
+                              </div>
+
+                            </div>
+                              <hr>
+                                      <p>Критерии обмена</P>
+                              <div class="form-group">
+                                  <select name="tseli_obmena">
+                                      <option value="">Обмен на</option>
+                                      <option value="1">На увеличение</option>
+                                      <option value="2">На уменьшение</option>
+                                  </select>
+                              </div><!-- /.form-group -->
+                              <div class="form-group">
+                                  <select name="mestopolozhenie_obmena">
+                                      <option value="">Район обмена</option>
+                                      <option value="1">В другом районе</option>
+                                      <option value="2">В своём районе</option>
+                                  </select>
+                              </div><!-- /.form-group -->
 
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-default">Искать</button>
@@ -260,7 +295,13 @@
 <script type="text/javascript" src="{{asset('static/assets/js/custom.js')}}"></script>
 <script type="text/javascript" src="{{asset('js/vendor/jquery.infinitescroll.min.js')}}"></script>
 <script type="text/javascript" src="{{ asset('js/angular/vendor/angular.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/angular/main.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/js/sm.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/js/angular.rangeSlider.js')}} "></script>
+<script>
+    angular.module("mainApp", ["ui-rangeSlider"]).controller("mainController", function ($scope) {
+    $scope.range = { min: 20, max: 100 };
+});
+</script>
 <!--[if gt IE 8]>
 <script type="text/javascript" src="{{asset('static/assets/js/ie.js')}}"></script>
 <![endif]-->
@@ -316,7 +357,6 @@ $('#sorting').change(function(evt){
       evt.preventDefault();
       $(this).closest('#formdata').submit();
   });
-
 
 
 </script>

@@ -15,7 +15,7 @@
 
 </head>
 
-<body class="page-sub-page page-legal" id="page-top">
+<body class="page-sub-page page-legal" id="page-top" ng-app="mainApp" ng-controller="mainController">
 <!-- Wrapper -->
 <div class="wrapper">
     <!-- Navigation -->
@@ -28,11 +28,12 @@
                 </div>
                 <div class="user-area">
                     <div class="actions">
-                      @if(Auth::check())
+                      {{-- @if(Auth::check())
                          <a href="{{ url('/dashboard/advertisement/add') }}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
                       @else
                          <a href="{{ url('/sign-in')}}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
-                      @endif                    </div>
+                      @endif    --}}
+                    </div>
                 </div>
             </div>
         </div>
@@ -50,28 +51,32 @@
                     </div>
                 </div>
                 <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
-                    <ul class="nav navbar-nav">
+                  <ul class="nav navbar-nav">
 
-                        @if(Auth::check())
+                      @if(Auth::check())
 
-                          <li class="has-child"><a href="#" title="Основное личное меню пользователя"><i class="fa fa-user fa-fw"></i>&nbsp;Личный кабинет</a>
-                              <ul class="child-navigation">
-                  <li><a href="{{ url('mailbox/inbox/') }}" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
-                  <li><a href="{{ url('/dashboard/advertisements') }}" title="Проверить и добавить новое объявление"><i class="fa fa-th-list"></i>&nbsp; Мои объявления</a></li>
-                                  <li><a href="#" title="Активировать дополнительные функции сайта"><i class="fa fa-rub"></i>&nbsp; Оплата</a></li>
-                  <li><a href="{{ url('dashboard/settings/'.Auth::user()->id )}}" title="Настройки пользователя и сайта"><i class="fa fa-cog"></i>&nbsp; Настройки</a>
-                                  <li><a href="{{ url('/auth/logout') }}" title="Обязательно зайдите завтра проверить новые сообщения!"><i class="fa fa-sign-out"></i>&nbsp;Выход</a></li>
-                              </ul>
-                          </li>
+                        <li class="has-child"><a href="#" title="Основное личное меню пользователя"><i class="fa fa-user fa-fw"></i>&nbsp;Личный кабинет</a>
+                            <ul class="child-navigation">
+                                <li><a href="{{ url('/mailbox/inbox') }}" title="Проверить новые сообщения, вам должно повезти" class="list-group-item"><i class="fa fa-envelope-o"></i>&nbsp; Сообщения мне &nbsp;<span class="badge-red" align="right">@include('messenger.unread-count')</span></a></li> <!-- CZ кол-во сообщений выводится из базы -->
+                                <li><a href="{{ url('/dashboard/advertisements') }}" title="Проверить и добавить новое объявление"><i class="fa fa-th-list"></i>&nbsp; Мои объявления</a></li>
+                                {{-- <li><a href="#" title="Активировать дополнительные функции сайта"><i class="fa fa-rub"></i>&nbsp; Оплата</a></li> --}}
+                                <li><a href="{{ url('dashboard/settings/'.Auth::user()->id )}}" title="Настройки пользователя и сайта"><i class="fa fa-cog"></i>&nbsp; Настройки</a>
+                                <li><a href="{{ url('/auth/logout') }}" title="Обязательно зайдите завтра проверить новые сообщения!"><i class="fa fa-sign-out"></i>&nbsp;Выход</a></li>
+                            </ul>
+                        </li>
+                        {{-- <li>
+                          <a href="{{ url('/dashboard/advertisement/add') }}" class="btn btn-white-green" title="Разместить объявление своей квартиры бесплатно!"><i class="fa fa-plus"></i>&nbsp; Разместить объявление</a>
+                        </li> --}}
+                        <li>&nbsp;&nbsp;&nbsp;</li>
+                        <a href="{{ url('/dashboard/advertisement/add') }}"  class="btn btn-white-green" title="Разместить объявление своей квартиры бесплатно!"><i class="fa fa-plus"></i>&nbsp; Разместить объявление</a>
 
-                        @else
-                          <li><a href="{{ url('/sign-in') }}" title="Войти с помощью Вашего аккаунта">Войти &nbsp; </a>
-                          </li>
-                          <li class="activ"><a href="{{ url('/join') }}" title="Пройти быструю регистрацию"><strong>&nbsp;Регистрация</strong></a>
-                          </li>
-                        @endif
+                      @else
 
-                    </ul>
+                <li><a href="{{ url('/sign-in') }}" title="Войти на сайт или пройти быструю регистрацию" style="margin-top: -3px; margin-right: 15px"><p><i class="fa fa-sign-in" aria-hidden="true">&nbsp; Войти </i></p></a></li>
+                <a href="{{ url('/sign-in') }}" class="btn btn-white-green" title="Разместить объявление своей квартиры бесплатно!"><i class="fa fa-pencil-square-o"></i>&nbsp; Разместить объявление</a>
+                      @endif
+
+                  </ul>
                 </nav><!-- /.navbar collapse-->
             </header><!-- /.navbar -->
         </div><!-- /.container -->
@@ -112,51 +117,86 @@
                                   </select>
                               </div><!-- /.form-group -->
                               <div class="form-group">
-                                  <select name="gorod">
+                                  <select name="city">
                                       <option value="">Город</option>
-                                      <option value="Москва">Москва</option>
-                                      <option value="Московская_область">Московская область</option>
-                                      <option value="Новая_Москва">Новая Москва</option>
+                                      <option value="1">Все города</option>
+                                      <option value="2">Москва</option>
+                                      <option value="3">Московская область</option>
+                                      <option value="4">Новая Москва</option>
                                   </select>
                               </div><!-- /.form-group -->
                               <div class="form-group">
-                                  <select name="rayon">
-                                      <option value="">Район</option>
-                                      <option value="0">Все районы</option>
-                                      <option value="ЦАО">ЦАО</option>
-                                      <option value="ЗАО">ЗАО</option>
-                                      <option value="ЮАО">ЮАО</option>
-                                      <option value="ВАО">ВАО</option>
-                                      <option value="САО">САО</option>
+                                  <select name="district">
+                                      <option value="">Округ</option>
+                                      <option value="0" data-city="2">Все округа</option>
+                                      <option value="1" data-city="2">Центральный</option>
+                                      <option value="2" data-city="2">Северный</option>
+                                      <option value="3" data-city="2">Северо-Восточный</option>
+                                      <option value="4" data-city="2">Восточный</option>
+                                      <option value="5" data-city="2">Юго-Восточный</option>
+                                      <option value="6" data-city="2">Южный</option>
+                                      <option value="7" data-city="2">Юго-Западный</option>
+                                      <option value="8" data-city="2">Западный</option>
+                                      <option value="9" data-city="2">Северо-Западный</option>
+                                      <option value="10" data-city="2">Зеленоградский</option>
+                                      <option value="11" data-city="3 4">Все районы</option>
+                                      <option value="12" data-city="4">Троицкий</option>
                                   </select>
                               </div><!-- /.form-group -->
                               <div class="form-group">
-                                  <select name="type_nedvizhimosti">
+                                  <select name="property-type">
                                       <option value="">Тип жилья</option>
-                                      <option value="Квартира">Квартира</option>
-                                      <option value="Комната">Комната</option>
-                                      <option value="Частный дом">Частный дом</option>
-                                      <option value="Новостройки">Новостройки</option>
+                                      <option value="1">Квартира</option>
+                                      <option value="2">Комната</option>
+                                      <option value="3">Частный дом</option>
+                                      <option value="4">Новостройки</option>
                                   </select>
                               </div><!-- /.form-group -->
               <div class="form-group">
-                                  <select name="kolitchestvo_komnat">
+                                  <select name="room">
                                       <option value="">Кол-во комнат</option>
                                       <option value="1">1</option>
                                       <option value="2">2</option>
                                       <option value="3">3</option>
-                                      <option value="4">4</option>
+                                      <option value="4">4+</option>
+                                      <option value="5">Студия</option>
                                   </select>
                               </div><!-- /.form-group -->
-              <div class="form-group">
-                                  <select name="obshaya_ploshad">
-                                      <option value="">Площадь</option>
-                                      <option value="1">30-70</option>
-                                      <option value="2">70-90</option>
-                                      <option value="3">90-110</option>
-                                      <option value="4">110+</option>
-                                  </select>
-                              </div><!-- /.form-group -->
+                              <div>
+                            <div class="slider" style="margin-top: 8px; border: 1px solid #d2d2d2">
+                                <span style="font-weight:bold; margin-left: 8px;" >Площадь</span>
+                                <div range-slider min="1" attach-handle-values="true" max="200" model-min="range.min" model-max="range.max"></div>
+                                <div style="margin:1em; display:table;">
+                                    <div class="slider-control">
+                                        <span>От:</span>
+                                        <input style="height:25px" type="number" class="" name="rangeMin" ng-model="range.min">
+                                        <label>м2</label>
+                                    </div>
+                                    <div class="slider-control">
+                                        <span>До:</span>
+                                        <input type="number" class="" name="rangeMax" ng-model="range.max">
+                                        <label>м2</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                          </div>
+                            <hr>
+                                    <p>Критерии обмена</P>
+                            <div class="form-group">
+                                <select name="form-sale-area">
+                                    <option value="">Обмен на</option>
+                                    <option value="1">На увеличение</option>
+                                    <option value="2">На уменьшение</option>
+                                </select>
+                            </div><!-- /.form-group -->
+                            <div class="form-group">
+                                <select name="form-sale-area">
+                                    <option value="">Район обмена</option>
+                                    <option value="1">В другом районе</option>
+                                    <option value="2">В своём районе</option>
+                                </select>
+                            </div><!-- /.form-group -->
 
                               <div class="form-group">
                                   <button type="submit" class="btn btn-default">Искать</button>
@@ -299,6 +339,14 @@
 <script type="text/javascript" src="{{asset('assets/js/fileinput.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('assets/js/custom-map.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/custom.js')}}"></script>
+<script type="text/javascript" src="{{ asset('js/angular/vendor/angular.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/js/sm.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/js/angular.rangeSlider.js')}} "></script>
+<script>
+    angular.module("mainApp", ["ui-rangeSlider"]).controller("mainController", function ($scope) {
+    $scope.range = { min: 20, max: 100 };
+});
+</script>
 
 <!--[if gt IE 8]>
 <script type="text/javascript" src="{{asset('static/assets/js/ie.js')}}"></script>

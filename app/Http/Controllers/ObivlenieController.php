@@ -32,6 +32,9 @@ use Storage;
 use Menahouse\ElasticSearchEngine;
 use Redirect;
 
+use App\Events\ObivlyavleniyeWasStored;
+use Illuminate\Support\Facades\Event;
+
 
 class ObivlenieController extends Controller
 {
@@ -62,48 +65,86 @@ class ObivlenieController extends Controller
           la geolocation : getResponseRequest
         */
 
-        //TODO : Ajout les column addres et vicota_patolka a la table obivlenie
         $user_id = Auth::user()->id ;
         $indexmodel = new ElasticSearchEngine;
         $Helper = new CustomHelper;
         $StoragePath = $Helper->getStorageDirectory();
-        $address =  Input::get('address');
 
-        $geo = $Helper->yandexGeocoding($address);
+        $TYPE_OBJECT = ['Комната', 'Частный дом'];
+        $submit_property = Input::get('property-type');
+        $submit_location = Input::get('city');
 
-        $district = $Helper->getDistritcs($geo['address'][0]);
 
-        $ar = explode(" ", $geo['metro'][0]);
-        $metro = '';
-        foreach ($ar as $key => $value) {
-          if ($ar[$key] != 'метро') {
-            $metro = $metro.' '.$value;
-          }
+        $property_type = function($submit_property){
+
+              $properties = [
+                              '1' => 'Квартира',
+                              '2' => 'Комната',
+                              '3' => 'Частный дом',
+                              '4' => 'Новостройки'
+                            ];
+
+              return  $properties[$submit_property];
+
+        };
+
+        $getLocation = function($submit_location){
+
+              $location = [
+                              '1' => '*',
+                              '2' => 'Москва',
+                              '3' => 'Московская область',
+                              '4' => 'Новая Москва'
+                            ];
+
+              return $location[$submit_location];
+
+        };
+
+
+        $kolitchestvo_komnat = Input::get('room');
+        $pt = $property_type($submit_property);
+        if (in_array($pt, $TYPE_OBJECT)) {
+          $kolitchestvo_komnat = null;
         }
+
+        // $address =  Input::get('address');
+        //
+        // $geo = $Helper->yandexGeocoding($address);
+        //
+        // $district = $Helper->getDistritcs($geo['address'][0]);
+        //
+        // $ar = explode(" ", $geo['metro'][0]);
+        // $metro = '';
+        // foreach ($ar as $key => $value) {
+        //   if ($ar[$key] != 'метро') {
+        //     $metro = $metro.' '.$value;
+        //   }
+        // }
+
 
         $obivlenie = obivlenie::create([
             // 'adressa' => $adressa,
-            'metro' => trim($metro),
-            'gorod' =>  Input::get('submit-location'),
-            'ulitsa' => $address,
+            'metro' => Input::get('submit-metro'),
+            'gorod' =>  $getLocation($submit_location),
+            'ulitsa' => Input::get('submit-address'),
             /*'dom' => Input::get('dom'),
             'address' => $address,
             'vicota_patolka' => Input::get('roof')
             */
-            'type_nedvizhimosti' => Input::get('submit-property-type'),
+            'type_nedvizhimosti' => $property_type($submit_property),
             'tekct_obivlenia' => Input::get('submit-description'),
-            'kolitchestvo_komnat' => Input::get('submit-room'),
+            'kolitchestvo_komnat' => $kolitchestvo_komnat,
             'etajnost_doma' => Input::get('submit-etajnost_doma') ,
             'zhilaya_ploshad' => Input::get('zhilaya_ploshad') ,
             'obshaya_ploshad' => Input::get('obshaya_ploshad') ,
             'ploshad_kurhni' => Input::get('ploshad_kurhni') ,
-            'rayon' => $district,
-            'roof' => Input::get('roof'),
+            'rayon' => $Helper->getDistrict(Input::get('district')),
+            'roof' => Input::get('roof-size'),
             'etazh' => Input::get('submit-etazh'),
-            'san_usel' => Input::get('submit-san-usel'),
+            'san_usel' => Input::get('submit-Baths'),
             'title' => Input::get('title'),
             'price' => Input::get('predpolozhitelnaya_tsena') ,
-            'opicanie' => Input::get('submit-description'),
             'status' => Input::get('submit-status'),
             'tseli_obmena' => Input::get('submit-tseli-obmena'),
             'mestopolozhenie_obmena' => Input::get('mestopolozhenie_obmena'),
@@ -153,6 +194,14 @@ class ObivlenieController extends Controller
                }
           }
 
+
+          if ($obivlenie) {
+              $user = User::whereid(Auth::user()->id)->select('id', 'email')->first();
+              Event::fire( new ObivlyavleniyeWasStored($user));
+          }
+
+
+
           // indexer  la publication dans elasticsearch
          $params = [
               'index' => 'menahouse',
@@ -178,7 +227,7 @@ class ObivlenieController extends Controller
                 // 'status' => 'availabe',
                 'user_id' => $user_id,
                 'roof' => $obivlenie->roof,
-                'title' => $obivlenie->title,
+                // 'title' => $obivlenie->title,
                 'status' => $obivlenie->status,
                 'tseli_obmena' => $obivlenie->tseli_obmena,
                 'mestopolozhenie_obmena' => $obivlenie->mestopolozhenie_obmena,
@@ -186,7 +235,7 @@ class ObivlenieController extends Controller
               ]
           ];
 
-         $indexmodel->ModelMapping($params);
+        // $indexmodel->ModelMapping($params);
 
           // tout est ok nous retourner une a la page des publications
           return Redirect('dashboard/advertisements');
@@ -283,7 +332,15 @@ class ObivlenieController extends Controller
       //create a new instance of Elasticsearch to performing search
       $elasticsearcher = new ElasticSearchEngine ;
 
-      $paramSearch = Input::except('_token');
+      $paramSearch = Input::except('_token', 'rangeMin', 'rangeMax');
+
+      $maxrange = Input::get('rangeMax');
+      $minrange = Input::get('rangeMin');
+      $setRange =  "BETWEEN " .$minrange.
+                    " AND ". $maxrange;
+
+      $paramSearch += ['obshaya_ploshad' => $setRange];
+
 
       // dd($paramSearch['status']);
 
@@ -386,12 +443,90 @@ class ObivlenieController extends Controller
       //   $paramSearchEngine = ["term" => $term];
       // }
 
-      $setrange = [
-         '1' => 'BETWEEN 30 AND 70',
-         '2' => 'BETWEEN 70 AND 90',
-         '3' => 'BETWEEN 90 AND 110',
-         '4' => '> 110'
-      ];
+
+
+      $matchParamValues = function($paramName, $paramKey) {
+            $all = ['Все города', 'Все округа', 'Все районы'];
+
+            $queryParam = [
+
+                "city" => [
+                    "1" => "Все города",
+                    "2" => "Москва",
+                    "3" => "Московская область",
+                    "4" => "Новая Москва"
+                ],
+
+                "district" => [
+                    "0" => "Все округа",
+                    "1" => "Центральный",
+                    "2" => "Северный",
+                    "3" => "Северо-Восточный",
+                    "4" => "Восточный",
+                    "5" => "Юго-Восточный",
+                    "6" => "Южный",
+                    "7" => "Юго-Западный",
+                    "8" => "Западный",
+                    "9" => "Северо-Западный",
+                    "10" => "Зеленоградский",
+                    "11" => "Все районы",
+                    "12" => "Троицкий"
+                ],
+
+                "typeroom" => [
+
+                      "1" => "Квартира",
+                      "2" => "Комната",
+                      "3" => "Частный дом",
+                      "4" => "Новостройки"
+                ],
+
+                "mestopolozhenie_obmena" => [
+                    "1" => "В_другом_районе",
+                    "2" => "В_своём_районе"
+                ],
+
+                // en fonction du critere de recherche prendre le contraire
+                // tseli_obmena == На увеличение ns retournons ttes les offres qui ont
+                // tseli_obmena == На уменьшение
+                // <select name="tseli_obmena">
+                //     <option value="">Обмен на</option>
+                //     <option value="1">На увеличение</option>
+                //     <option value="2">На уменьшение</option>
+                // </select>
+                //
+
+                "tseli_obmena" => [
+                    "1" => "На_уменьшение",
+                    "2" => "На_увеличение"
+                ]
+
+            ];
+
+            $q = function() use ($paramName){
+
+               $qt = [
+                        "city" => "gorod",
+                        "district" => "rayon",
+                        "typeroom" => "type_nedvizhimosti",
+                        "tseli_obmena" => "tseli_obmena",
+                        "mestopolozhenie_obmena" => "mestopolozhenie_obmena"
+                    ];
+               return $qt[$paramName];
+            };
+
+            foreach ($queryParam as $queryParamKey => $queryParamValue) {
+                //  $qr = "";
+                  if ($queryParamKey == $paramName) {
+
+                      if (!in_array($queryParamValue[$paramKey], $all)) {
+                          return  ["1" => $q($paramName), "2" => $queryParamValue[$paramKey]];
+                      }
+                  }
+            }
+
+          //  return $qr ;
+      };
 
       $statval = $paramSearch['status'];
       $qb = "SELECT * FROM obivlenie WHERE status = :status";
@@ -400,14 +535,19 @@ class ObivlenieController extends Controller
       foreach ($paramSearch as $key => $value) {
         if ((!in_array($key, ['_token', 'status'])) AND (!empty($paramSearch[$key]))) {
           if ($key == "obshaya_ploshad") {
-              $qb = $qb." AND ".$key." ".$setrange[$value];
+              $qb = $qb." AND ".$key." ".$setRange;
               $flag = $value;
           }
           else {
-              $qb = $qb ." AND ".$key."= :".$key;
-              $params += [ $key => $value];
+              $qv = $matchParamValues($key, $value);
+              if (!is_null($qv)) {
+                $qb = $qb ." AND ".$qv['1']."= :".$qv['1'];
+                $params += [ $qv['1'] => $qv['2']];
+              }
+
             }
       }}
+
 
       if (Auth::check()) {
           $qb = $qb. " AND user_id <> ".Auth::user()->id;
@@ -569,6 +709,8 @@ class ObivlenieController extends Controller
 
 
           $paramSearch = Input::except('_token');
+
+          dd($paramSearch);
           $foundNotEmptyValue = false;
 
           foreach ($paramSearch as $key => $value) {
@@ -597,7 +739,6 @@ class ObivlenieController extends Controller
             // $qb = $qb." ORDER BY ".$setOrderBy[$sort]." DESC";
             $houses = DB::select(DB::raw($qb), $params);
           }
-
 
         $foundelemts =count($houses);
 
@@ -698,4 +839,5 @@ class ObivlenieController extends Controller
            ]
        );
     }
+
 }

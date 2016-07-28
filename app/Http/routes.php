@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\UserMessage;
 use Illuminate\Support\Collection ;
 
+use Menahouse\CustomHelper;
+
 
 // use Request;
 // use Validator;
@@ -40,12 +42,13 @@ Route::group(['middleware' => 'auth'], function () {
 
         $userId = Auth::user()->id ;
         $flag = 'advertisements';
+        $show_link = true;
     //    $obivlenie = obivlenie::whereuser_id($userId)->get();
         $obivlenie = obivlenie::whereuser_id($userId)->where('available','=','1')
                                                      ->with('images')
                                                      ->get();
 
-        return View('sessions.dashboard', compact('flag', 'obivlenie'));
+        return View('sessions.dashboard', compact('flag', 'obivlenie', 'show_link'));
     });
 
 
@@ -88,6 +91,8 @@ Route::group(['middleware' => 'auth'], function () {
 
         $userId = Auth::user()->id ;
         $flag = 'bookmarked';
+        $show_link = true;
+
 
         $houses = DB::table('bookmarked')
             ->join('obivlenie', 'bookmarked.obivlenie_id', '=', 'obivlenie.id')
@@ -95,7 +100,7 @@ Route::group(['middleware' => 'auth'], function () {
             ->select('obivlenie.*', 'bookmarked.id as bkm_id', 'bookmarked.created_at as bkm_date')
             ->get();
 
-        return View('sessions.bookmarked', compact('flag', 'houses'));
+        return View('sessions.bookmarked', compact('flag', 'houses', 'show_link'));
     });
 
     /* Route::get('dashboard/advertisement/add', function ()    {
@@ -116,13 +121,20 @@ Route::group(['middleware' => 'auth'], function () {
           Route::get('inbox', ['as' => 'messages', 'uses' => 'UserMessageController@index']);
           Route::get('message/compose/{id}', function($id){
 
-              $userID = Auth::user()->id ;
-              $house = Obivlenie::whereid($id)->with('images')->first();
-              $typemsg = "Новое сообщение ";
-              $To = $house->user_id;
-              $flag ="compose";
 
-              return view('messenger.compose', compact('house', 'To','typemsg', 'flag'));
+              $user = Auth::user() ;
+              $ch = new CustomHelper;
+
+              if ($ch->getUserPlanPass($user)) {
+                  $house = Obivlenie::whereid($id)->first();
+                  $typemsg = "Новое сообщение ";
+                  $To = $house->user_id;
+                  $flag ="compose";
+
+                  return view('messenger.compose', compact('house', 'To','typemsg', 'flag'));
+              }
+
+              return redirect()->back();
           });
 
           Route::get('message/reply/{fromid}/{houseid}', function($fromid, $houseid){
@@ -198,6 +210,7 @@ Route::group(['middleware' => 'auth'], function () {
       if ($id == Auth::user()->id ) {
 
         $user = User::whereid($id)->first();
+        $show_link = false;
 
         try {
              $userprofile = Profiles::whereuser_id($user->id)
@@ -210,7 +223,7 @@ Route::group(['middleware' => 'auth'], function () {
         }
 
       //  return view('sessions.profil', compact('userprofile', 'user'));
-        return view('sessions.settings-profil', compact('user', 'userprofile', 'flag'));
+        return view('sessions.settings-profil', compact('user', 'userprofile', 'flag', 'show_link'));
 
       } else{
 
@@ -331,8 +344,8 @@ Route::get('pricing', function(){
 Route::post('/sorted/properties', 'ObivlenieController@sortResult');
 
 Route::post('signup', function(){
-  $plan = Input::get('plan');
-  return view('registration.create', compact('plan'));
+  // $plan = Input::get('plan');
+  return view('registration.create');
 });
 
 Route::get('register', ['as' => 'register_path',
@@ -352,49 +365,6 @@ Route::get('confirmation', function(){
     return view('registration.confirm_account', compact('email'));
 });
 
-
-Route::get('catalogue/houses/drugie_goroda', function(){
-
-      $houses =  Obivlenie::where('gorod', '<>', 'Москва')
-                ->with('images')->Paginate(5);
-
-       return View('house.catalogue', compact('houses'));
-});
-
-Route::get('catalogue/houses/Moskva/{typehouse}', function($typehouse){
-
-       if ($typehouse == "drugie_tip_domov") {
-         $houses =  Obivlenie::where('gorod', '<>', 'Москва')
-                       ->where('type_nedvizhimosti', '<>', 'Квартира')
-                       ->with('images')->Paginate(5);
-       }
-
-       else {
-
-         try {
-               //====> verifier si le parametre existe si oui retourner la liste
-              //          des apparts
-          //    $house = Obivlenie::wherekolitchestvo_komnat($typehouse)->firstOrfail();
-
-              $houses =  Obivlenie::where('gorod', '=', 'Москва')
-                            ->where('type_nedvizhimosti', '=', 'Квартира')
-                            ->where('kolitchestvo_komnat','=', $typehouse)
-                            // ->with('images')->get();
-                            ->with('images')->Paginate(5);
-
-         } catch (ModelNotFoundException $e) {
-
-           //====> en cas d erreur retourner ts les apparts
-          //  $houses =  Obivlenie::where('gorod', '=', 'Москва')
-          //                ->where('type_nedvizhimosti', '=', 'Квартира')
-          //                ->with('images')->Paginate(5);
-                        //  ->with('images')->get();
-         }
-
-       }
-
-       return View('house.catalogue', compact('houses'));
-});
 
 
 /*

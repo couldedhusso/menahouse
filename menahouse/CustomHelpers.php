@@ -5,6 +5,12 @@
   use Illuminate\Http\Request;
   use Illuminate\Contracts\Filesystem\Filesystem;
   use Yandex\Geo;
+  use Redis;
+
+  // require "predis/autoload.php";
+  // Predis\Autoloader::register();
+  use  \Firebase\JWT\JWT;
+  use Carbon\Carbon;
 
   /**
    *
@@ -16,6 +22,74 @@
 
     public function __construct(){
       $this->yandex_api = new \Yandex\Geo\Api();
+    }
+
+    private function redisSet($db_param){
+      return [
+          'scheme'   => 'tcp',
+          'host'     => '127.0.0.1',
+          'port'     => 6379,
+          'database' => $db_param
+      ];
+    }
+
+    private function createToken($user){
+
+        $issuedAt   = time();
+        $expire     = $issuedAt + 60; // 30 * 24 * 60 * 60 license d essai pour 1 mois
+
+        /*
+         * Create the token as an array
+         */
+        $payload = [
+            'iat'  => $issuedAt,                                     // Issued at: time when the token was generated
+            'exp'  => $expire,                                     // Expire
+            'sub' => [                                            // Data related to the signer user
+                'userId'   => $user->id,
+                'userMail' => $user->email,
+            ]
+        ];
+
+        return \Firebase\JWT\JWT::encode($payload, env('JWT_KEY'), 'HS256');
+
+    }
+
+    private function redisClientSet($db){
+
+      //===  https://github.com/antirez/retwis/blob/master/retwis.php
+
+      static $rc = false ;
+      if ($rc) return $rc;
+      $rc = new Predis\Client($this->redisSet($db));
+    }
+
+    public function setUserPlanToken($user){
+        // definisons le client redis
+        // par default ns utiliserons le db 0 pour les licenses user
+
+        if (!Redis::hget("users:$user->id", "payload")) {
+            $payload = $this->createToken($user);
+            Redis::hset("userpass:$user->id", "payload", "$payload");
+        }
+
+      //  dd(Redis::hget("userpass:$user->id", "payload"));
+    }
+
+    public function getUserPlanPass($user){
+        // definisons le client redis
+        // par default ns utiliserons le db 0 pour les licenses user
+
+        $token = Redis::hget("users:$user->id", "payload");
+        if ($token) {
+           $payload = (array) \Firebase\JWT\JWT::decode($token, env('JWT_KEY'), ['HS256']);
+           if ($payload['exp'] < time()) {
+               return true ;
+              //  response()->json(['message' => 'Token has expired']);
+           }
+         }
+         return false ;
+
+      //  dd(Redis::hget("userpass:$user->id", "payload"));
     }
 
     public function yandexGeocoding($searchParams){
@@ -156,4 +230,67 @@
       }
       return $geoData ;
     }
+
+    public function getLocation($index){
+        switch ($index) {
+          case '2':
+            $gorod = "Московская область";
+            break;
+          case '3':
+            $gorod = "Новая Москва";
+            break;
+          default:
+            $gorod = "Москва";
+            break;
+        }
+        return $gorod ;
+    }
+
+    public function getDistrict($index){
+      switch ($index) {
+        case '2':
+              $district = "Северный";
+              break;
+        case '3':
+              $district = "Московская область";
+              break;
+        case '4':
+              $district = "Восточный";
+              break;
+        case '5':
+              $district = "Юго-Восточный";
+              break;
+        case '6':
+              $district = "Южный";
+              break;
+        case '7':
+              $district = "Юго-Западный";
+              break;
+        case '8':
+              $district = "Западный";
+              break;
+
+        case '9':
+              $district = "Северо-Западный";
+              break;
+        case '10':
+              $district = "Зеленоградский";
+              break;
+        case '11':
+              $district = "-";
+              break;
+        case '12':
+              $district = "овомосковский АО";
+              break;
+       case '13':
+             $district = "Троицкий АО";
+             break;
+       default:
+             $district = "Центральный";
+             break;
+      }
+      return $district ;
+    }
+
+
   }

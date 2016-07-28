@@ -48,7 +48,7 @@
                       </div>
                           <div class="mail-attachment">
                               <div class="attachment">
-                                      @foreach($house->images as $img )
+                                      {{-- @foreach($house->images as $img )
 
                                         <div class="file-box">
                                           <div class="file">
@@ -58,14 +58,14 @@
                                                   </div>
                                                   <div class="file-name">
                                                       {{-- {{asset('storage/pictures/'.$img->path)}} --}}
-                                                      {{-- <br> --}}
+                                                      {{-- <br> 
                                                       <small>Добавлено: {{$img->created_at->format("D M j")}}</small>
                                                     </div>
                                                 </a>
                                             </div>
 
                                         </div>
-                                      @endforeach
+                                      @endforeach --}}
                                   <div class="clearfix"></div>
                               </div>
                               </div>

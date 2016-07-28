@@ -61,8 +61,8 @@ class ElasticSearchEngine
         $paramRange = $paramSearch["range"];
       }
       if (count($paramTerm) == 1) {
-           $searchConditons["bool"]["must"] = ["match"
-                                    => ["gorod" => $paramTerm["gorod"]]];
+           $searchConditons["bool"]["must"] =
+           ["match"  => ["gorod" => $paramTerm["gorod"]]];
            if ( isset($paramRange) ) {
 
               array_push($searchConditons["bool"]["must"],

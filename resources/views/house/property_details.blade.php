@@ -13,10 +13,10 @@
   <header class="property-title">
 
       <?php
-         $typehouse = $house->typeHouse($house->kolitchestvo_komnat) ;
+         $typehouse = $house->typeHouse($house->kolitchestvo_komnat, $house->type_nedvizhimosti) ;
          $retVal = ($house->status == "Обмен") ? "Обмен" : "Обмен-продаж" ;
       ?>
-      <h1>{{$typehouse}} квартира на {{ $retVal }}</h1>
+      <h1>{{$typehouse}} на {{ $retVal }}</h1>
       <!-- CZ изменяемый статус на "обмен"/"продажу" -->
       <figure> м.{{ $house->metro }}; {{ $house->ulitsa }} </figure>
       <!-- CZ адрес -->
@@ -25,8 +25,10 @@
         <!--<a href="#" class="fa fa-print"></a>-->
         @if(Auth::check())
           <a href="{{url("/dashboard/bookmarked/".$id)}}" class="bookmark" data-bookmark-state="empty"><span class="title-add">Добавить в избранное</span><span class="title-added">Добавлено</span></a>
+          <a href="#form-contact-agent" class="btn btn-white-grey-2" style=""title="Написать"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
         @else
           <a href="#" class="bookmark" data-bookmark-state="empty"><span class="title-add">Добавить в избранное</span><span class="title-added">Добавлено</span></a>
+          <a href="#form-contact-agent" class="btn btn-white-grey-2" style=""title="Написать"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
         @endif
 
       </span>
@@ -51,7 +53,7 @@
           <h2>Общая информация</h2></header>
         <dl>
           <dt>Тип:</dt>
-          <dd>{{$typehouse}} квартира</dd>
+          <dd>{{$typehouse}}</dd>
           <dt>Статус:</dt>
           @if($house->status == "Обмен")
             <dd>{{ $house->status }}</dd>
@@ -67,28 +69,34 @@
           @else
             <dd> Новая Москва</dd>
           @endif
+          <dt>Округ:</dt>
+          <dd>{{ $house->rayon }}</dd>
           <dt>Адрес:</dt>
           <dd>{{ $house->ulitsa }}, {{ $house->dom }}</dd>
-          <dt>Метро:</dt>
+          <dt>Ближайшее метро:</dt>
           <dd>{{ $house->metro }}</dd>
           <dt>Площадь:</dt>
           <dd>{{ $house->obshaya_ploshad }} м<sup>2</sup></dd>
           <dt>Жилая:</dt>
           <dd>{{ $house->zhilaya_ploshad }} м<sup>2</sup></dd>
           <dt>Кухня:</dt>
-          <dd>9</dd>
+          <dd>{{ $house->ploshad_kurhni }} м<sup>2</sup></dd></dd>
           <dt>Сан.узел:</dt>
           <dd>{{ $house->san_usel }}</dd>
+          <dt>Высота потолков</dt>
+                <dd>{{ $house->roof }} м</dd>
+          <dt>Этаж</dt>
+               <dd>{{ $house->etazh }}/{{ $house->etajnost_doma }}</dd>
           <dt>Цена:</dt>
           <dd><span class="tag price"> <?php echo number_format($house->price, 2, ',', ' ')." "; ?>&#x20bd</span></dd>
-          <dt>Рейтинг:</dt>
+          {{-- <dt>Рейтинг:</dt>
           <dd>
             <div class="rating rating-overall" data-score="4"></div>
-          </dd>
+          </dd> --}}
         </dl>
       </section>
       <!-- /#quick-summary -->
-      <section id="floor-plans">
+      {{-- <section id="floor-plans">
         <div class="floor-plans">
           <header>
             <h2>План помещения</h2></header>
@@ -97,7 +105,7 @@
           <a href="assets/img/properties/floor-plan-big.jpg" class="image-popup"><img alt="" src="assets/img/properties/floor-plan-02.jpg"></a>
           <!-- CZ ссылка по id -->
         </div>
-      </section>
+      </section> --}}
       <!-- /#floor-plans -->
 
     </div>
@@ -152,22 +160,19 @@
     <div class="col-md-8">
       </br>
       </br>
-      </br>
-      </br>
-      </br>
     </div>
 
-    <div class="col-md-8 col-sm-12">
-      <section id="property-map">
-        <header>
-          <h2>Карта</h2></header>
-        <div class="property-detail-map-wrapper">
-          <div class="property-detail-map" id="property-detail-map"></div>
-          <!-- CZ yandex map -->
-        </div>
-      </section>
-      <!-- /#property-map -->
+    <div class="col-md-8">
+    		 </br>
     </div>
+    <div class="col-md-12 col-sm-12">
+    			<section id="property-map">
+          <header><h2>Карта</h2></header>
+              <div class="property-detail-map-wrapper">
+                <iframe src="https://api-maps.yandex.ru/frame/v1/-/CVdNENPK" width="100%" height="320px" frameborder="0"></iframe>
+             </div>
+          </section><!-- /#property-map -->
+    </div><!-- /.col-md-8 -->
     <!-- /.col-md-8 -->
   </div>
   <!-- /.row -->

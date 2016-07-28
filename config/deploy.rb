@@ -6,7 +6,8 @@ set :repo_url, 'git@github.com:couldedhusso/menahouse.git'
 set :default_stage, 'production'
 set :user, 'ubuntu'
 
-# Default branch is :master
+set :branch, 'dev'
+# Default branch is :dev
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name

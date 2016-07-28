@@ -93,9 +93,20 @@ class Thread extends Eloquent
     }
 
     /**
+     * Returns all threads by subject.
+     *
+     * @return mixed
+     */
+    public static function getBySubject($subjectQuery)
+    {
+        return self::where('subject', 'like', $subjectQuery)->get();
+    }
+
+    /**
      * Returns an array of user ids that are associated with the thread.
      *
      * @param null $userId
+     *
      * @return array
      */
     public function participantsUserIds($userId = null)
@@ -114,6 +125,7 @@ class Thread extends Eloquent
      *
      * @param $query
      * @param $userId
+     *
      * @return mixed
      */
     public function scopeForUser($query, $userId)
@@ -132,6 +144,7 @@ class Thread extends Eloquent
      *
      * @param $query
      * @param $userId
+     *
      * @return mixed
      */
     public function scopeForUserWithNewMessages($query, $userId)
@@ -154,6 +167,7 @@ class Thread extends Eloquent
      *
      * @param $query
      * @param $participants
+     *
      * @return mixed
      */
     public function scopeBetween($query, array $participants)
@@ -169,7 +183,6 @@ class Thread extends Eloquent
      * Adds users to this thread.
      *
      * @param array $participants list of all participants
-     * @return void
      */
     public function addParticipants(array $participants)
     {
@@ -186,13 +199,13 @@ class Thread extends Eloquent
     /**
      * Mark a thread as read for a user.
      *
-     * @param integer $userId
+     * @param int $userId
      */
     public function markAsRead($userId)
     {
         try {
             $participant = $this->getParticipantFromUser($userId);
-            $participant->last_read = new Carbon;
+            $participant->last_read = new Carbon();
             $participant->save();
         } catch (ModelNotFoundException $e) {
             // do nothing
@@ -202,7 +215,8 @@ class Thread extends Eloquent
     /**
      * See if the current thread is unread by the user.
      *
-     * @param integer $userId
+     * @param int $userId
+     *
      * @return bool
      */
     public function isUnread($userId)
@@ -223,7 +237,9 @@ class Thread extends Eloquent
      * Finds the participant record from a user id.
      *
      * @param $userId
+     *
      * @return mixed
+     *
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function getParticipantFromUser($userId)
@@ -245,8 +261,9 @@ class Thread extends Eloquent
     /**
      * Generates a string of participant information.
      *
-     * @param null $userId
+     * @param null  $userId
      * @param array $columns
+     *
      * @return string
      */
     public function participantsString($userId = null, $columns = ['name'])
@@ -274,6 +291,7 @@ class Thread extends Eloquent
      * Checks to see if a user is a current participant of the thread.
      *
      * @param $userId
+     *
      * @return bool
      */
     public function hasParticipant($userId)
@@ -290,6 +308,7 @@ class Thread extends Eloquent
      * Generates a select string used in participantsString().
      *
      * @param $columns
+     *
      * @return string
      */
     protected function createSelectString($columns)
@@ -314,5 +333,47 @@ class Thread extends Eloquent
         }
 
         return $selectString;
+    }
+    /**
+     * Returns array of unread messages in thread for given user.
+     *
+     * @param $userId
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function userUnreadMessages($userId)
+    {
+        $messages = $this->messages()->get();
+        $participant = $this->getParticipantFromUser($userId);
+        if (!$participant) {
+            return collect();
+        }
+        if (!$participant->last_read) {
+            return collect($messages);
+        }
+        $unread = [];
+        $i = count($messages) - 1;
+        while ($i) {
+            if ($messages[$i]->updated_at->gt($participant->last_read)) {
+                array_push($unread, $messages[$i]);
+            } else {
+                break;
+            }
+            --$i;
+        }
+
+        return collect($unread);
+    }
+
+    /**
+     * Returns count of unread messages in thread for given user.
+     *
+     * @param $userId
+     *
+     * @return int
+     */
+    public function userUnreadMessagesCount($userId)
+    {
+        return $this->userUnreadMessages($userId)->count();
     }
 }
