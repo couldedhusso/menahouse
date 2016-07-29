@@ -327,6 +327,8 @@ CREATE TABLE `users` (
   `confirmed` tinyint(1) NOT NULL DEFAULT '0',
   `confirmation_code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `billing` varchar(100) DEFAULT 'free' NULL ,
+  `payload` varchar(255)  NULL ,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `notify` enum('y','n') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'y',

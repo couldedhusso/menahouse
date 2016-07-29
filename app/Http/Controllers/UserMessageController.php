@@ -203,7 +203,7 @@ class UserMessageController extends Controller
 
         $ch = new CustomHelper ;
 
-        if ($ch->getUserPlanPass($user)) {
+      //  if ($ch->getUserPlanPass($user)) {
 
 
         try {
@@ -223,14 +223,14 @@ class UserMessageController extends Controller
 
         // si le message est destine a l user alors marquer comme lu et
         // afficher le message
-        if ($userId == $usermessage->toid) {
-          $usermessage->markAsRead($userId, $id);
+        if ($user->id == $usermessage->toid) {
+          $usermessage->markAsRead($user->id, $id);
         }
         $flag = "show";
         return view('messenger.show', compact('usermessage', 'house', 'flag'));
-      }
+    //  }
 
-      return redirect()->back();
+      ///return redirect()->back();
     }
 
     /**

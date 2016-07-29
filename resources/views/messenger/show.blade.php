@@ -20,10 +20,11 @@
                   <div class="mail-box-header">
                       <div class="pull-right">
                           <a href="{{url('/mailbox/message/reply/'.$usermessage->fromid.'/'.$house->id)}}" class="btn btn-white2-sm" title="Ответить"><i class="fa fa-reply"></i> Ответить</a>
-                          <a href="{{url('/mailbox/message/like/'.$usermessage->id)}}" class="btn btn-white-red"title="Добавить в избранное"><i class="fa fa-heart-o"></i> </a>
+                          <a href="{{url('/mailbox/message/like/'.$usermessage->id)}}" class="btn  btn-white-red-2 btn-sm-1"title="Добавить в избранное"><i class="fa fa-heart-o"></i> </a>
                           <a href="{{url('/mailbox/message/trash/'.$usermessage->id)}}" class="btn btn-white-grey" title="Удалить"><i class="fa fa-trash-o"></i> </a>
                           <a href="#" class="btn btn-white-grey" title="Пожаловаться"><i class="fa fa-bug"></i> </a>
                       </div>
+
                       <h3>
                           Подробности сообщения
                       </h3>
@@ -58,7 +59,7 @@
                                                   </div>
                                                   <div class="file-name">
                                                       {{-- {{asset('storage/pictures/'.$img->path)}} --}}
-                                                      {{-- <br> 
+                                                      {{-- <br>
                                                       <small>Добавлено: {{$img->created_at->format("D M j")}}</small>
                                                     </div>
                                                 </a>

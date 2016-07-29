@@ -53,6 +53,18 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     Route::get('dashboard/advertisement/add', function ()    {
+        $userid = Auth::user()->id ;
+        $havehouse = Obivlenie::whereuser_id($userid)->count();
+        if ($havehouse >= 1) {
+            return redirect()->back();
+        }
+
+        //
+        // $token = Redis::hget("users:$userid", "payload");
+        // if ($token) {
+        //   return redirect()->back();
+        // }
+
         return View('sessions.additem') ;
     });
 
@@ -447,6 +459,56 @@ Route::get('/home', function () {
 
 Route::get('/', function () {
 
+  // for ($i=0; $i < 1000; $i++) {
+  //     $user = User::create([
+  //             'familia' => str_random(4),
+  //             'imia' => str_random(4),
+  //             'otchestvo' => str_random(4),
+  //             'phonenumber' => '112',
+  //             'email' => str_random(4)."@menahouse.ru",
+  //             'password' => bcrypt($i),
+  //             'confirmed' => '1',
+  //             'status' => 'activated',
+  //             'confirmation_code' => null,
+  //       ]);
+  //
+  //   $profi = Profiles::create([
+  //       'user_id' => $user->id,
+  //   ]);
+  //
+  //   $obivlenie = obivlenie::create([
+  //       // 'adressa' => $adressa,
+  //       'metro' => str_random(4),
+  //       'gorod' =>  str_random(4),
+  //       'ulitsa' => str_random(4),
+  //       /*'dom' => Input::get('dom'),
+  //       'address' => $address,
+  //       'vicota_patolka' => Input::get('roof')
+  //       */
+  //       'type_nedvizhimosti' => str_random(4),
+  //       'tekct_obivlenia' => str_random(4),
+  //       'kolitchestvo_komnat' => str_random(4),
+  //       'etajnost_doma' => str_random(4),
+  //       'zhilaya_ploshad' => str_random(4),
+  //       'obshaya_ploshad' => str_random(4) ,
+  //       'ploshad_kurhni' => str_random(4) ,
+  //       'rayon' => str_random(4),
+  //       'roof' => str_random(4),
+  //       'etazh' => str_random(4),
+  //       'san_usel' => str_random(4),
+  //       'title' => str_random(4),
+  //       'price' => str_random(4) ,
+  //       'status' => str_random(4),
+  //       'tseli_obmena' => str_random(4),
+  //       'mestopolozhenie_obmena' => str_random(4),
+  //       'doplata' => str_random(4),
+  //       'numberclick' => 0,
+  //     //  'predpolozhitelnaya_tsena' => Input::get('predpolozhitelnaya_tsena'),
+  //       'user_id' => $user->id,
+  //   ]);
+  //
+  // }
+
   // $roleCount = Role::count() ;
   // if ( $roleCount != 3){
   //     $roleadm = Role::wherename('Admin')->first();
@@ -469,6 +531,10 @@ Route::get('/', function () {
   // }
   //
   if (Auth::check()) {
+
+
+
+
       $userID = Auth::user()->id ;
       $oneroom  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 1)
                                         ->where('user_id', '!=', $userID)
