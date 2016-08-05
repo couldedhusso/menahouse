@@ -143,8 +143,9 @@ class RegistrationController extends Controller
 
   $emailExist = User::where('email', '=', $email)->count() ;
 
-  if ($emailExist) {
+  if ($emailExist)  {
 
+      // Flash::warning('такая элекьронная почта уже есть !!');
       return redirect()->back();
 
   } else {
