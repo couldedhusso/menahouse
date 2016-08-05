@@ -341,7 +341,6 @@ class ObivlenieController extends Controller
 
       $paramSearch += ['obshaya_ploshad' => $setRange];
 
-
       // dd($paramSearch['status']);
 
       // $gorod = Input::get('form-sale-city') ;
@@ -566,6 +565,7 @@ class ObivlenieController extends Controller
 
     }
 
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -710,7 +710,6 @@ class ObivlenieController extends Controller
 
           $paramSearch = Input::except('_token');
 
-          dd($paramSearch);
           $foundNotEmptyValue = false;
 
           foreach ($paramSearch as $key => $value) {

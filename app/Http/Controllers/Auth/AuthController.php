@@ -63,9 +63,10 @@ class AuthController extends Controller
     {
 
       $confirmation_code = str_random(30);
+      $email = $data['email'];
 
       list($familia, $imia, $otchestvo) = explode(" ", $data['fio']);
-      dd($data['fio']);
+      // dd($data['fio']);
 
       // return User::create([
       //     'name' => $data['name'],
@@ -78,7 +79,7 @@ class AuthController extends Controller
               'imia' => $imia,
               'otchestvo' => $otchestvo,
               'phonenumber' => $data['phonenumber'],
-              'email' => $data['email'],
+              'email' => $email,
               'password' => bcrypt($data['password']),
               'confirmation_code' => $confirmation_code
         ]);

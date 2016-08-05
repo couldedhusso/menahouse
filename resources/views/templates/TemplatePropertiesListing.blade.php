@@ -142,7 +142,7 @@
 
                             </div>
                               <hr>
-                                      <p>Критерии обмена</P>
+                              <p>Критерии обмена</P>
                               <div class="form-group">
                                   <select name="tseli_obmena">
                                       <option value="">Обмен на</option>

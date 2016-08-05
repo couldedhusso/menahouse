@@ -139,46 +139,58 @@ class RegistrationController extends Controller
   // });
 
 
+  $email = Input::get('email');
 
-    // list($familia, $imia, $otchestvo) = explode(" ", Input::get('fio'));
-    $name = explode(" ", Input::get('fio'));
-    switch (count($name)) {
-      case 1:
-        $familia = $name[0];
-        $imia = " "; $otchestvo =" ";
-        break;
-      case 2:
+  $emailExist = User::where('email', '=', $email)->count() ;
+
+  if ($emailExist) {
+
+      return redirect()->back();
+
+  } else {
+
+      // list($familia, $imia, $otchestvo) = explode(" ", Input::get('fio'));
+      $name = explode(" ", Input::get('fio'));
+      switch (count($name)) {
+        case 1:
+          $familia = $name[0];
+          $imia = " "; $otchestvo =" ";
+          break;
+        case 2:
+            $familia = $name[0]; $imia = $name[1];
+            $otchestvo =" ";
+          break;
+        default:
           $familia = $name[0]; $imia = $name[1];
-          $otchestvo =" ";
-        break;
-      default:
-        $familia = $name[0]; $imia = $name[1];
-        $otchestvo = $name[2];
-        break;
-    }
+          $otchestvo = $name[2];
+          break;
+      }
 
-    /// == > Active le compte a la creation a modifier
-    $user = User::create([
-            'familia' => $familia,
-            'imia' => $imia,
-            'otchestvo' => $otchestvo,
-            'phonenumber' => Input::get('phonenumber'),
-            'email' => Input::get('email'),
-            'password' => bcrypt(Input::get('password')),
-            'confirmed' => '1',
-            'status' => 'activated',
-            'confirmation_code' => null,
-      ]);
+      /// == > Active le compte a la creation a modifier
+      $user = User::create([
+              'familia' => $familia,
+              'imia' => $imia,
+              'otchestvo' => $otchestvo,
+              'phonenumber' => Input::get('phonenumber'),
+              'email' => Input::get('email'),
+              'password' => bcrypt(Input::get('password')),
+              'confirmed' => '1',
+              'status' => 'activated',
+              'confirmation_code' => null,
+        ]);
 
-      // $roleid = Role::where('name', '=', 'Member')->get();
-      //
-      // $user->assignRole($roleid);
-      // $user->save();
+        // $roleid = Role::where('name', '=', 'Member')->get();
+        //
+        // $user->assignRole($roleid);
+        // $user->save();
 
-      // Authenticate A User Instance
-    Auth::login($user);
+        // Authenticate A User Instance
+      Auth::login($user);
 
-    return view('pages.thank_you');
+      return view('pages.thank_you');
+
+  }
+
   //  return view('pages.thank_you', compact('email');
   }
 
