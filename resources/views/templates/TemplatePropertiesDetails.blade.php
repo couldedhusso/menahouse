@@ -203,7 +203,7 @@
                               </div><!-- /.form-group -->
                           </form><!-- /#form-map -->
                         </aside><!-- /#edit-search -->
-                        <aside id="featured-properties">
+                        {{-- <aside id="featured-properties">
                             <header><h3>Спецпредложения</h3></header>
                             <div class="property small">
                                 <a href="property-detail.html">
@@ -241,7 +241,7 @@
                                     <div class="tag price">9 000 000</div>
                                 </div>
                             </div><!-- /.property -->
-                        </aside><!-- /#featured-properties -->
+                        </aside><!-- /#featured-properties --> --}}
                         <aside id="our-guides">
                             <header><h3>Почему мы?</h3></header>
                             <a href="#" class="universal-button">
@@ -344,7 +344,7 @@
 <script type="text/javascript" src="{{ asset('assets/js/angular.rangeSlider.js')}} "></script>
 <script>
     angular.module("mainApp", ["ui-rangeSlider"]).controller("mainController", function ($scope) {
-    $scope.range = { min: 20, max: 100 };
+    $scope.range = { min: 5, max: 170 };
 });
 </script>
 

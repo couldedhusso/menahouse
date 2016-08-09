@@ -135,8 +135,8 @@ return [
         Cmgmyr\Messenger\MessengerServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         'Collective\Html\HtmlServiceProvider',
-        // 'Barryvdh\Debugbar\ServiceProvider',
-        // 'Intervention\Image\ImageServiceProvider',
+        'Barryvdh\Debugbar\ServiceProvider',
+        'Intervention\Image\ImageServiceProvider',
         'Laracasts\Flash\FlashServiceProvider',
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
 

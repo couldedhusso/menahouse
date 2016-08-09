@@ -245,8 +245,12 @@
                     <div class="form-group">
                       <label for="submit-status">Местоположение</label>
                       <select name="mestopolozhenie_obmena" id="submit-status">
-                        <option value="В_том_же_районе">В том же районе</option>
+                        {{-- <option value="В_том_же_районе">В том же районе</option>
+                        <option value="В_другом_районе">В другом районе</option> --}}
+
+                        <option value="В_своём_районе">В своём районе</option>
                         <option value="В_другом_районе">В другом районе</option>
+
                       </select>
                     </div>
                   </div>

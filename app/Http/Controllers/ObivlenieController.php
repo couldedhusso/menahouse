@@ -108,6 +108,12 @@ class ObivlenieController extends Controller
           $kolitchestvo_komnat = null;
         }
 
+        if ( "Московская область" == $getLocation($submit_location)) {
+          $setDistrict = "-";
+        }else {
+          $setDistrict = $Helper->getDistrict(Input::get('district'));
+        }
+
         // $address =  Input::get('address');
         //
         // $geo = $Helper->yandexGeocoding($address);
@@ -139,7 +145,7 @@ class ObivlenieController extends Controller
             'zhilaya_ploshad' => Input::get('zhilaya_ploshad') ,
             'obshaya_ploshad' => Input::get('obshaya_ploshad') ,
             'ploshad_kurhni' => Input::get('ploshad_kurhni') ,
-            'rayon' => $Helper->getDistrict(Input::get('district')),
+            'rayon' => $setDistrict,
             'roof' => Input::get('roof-size'),
             'etazh' => Input::get('submit-etazh'),
             'san_usel' => Input::get('submit-Baths'),
@@ -336,10 +342,26 @@ class ObivlenieController extends Controller
 
       $maxrange = Input::get('rangeMax');
       $minrange = Input::get('rangeMin');
-      $setRange =  "BETWEEN " .$minrange.
-                    " AND ". $maxrange;
+      $rangeIsSet = true;
 
+      $setRange =  "BETWEEN " .$minrange.
+                   " AND ". $maxrange;
       $paramSearch += ['obshaya_ploshad' => $setRange];
+
+      //
+      // if (("20" != $minrange) || ("100" != $maxrange)) {
+      //
+      //    $setRange =  "BETWEEN " .$minrange.
+      //                 " AND ". $maxrange;
+      //    $paramSearch += ['obshaya_ploshad' => $setRange];
+      //    $rangeIsSet = true;
+      // }
+
+      if (("11" != $paramSearch["district"])  &&
+          ("Московская область" != $paramSearch["city"])) {
+          $paramSearch["district"] = "";
+      }
+
 
       // dd($paramSearch['status']);
 
@@ -472,8 +494,7 @@ class ObivlenieController extends Controller
                     "12" => "Троицкий"
                 ],
 
-                "typeroom" => [
-
+                "property-type" => [
                       "1" => "Квартира",
                       "2" => "Комната",
                       "3" => "Частный дом",
@@ -483,6 +504,14 @@ class ObivlenieController extends Controller
                 "mestopolozhenie_obmena" => [
                     "1" => "В_другом_районе",
                     "2" => "В_своём_районе"
+                ],
+
+                "room" => [
+                  "1" => "1",
+                  "2" => "2",
+                  "3" => "3",
+                  "4" => "4",
+                  "5" => "5"
                 ],
 
                 // en fonction du critere de recherche prendre le contraire
@@ -505,11 +534,12 @@ class ObivlenieController extends Controller
             $q = function() use ($paramName){
 
                $qt = [
-                        "city" => "gorod",
-                        "district" => "rayon",
-                        "typeroom" => "type_nedvizhimosti",
-                        "tseli_obmena" => "tseli_obmena",
-                        "mestopolozhenie_obmena" => "mestopolozhenie_obmena"
+                          "city" => "gorod",
+                          "district" => "rayon",
+                          "property-type" => "type_nedvizhimosti",
+                          "tseli_obmena" => "tseli_obmena",
+                          "room" => "kolitchestvo_komnat",
+                          "mestopolozhenie_obmena" => "mestopolozhenie_obmena"
                     ];
                return $qt[$paramName];
             };
@@ -532,8 +562,11 @@ class ObivlenieController extends Controller
 
       $params = ['status' => $paramSearch['status'] ];
       foreach ($paramSearch as $key => $value) {
-        if ((!in_array($key, ['_token', 'status'])) AND (!empty($paramSearch[$key]))) {
-          if ($key == "obshaya_ploshad") {
+
+        if ((!in_array($key, ['_token', 'status']))
+             AND (!empty($paramSearch[$key]))) {
+
+          if (($key == "obshaya_ploshad") && ($rangeIsSet == true )) {
               $qb = $qb." AND ".$key." ".$setRange;
               $flag = $value;
           }
@@ -543,7 +576,6 @@ class ObivlenieController extends Controller
                 $qb = $qb ." AND ".$qv['1']."= :".$qv['1'];
                 $params += [ $qv['1'] => $qv['2']];
               }
-
             }
       }}
 
@@ -551,6 +583,9 @@ class ObivlenieController extends Controller
       if (Auth::check()) {
           $qb = $qb. " AND user_id <> ".Auth::user()->id;
       }
+
+      // dd($qb);
+
 
       $houses = DB::select(DB::raw($qb), $params);
 

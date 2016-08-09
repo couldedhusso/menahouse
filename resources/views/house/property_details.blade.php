@@ -64,7 +64,7 @@
           <dt>Город:</dt>
           @if($house->gorod == "Москва")
             <dd>{{ $house->gorod}}</dd>
-          @elseif($house->gorod == "Московская_область")
+          @elseif($house->gorod == "Московская область")
             <dd> Московская область</dd>
           @else
             <dd> Новая Москва</dd>

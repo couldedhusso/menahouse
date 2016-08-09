@@ -458,15 +458,15 @@ Route::get('/home', function () {
 });
 
 Route::get('/', function () {
-
-  // for ($i=0; $i < 1000; $i++) {
+//
+  // for ($i=1; $i < 4; $i++) {
   //     $user = User::create([
   //             'familia' => str_random(4),
   //             'imia' => str_random(4),
   //             'otchestvo' => str_random(4),
   //             'phonenumber' => '112',
   //             'email' => str_random(4)."@menahouse.ru",
-  //             'password' => bcrypt($i),
+  //             'password' => bcrypt(123),
   //             'confirmed' => '1',
   //             'status' => 'activated',
   //             'confirmation_code' => null,
@@ -479,35 +479,49 @@ Route::get('/', function () {
   //   $obivlenie = obivlenie::create([
   //       // 'adressa' => $adressa,
   //       'metro' => str_random(4),
-  //       'gorod' =>  str_random(4),
+  //       'gorod' =>  "Новая Москва",
   //       'ulitsa' => str_random(4),
   //       /*'dom' => Input::get('dom'),
   //       'address' => $address,
   //       'vicota_patolka' => Input::get('roof')
   //       */
-  //       'type_nedvizhimosti' => str_random(4),
-  //       'tekct_obivlenia' => str_random(4),
-  //       'kolitchestvo_komnat' => str_random(4),
-  //       'etajnost_doma' => str_random(4),
-  //       'zhilaya_ploshad' => str_random(4),
-  //       'obshaya_ploshad' => str_random(4) ,
-  //       'ploshad_kurhni' => str_random(4) ,
+  //       'type_nedvizhimosti' => "Комната",
+  //       'tekct_obivlenia' => str_random(100),
+  //       'kolitchestvo_komnat' => "-",
+  //       'etajnost_doma' => "5",
+  //       'zhilaya_ploshad' => 30,
+  //       'obshaya_ploshad' => "110" ,
+  //       'ploshad_kurhni' => 10 ,
   //       'rayon' => str_random(4),
-  //       'roof' => str_random(4),
-  //       'etazh' => str_random(4),
+  //       'roof' => "2",
+  //       'etazh' => "3",
   //       'san_usel' => str_random(4),
   //       'title' => str_random(4),
-  //       'price' => str_random(4) ,
-  //       'status' => str_random(4),
-  //       'tseli_obmena' => str_random(4),
-  //       'mestopolozhenie_obmena' => str_random(4),
+  //       'price' => "500000" ,
+  //       'status' => "Обмен",
+  //       'tseli_obmena' => "На_уменьшение",
+  //       'mestopolozhenie_obmena' => "В_том_же_районе",
   //       'doplata' => str_random(4),
   //       'numberclick' => 0,
   //     //  'predpolozhitelnaya_tsena' => Input::get('predpolozhitelnaya_tsena'),
   //       'user_id' => $user->id,
   //   ]);
   //
-  // }
+  //
+  //   $arrayName = [
+  //     '1' => '2cP7ZHUIwVBPbM3TSafu180RWvMbE0Cw.jpeg',
+  //     '2' => '2SIrJ1QTv0kN9Rm7lRke5fFRb9xYE5zV.jpeg',
+  //     '3' => '49CSL8PDRUtVya4FzlvjkSvLOYWwXqJW.jpeg'
+  //   ];
+  //
+  //   foreach ($arrayName as $key => $value) {
+  //     $img = new Images ;
+  //     $img = $obivlenie->images()->create(array('path' => $value));
+  //     $obivlenie->images()->save($img);
+  //   }
+  //
+  //
+  //  }
 
   // $roleCount = Role::count() ;
   // if ( $roleCount != 3){
