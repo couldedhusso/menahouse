@@ -15,9 +15,11 @@
 
 </head>
 
-<body class="page-sub-page page-create-account page-account" id="page-top" ng-app="mainApp" ng-controller="mainController">
+<body class="page-sub-page page-create-account page-account" ng-app="mainApp" id="page-top"   ng-controller="mainController" >
 <!-- Wrapper -->
 <div class="wrapper">
+  {{-- Say hello to: {> $scope. <} --}}
+  {{-- Say hello to: <input type="text" ng-model="name"> --}}
 
     <div class="navigation">
         <div class="secondary-navigation">
@@ -66,27 +68,30 @@
                   <section id="sidebar">
                     <aside id="edit-search">
                             <header><h3>Поиск</h3></header>
-                            <form role="form" id="form-sidebar" class="form-search" method="post" action="/property/catalogue">
+                            <form role="form" id="form-sidebar" class="form-search" method="get" >
                                 <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
                                 {!! csrf_field() !!}
                                 <div class="form-group">
-                                    <select name="status">
-                                      {{-- <option value="">Статус</option> --}}
+                                    <select name="status" ng-model="qs.status">
+                                      <option value="">Статус</option>
                                       <option value="Обмен">Обмен</option>
                                       <option value="Обмен_продажа">Обмен/продажа</option>
                                     </select>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
-                                    <select name="city">
+                                    <select name="city" ng-model="qs.city">
                                         <option value="">Город</option>
-                                        <option value="1">Все города</option>
-                                        <option value="2">Москва</option>
-                                        <option value="3">Московская область</option>
-                                        <option value="4">Новая Москва</option>
+                                        <option  ngValue="{>1<}">Все города</option>
+                                        <option ng-value="{>2<}">Москва</option>
+                                        <option ng-value="{>3<}">Московская область</option>
+                                        <option ng-value="{>4<}">Новая Москва</option>
                                     </select>
+
+                                    <hr>
+                                    <tt>model = {>qs.city<}</tt><br/>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
-                                    <select name="district">
+                                    <select name="district" ng-model="qs.district">
                                         <option value="">Округ</option>
                                         <option value="0" data-city="2">Все округа</option>
                                         <option value="1" data-city="2">Центральный</option>
@@ -104,7 +109,7 @@
                                     </select>
                                 </div><!-- /.form-group -->
                                 <div class="form-group">
-                                    <select name="property-type">
+                                    <select name="property-type" ng-model="qs.propertytype">
                                         <option value="">Тип жилья</option>
                                         <option value="1">Квартира</option>
                                         <option value="2">Комната</option>
@@ -112,8 +117,8 @@
                                         <option value="4">Новостройки</option>
                                     </select>
                                 </div><!-- /.form-group -->
-                <div class="form-group">
-                                    <select name="room">
+                                <div class="form-group">
+                                    <select name="room" ng-model="qs.room">
                                         <option value="">Кол-во комнат</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -129,12 +134,12 @@
                                   <div style="margin:1em; display:table;">
                                       <div class="slider-control">
                                           <span>От:</span>
-                                          <input style="height:25px" type="number" class="" name="rangeMin" ng-model="range.min">
+                                          <input style="height:25px" type="number" class="" name="rangeMin" ng-model="qs.min">
                                           <label>м2</label>
                                       </div>
                                       <div class="slider-control">
                                           <span>До:</span>
-                                          <input type="number" class="" name="rangeMax" ng-model="range.max">
+                                          <input type="number" class="" name="rangeMax" ng-model="qs.max">
                                           <label>м2</label>
                                       </div>
                                   </div>
@@ -144,14 +149,14 @@
                               <hr>
                               <p>Критерии обмена</P>
                               <div class="form-group">
-                                  <select name="tseli_obmena">
+                                  <select name="tseli_obmena" ng-model="qs.tseli_obmena">
                                       <option value="">Обмен на</option>
                                       <option value="1">На увеличение</option>
                                       <option value="2">На уменьшение</option>
                                   </select>
                               </div><!-- /.form-group -->
                               <div class="form-group">
-                                  <select name="mestopolozhenie_obmena">
+                                  <select name="mestopolozhenie_obmena" ng-model="qs.mestopolozhenie_obmena">
                                       <option value="">Район обмена</option>
                                       <option value="1">В другом районе</option>
                                       <option value="2">В своём районе</option>
@@ -159,7 +164,7 @@
                               </div><!-- /.form-group -->
 
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-default">Искать</button>
+                                    <button type="submit" ng-click="getItems()" class="btn btn-default">Искать</button>
                                 </div><!-- /.form-group -->
                             </form><!-- /#form-map -->
                         </aside><!-- /#edit-search -->
@@ -297,32 +302,102 @@
 <script type="text/javascript" src="{{ asset('js/angular/vendor/angular.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/sm.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/angular.rangeSlider.js')}} "></script>
+<script type="text/javascript" src="{{ asset('assets/js/jquery.jcarousel.min.js')}} "></script>
+<script type="text/javascript" src="{{ asset('assets/js/jcarousel.skeleton.js')}} "></script>
+
+<script type="text/javascript" src="{{ asset('js/src/menahouseInit.js') }} "></script>
+{{-- <script type="text/javascript" src="{{ asset('js/controller/menahouseSearchEngine.js')}} "></script> --}}
+
 <script>
-    angular.module("mainApp", ["ui-rangeSlider"]).controller("mainController", function ($scope) {
-    $scope.range = { min: 5, max: 170  };
-});
+//     angular.module("mainApp", ["ui-rangeSlider"]).controller("mainController", function ($scope) {
+//     $scope.range = { min: 20, max: 100 };
+// });
+// $(function() {
+//     $('.jcarousel').jcarousel({
+//         // Configuration goes here
+//
+//         'visible': 4
+//     });
+// });
+//
+// $('.jcarousel-pagination').jcarouselPagination({
+//     'carousel': $('.jcarousel'),
+//     // 'perPage': 4
+// });
+
+
 </script>
+
 <!--[if gt IE 8]>
 <script type="text/javascript" src="{{asset('static/assets/js/ie.js')}}"></script>
 <![endif]-->
 <script type="text/javascript">
-/*
-	Load more content with jQuery - May 21, 2013
-	(c) 2013 @ElmahdiMahmoud
-*/
 
-$(function () {
-    $("div.property").slice(0, 4).show();
-    $("#loadMore").on('click', function (e) {
-        e.preventDefault();
-        $("div.property:hidden").slice(0, 4).slideDown();
-        if ($("div.property:hidden").length == 0) {
-            $("#load").fadeOut('slow');
-        }
-        $('html,body').animate({
-            scrollTop: $(this).offset().top
-        }, 1500);
-    });
+// credit http://jsfiddle.net/juddlyon/Q2TYv/10/
+
+$(document).ready(function(){
+  $('#myCarousel').carousel({
+    interval : false;
+  });
+
+  /* SLIDE ON CLICK */
+
+  $('.pagination > li > a').click(function() {
+
+      // grab href, remove pound sign, convert to number
+      var item = Number($(this).attr('href').substring(1));
+
+      // remove current active class
+      $('.pagination .active').removeClass('active');
+
+      // add active class to just clicked on item
+      $(this).parent().addClass('active');
+
+      // don't follow the link
+      return false;
+  });
+
+
+  // bind 'slid' function
+$('#myCarousel').bind('slid', function() {
+
+    // remove active class
+    $('.pagination .active').removeClass('active');
+
+    // get index of currently active item
+    var idx = $('#myCarousel .item.active').index();
+
+    // select currently active item and add active class
+    $('.pagination li:eq(' + idx + ')').addClass('active');
+
+});
+});
+
+
+// $(function () {
+//     $("div.property").slice(0, 4).show();
+//     $("#loadMore").on('click', function (e) {
+//         e.preventDefault();
+//         $("div.property:hidden").slice(0, 4).slideDown();
+//         if ($("div.property:hidden").length == 0) {
+//             $("#load").fadeOut('slow');
+//         }
+//         $('html,body').animate({
+//             scrollTop: $(this).offset().top
+//         }, 1500);
+//     });
+//
+//     // $("#bookmarkItem").on('click', function(e) {
+//     //     e.preventDefault();
+//     //
+//     //     console.log('ajouter aux favris');
+//     // });
+// });
+
+
+$("#bookmarkItem").click(function (e)  {
+    e.preventDefault();
+    console.log('ajouter aux favris');
 });
 
 $('a[href=#top]').click(function () {
@@ -356,7 +431,7 @@ $(window).scroll(function () {
 $('#sorting').change(function(evt){
       evt.preventDefault();
       $(this).closest('#formdata').submit();
-  });
+});
 
 
 </script>

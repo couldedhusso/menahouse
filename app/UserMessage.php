@@ -90,6 +90,11 @@ class UserMessage extends Eloquent
         return $this->morphMany('App\Images', 'imageable');
       }
 
+      public function favorisutilisateurs()
+      {
+          return $this->morphMany('App\FavorisUtilisateurs', 'favorisutilisateurable');
+      }
+
 
       /**
        * Mark a thread as read for a user

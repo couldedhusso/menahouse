@@ -121,6 +121,12 @@ return [
             'database' => 0,
         ],
 
+        'session' => [
+            'host'     => 'localhost',
+            'port'     => 6379,
+            'database' => 1,
+        ],
+
     ],
 
 ];

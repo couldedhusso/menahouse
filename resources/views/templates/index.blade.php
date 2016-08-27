@@ -15,8 +15,8 @@
 
 </head>
 
-<body class="page-homepage navigation-fixed-top page-slider horizontal-search-float" id="page-top" data-spy="scroll" data-target=".navigation" data-offset="90"
-      >
+<body class="page-homepage navigation-fixed-top page-slider horizontal-search-float"  ng-controller="mainController"
+            id="page-top" data-spy="scroll" data-target=".navigation" data-offset="90">
 <!-- Wrapper -->
 <div class="wrapper">
     <!-- Navigation -->
@@ -131,30 +131,35 @@
             <div class="container">
                 <div class="search-box map">
 <br>
-                   <form role="form" id="form-map-sale" class="form-map form-search clearfix" method="post" action="properties/all">
+                   <form role="form" id="form-map-sale" class="form-map form-search clearfix" method="post" action="/properties/all">
                         <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
                         <div class="row">
                           <div class="col-md-1">
                           </div>
                             <div class="col-md-3 col-sm-4">
                                 <div class="form-group">
-                                    <select name="gorod">
+                                    <select name="gorod" ng-model="qs.gorod">
+                                        <option value="">Город</option>
                                         <option value="Москва">Москва</option>
                                         <option value="Московская область">Московская область</option>
                                         <option value="Новая Москва">Новая Москва</option>
                                     </select>
+
+
                                 </div><!-- /.form-group -->
                             </div>
 
                             <div class="col-md-4 col-sm-4">
                                 <div class="form-group">
-                                    <select name="type_nedvizhimosti">
+                                    <select name="type_nedvizhimosti" ng-model="qs.type_nedvizhimosti">
                                         <option value="">Тип жилья</option>
                                         <option value="Комната">Комната</option>
                                         <option value="Квартира">Квартира</option>
                                         <option value="Частный дом">Частный дом</option>
                                         <option value="Новостройки">Новостройки</option>
+
                                     </select>
+
                                 </div><!-- /.form-group -->
                             </div>
 							<!-- <div class="col-md-3 col-sm-4">
@@ -171,8 +176,8 @@
                             </div> -->
                             <div class="col-md-3 col-sm-4">
                                 <div class="form-group">
-                                  <!--  <button type="submit" data-ng-click = "processForm(search)" class="btn btn-default">Искать</button> -->
-                                    <button type="submit" class="btn btn-default">Искать</button>
+                                   {{-- <button type="submit" data-ng-click = "processForm(search)" class="btn btn-default">Искать</button>  action="properties/all" --}}
+                                   <button type="submit"  class="btn btn-default">Искать</button>
                                 </div><!-- /.form-group -->
                             </div>
 							<div class="col-md-12 col-sm-12">
@@ -239,7 +244,7 @@
                                 <header><h3>Безопасно</h3></header>
                                 <p>Без риэлторов, посредников и прочих! <br>
                                 Вы общаетесь исключительно с собственниками напрямую</p><br>
-                                <a href="{{url('properties/all')}}" class="link-arrow">Подробнее</a>
+                                <a href="{{url("#")}}" class="link-arrow">Подробнее</a>
 							</aside>
 							<br>
                         </div><!-- /.feature-box -->
@@ -250,7 +255,7 @@
                             <aside class="description">
                                 <header><h3>Самостоятельно</h3></header>
                                 <p>Нашли, посмотрели, договорились. Мы поможем со всеми документами Без переплат и скрытых условий!</p><br>
-                                <a href="{{url('properties/all')}}" class="link-arrow">Подробнее</a>
+                                <a href="{{url("#")}}" class="link-arrow">Подробнее</a>
               </aside>
                             </aside>
 							<br>
@@ -263,7 +268,7 @@
                                 <header><h3>С каждым днём больше</h3></header>
                                 <p>Расскажите Вашим Друзьям, и Друзьям Друзей<br>
                                  Больше Объявлений позволят найти лучший вариант</p><br>
-                                 <a href="{{url('properties/all')}}" class="link-arrow">Подробнее</a>
+                                 <a href="{{url("#")}}" class="link-arrow">Подробнее</a>
                </aside>
                             </aside>
 							<br>
@@ -403,7 +408,8 @@
 <script type="text/javascript" src="{{ asset('assets/js/jquery.slider.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/custom.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/angular/vendor/angular.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/angular/main.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/js/angular.rangeSlider.js')}} "></script>
+<script type="text/javascript" src="{{ asset('js/src/menahouseInit.js') }} "></script>
 
 
 <!--[if gt IE 8]>

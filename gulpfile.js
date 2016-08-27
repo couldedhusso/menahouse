@@ -23,6 +23,7 @@ elixir(function(mix) {
   'css/owl.transitions.css',
   'css/fileinput.min.css',
   'css/magnific-popup.css',
+  'css/jcarousel.skeleton.css',
   'css/style.css',
   'css/angular.rangeSlider.css',
   'css/angular.rangeSlider.sm.css'

@@ -7,6 +7,7 @@ use App\Images ;
 use App\Profiles;
 use App\User;
 use App\Receiver;
+use App\FavorisUtilisateurs;
 
 use App\Bookmarked;
 use App\Http\Controllers;
@@ -254,6 +255,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('setting/edit/password', ['as' => 'password_edit',
                                         'uses' => 'SessionController@changePasswordUser']);
+
+
+  // ==== gestion des favoris utilisateurs
+  Route::post('/add-item-to-bookmark', 'FavorisUtilisateurController@bookmarkItem');
+  Route::post('/remove-item-to-bookmark', 'FavorisUtilisateurController@removeItem');
+
+
 });
 
 //====> advertisements routes
@@ -342,6 +350,15 @@ Route::get('property/type/{param}', function($param){
 Route::post('property/catalogue', 'ObivlenieController@searchEngine');
 Route::post('properties/all', 'ObivlenieController@getCatalogue');
 Route::get('properties/all', 'ObivlenieController@getAllProperties');
+
+
+// ==== angular search filters
+
+Route::post('setfilter', 'SessionController@setfilterValue');
+Route::get('getfilter', 'SessionController@getfilterValue');
+
+// ==== end
+
 
 // Route::post('house/catalogue', 'ObivlenieController@search');
 // Route::get('dashboard',  'DashboardController@show');

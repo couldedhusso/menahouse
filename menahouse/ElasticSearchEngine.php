@@ -206,12 +206,12 @@ class ElasticSearchEngine
       }, $result));
    }
 
-  private function getIdFoundElements($items){
-    $result = $items['hits']['hits'];
-    dd($result);
-    $id = new Collection() ;
-    foreach ($result['_source'] as $value) { $id->push($value['id']); }
-    return $id ;
-  }
+   private function getIdFoundElements($items){
+        $result = $items['hits']['hits'];
+        dd($result);
+        $id = new Collection() ;
+        foreach ($result['_source'] as $value) { $id->push($value['id']); }
+        return $id ;
+   }
 
 }

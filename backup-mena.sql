@@ -339,6 +339,16 @@ CREATE TABLE `users` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
+CREATE TABLE favorisutilisateurs (
+	 id int(3) primary key  AUTO_INCREMENT,
+	 imageable_id INT(3) NOT NULL,
+	 imageable_type VARCHAR(255),
+     deleted BOOLEAN  DEFAULT '0',
+     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+)
+
+
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

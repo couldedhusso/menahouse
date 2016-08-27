@@ -46,6 +46,7 @@ class ObivlenieController extends Controller
 
     private $searchresults ;
 
+
     public function index()
     {
         //
@@ -71,8 +72,12 @@ class ObivlenieController extends Controller
         $StoragePath = $Helper->getStorageDirectory();
 
         $TYPE_OBJECT = ['Комната', 'Частный дом'];
-        $submit_property = Input::get('property-type');
+        $submit_property = Input::get('propertytype');
+
         $submit_location = Input::get('city');
+        if ("" ==  $submit_location) {
+            $submit_location = '2';
+        }
 
 
         $property_type = function($submit_property){
@@ -335,8 +340,12 @@ class ObivlenieController extends Controller
 
     public function searchEngine(Request $request){
 
+
+      ///=== TODO :  архитектура для высокой нагрузски на AWS
+
       //create a new instance of Elasticsearch to performing search
       $elasticsearcher = new ElasticSearchEngine ;
+      $term = []; $range = [];
 
       $paramSearch = Input::except('_token', 'rangeMin', 'rangeMax');
 
@@ -348,6 +357,8 @@ class ObivlenieController extends Controller
                    " AND ". $maxrange;
       $paramSearch += ['obshaya_ploshad' => $setRange];
 
+
+
       //
       // if (("20" != $minrange) || ("100" != $maxrange)) {
       //
@@ -356,6 +367,8 @@ class ObivlenieController extends Controller
       //    $paramSearch += ['obshaya_ploshad' => $setRange];
       //    $rangeIsSet = true;
       // }
+
+
 
       if (("11" != $paramSearch["district"])  &&
           ("Московская область" != $paramSearch["city"])) {
@@ -367,7 +380,7 @@ class ObivlenieController extends Controller
 
       // $gorod = Input::get('form-sale-city') ;
       // $form_sale_district = Input::get('form-sale-district') ;
-      // $form_sale_property_type  = Input::get('form-sale-property-type') ;
+      // $form_sale_property_type  = Input::get('form-sale-propertytype') ;
       // $form_sale_number_room = Input::get('form-sale-number-room');
       // $form_sale_surface = Input::get('form-sale-surface');
       //
@@ -494,7 +507,7 @@ class ObivlenieController extends Controller
                     "12" => "Троицкий"
                 ],
 
-                "property-type" => [
+                "propertytype" => [
                       "1" => "Квартира",
                       "2" => "Комната",
                       "3" => "Частный дом",
@@ -536,7 +549,7 @@ class ObivlenieController extends Controller
                $qt = [
                           "city" => "gorod",
                           "district" => "rayon",
-                          "property-type" => "type_nedvizhimosti",
+                          "propertytype" => "type_nedvizhimosti",
                           "tseli_obmena" => "tseli_obmena",
                           "room" => "kolitchestvo_komnat",
                           "mestopolozhenie_obmena" => "mestopolozhenie_obmena"
@@ -558,6 +571,8 @@ class ObivlenieController extends Controller
       };
 
       $statval = $paramSearch['status'];
+      $term += ['status' => $paramSearch['status']];
+
       $qb = "SELECT * FROM obivlenie WHERE status = :status";
 
       $params = ['status' => $paramSearch['status'] ];
@@ -575,17 +590,17 @@ class ObivlenieController extends Controller
               if (!is_null($qv)) {
                 $qb = $qb ." AND ".$qv['1']."= :".$qv['1'];
                 $params += [ $qv['1'] => $qv['2']];
+
+
+                ///===  request parameters for elasticsearch
+                $term += [ $qv['1'] => $qv['2']];
               }
             }
       }}
 
-
       if (Auth::check()) {
           $qb = $qb. " AND user_id <> ".Auth::user()->id;
       }
-
-      // dd($qb);
-
 
       $houses = DB::select(DB::raw($qb), $params);
 
@@ -613,31 +628,43 @@ class ObivlenieController extends Controller
       $Helper = new CustomHelper;
       $StoragePath = $Helper->getStorageDirectory();
 
-      $excludeKeyValues = array("address", "file-upload", "_token");
+      $excludeKeyValues = array("file-upload", "_token");
 
-      $address =  Input::get('address');
+      // $address =  Input::get('address');
       $updateparams = [];
-
-      if (!empty($address)) {
-          $geo = $Helper->yandexGeocoding($address);
-          $updateparams = array('rayon' => $Helper->getDistritcs($geo['address'][0]) );
-          $ar = explode(" ", $geo['metro'][0]);
-          $metro = '';
-          foreach ($ar as $key => $value) {
-            if ($ar[$key] != 'метро') {
-              $metro = $metro.' '.$value;
-            }
-          }
-          $updateparams += array('metro' => trim($metro) );
-      }
+      //
+      // if (!empty($address)) {
+      //     $geo = $Helper->yandexGeocoding($address);
+      //     $updateparams = array('rayon' => $Helper->getDistritcs($geo['address'][0]) );
+      //     $ar = explode(" ", $geo['metro'][0]);
+      //     $metro = '';
+      //     foreach ($ar as $key => $value) {
+      //       if ($ar[$key] != 'метро') {
+      //         $metro = $metro.' '.$value;
+      //       }
+      //     }
+      //     $updateparams += array('metro' => trim($metro) );
+      // }
 
       $inputall = Input::all();
 
+      $arrayName = ['city', 'district', 'propertytype', 'room'];
+
       foreach ($inputall as $key => $value) {
         if (!in_array($key, $excludeKeyValues) AND (!empty($value))) {
-          $updateparams += array( $key => $value );
+            if (in_array($key, $arrayName)) {
+                $paramupdte = $Helper->mappingFields($key, $value);
+                $updateparams += [$paramupdte['1'] => $paramupdte['2'] ];
+
+            } else {
+              //  dd(array( $key => $value ));
+              $updateparams += [$key => $value] ;
+
+            }
+
         }
       }
+
 
       $house = Obivlenie::where('id', '=', $updateparams['id'])->first();
 
@@ -723,7 +750,7 @@ class ObivlenieController extends Controller
         // $paramSearch = Input::all();
         //
         //   $form_sale_city = Input::get('form-sale-city');
-        //   $form_sale_property_type = Input::get('form-sale-property-type');
+        //   $form_sale_property_type = Input::get('form-sale-propertytype');
         //
         //   if ((!empty($form_sale_city)) and (empty($form_sale_property_type) )) {
         //         $houses = Obivlenie::where('gorod', '=', $form_sale_city)->get();
@@ -772,6 +799,8 @@ class ObivlenieController extends Controller
             }
             // $qb = $qb." ORDER BY ".$setOrderBy[$sort]." DESC";
             $houses = DB::select(DB::raw($qb), $params);
+          } else {
+            return Redirect()->back();
           }
 
         $foundelemts =count($houses);

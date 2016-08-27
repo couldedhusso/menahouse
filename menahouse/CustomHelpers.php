@@ -122,6 +122,77 @@
       return null ;
     }
 
+    public function mappingFields($paramKey, $paramValue){
+
+
+          $matchParamValues = function($paramKey, $paramValue) {
+                // $all = ['Все города', 'Все округа', 'Все районы'];
+
+                $queryParam = [
+
+                    "city" => [
+                        "1" => "Все города",
+                        "2" => "Москва",
+                        "3" => "Московская область",
+                        "4" => "Новая Москва"
+                    ],
+
+                    "district" => [
+                        "0" => "Все округа",
+                        "1" => "Центральный",
+                        "2" => "Северный",
+                        "3" => "Северо-Восточный",
+                        "4" => "Восточный",
+                        "5" => "Юго-Восточный",
+                        "6" => "Южный",
+                        "7" => "Юго-Западный",
+                        "8" => "Западный",
+                        "9" => "Северо-Западный",
+                        "10" => "Зеленоградский",
+                        "11" => "Все районы",
+                        "12" => "Троицкий"
+                    ],
+
+                    "property-type" => [
+                          "1" => "Квартира",
+                          "2" => "Комната",
+                          "3" => "Частный дом",
+                          "4" => "Новостройки"
+                    ],
+
+                    "room" => [
+                      "1" => "1",
+                      "2" => "2",
+                      "3" => "3",
+                      "4" => "4",
+                      "5" => "5"
+                    ]
+
+                ];
+
+                $res = $queryParam[$paramKey];
+
+                return $res[$paramValue];
+        };
+
+        $q = function() use ($paramKey){
+
+           $qt = [
+                      "city" => "gorod",
+                      "district" => "rayon",
+                      "property-type" => "type_nedvizhimosti",
+                      // "tseli_obmena" => "tseli_obmena",
+                       "room" => "kolitchestvo_komnat",
+                      // "mestopolozhenie_obmena" => "mestopolozhenie_obmena"
+                ];
+           return $qt[$paramKey];
+        };
+
+        return  [
+          '1' => $q($paramKey),
+          '2' => $matchParamValues($paramKey, $paramValue)
+        ];
+    }
 
     public function getDistritcs($param)
     {
@@ -248,11 +319,14 @@
 
     public function getDistrict($index){
       switch ($index) {
+        case '1':
+              $district = "Центральный";
+              break;
         case '2':
               $district = "Северный";
               break;
         case '3':
-              $district = "Московская область";
+              $district = "Северо-Восточный";
               break;
         case '4':
               $district = "Восточный";
@@ -280,14 +354,12 @@
               $district = "-";
               break;
         case '12':
-              $district = "овомосковский АО";
+              $district = "Новомосковский АО";
               break;
        case '13':
              $district = "Троицкий АО";
              break;
-       default:
-             $district = "Центральный";
-             break;
+
       }
       return $district ;
     }

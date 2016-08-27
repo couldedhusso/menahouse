@@ -152,7 +152,7 @@
                                       <option value="4">Новостройки</option>
                                   </select>
                               </div><!-- /.form-group -->
-              <div class="form-group">
+                              <div class="form-group">
                                   <select name="room">
                                       <option value="">Кол-во комнат</option>
                                       <option value="1">1</option>

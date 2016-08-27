@@ -9,32 +9,25 @@
 @endsection
 
 @section('content')
-<header><h1>Добавить новое объявление</h1></header>
+<header><h1>Редактировать объявление</h1></header>
 {{-- <form role="form" id="form-submit" class="form-submit" action="thank-you.html"> --}}
 {!! Form::open(array('route' => 'path_update_item', 'method' => 'post', 'files' => 'true')) !!}
   <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
+  {!! csrf_field() !!}
 
+  <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
   {!! csrf_field() !!}
 
   <div class="row">
     <div class="col-md-9 col-sm-9">
       <section id="submit-form">
         <section id="basic-information">
-          <header>
-            <h2>Карточка объекта</h2></header>
-          <div class="row">
-            <div class="col-md-8">
-              <div class="form-group">
-                <label for="submit-title">Заголовок</label>
-                <input type="text" class="form-control" id="title" name="title" value="{{$house->title}}">
-                <input name="id" type="hidden" value="{!! $id !!}" />
-              </div>
-              <!-- /.form-group -->
-            </div>
-          </div>
+          <header><h2>Карточка объекта</h2></header>
+
           <div class="form-group">
             <label for="submit-description">Описание</label>
             <textarea class="form-control" id="tekct_obivlenia" rows="8" name="tekct_obivlenia" value="{{$house->tekct_obivlenia}}" ></textarea>
+            <input name="id" type="hidden" value="{!! $id !!}" />
           </div>
           <!-- /.form-group -->
         </section>
@@ -45,216 +38,212 @@
             <div class="block clearfix">
               <div class="col-md-6 col-sm-6">
                 <section id="summary">
-                  <header>
-                    <h2>Подробности</h2></header>
-                  <div class="form-group">
-                    <label for="gorod">Местоположение</label>
-                    <select name="gorod" id="gorod">
-                      @if($house->gorod == 'Москва')
-                        <option value="Москва" selected>Москва</option>
-                        <option value="Московская область">Московская область</option>
-                        <option value="Новая Москва">Новая Москва</option>
-                      @elseif($house->gorod == 'Московская область')
-                        <option value="Москва">Москва</option>
-                        <option value="Московская область" selected>Московская область</option>
-                        <option value="Новая Москва">Новая Москва</option>
-                      @else
-                        <option value="Москва" selected>Москва</option>
-                        <option value="Московская область">Московская область</option>
-                        <option value="Новая Москва" selected>Новая Москва</option>
-                      @endif
-                    </select>
-                  </div>
-
+                  <header><h2>Подробности</h2></header>
                   <div class="row">
-
-                    <!-- /.col-md-6 -->
                     <div class="col-md-12 col-sm-12">
-                      <div class="form-group">
-                        <label for="type_nedvizhimosti">Тип жилья</label>
-                        <select name="type_nedvizhimosti" id="type_nedvizhimosti">
+                              <div class="form-group" title="Укажите какой тип вашего жилья">
+                                  <label for="submit-property-type">Тип жилья</label>
+                                  <select name="property-type" id="submit-property-type">
 
-                          @if($house->type_nedvizhimosti == 'Комната')
-                              <option value="Комната" selected>Комната</option>
-                              <option value="Квартира">Квартира</option>
-                              <option value="Частный дом">Частный дом</option>
-                              <option value="Новостройки">Новостройки</option>
-                          @elseif($house->type_nedvizhimosti == 'Квартира')
-                              <option value="Комната">Комната</option>
-                              <option value="Квартира" selected>Квартира</option>
-                              <option value="Частный дом">Частный дом</option>
-                              <option value="Новостройки">Новостройки</option>
-                          @elseif($house->type_nedvizhimosti == 'Частный дом')
-                              <option value="Комната">Комната</option>
-                              <option value="Квартира">Квартира</option>
-                              <option value="Частный дом" selected>Частный дом</option>
-                              <option value="Новостройки">Новостройки</option>
-                          @else
-                            <option value="Комната">Комната</option>
-                            <option value="Квартира">Квартира</option>
-                            <option value="Частный дом">Частный дом</option>
-                            <option value="Новостройки" selected>Новостройки</option>
-                          @endif
-                        </select>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <!-- /.col-md-6 -->
-                    <div class="col-md-6 col-sm-6">
-                          <div class="form-group">
-                             <label for="kolitchestvo_komnat">Количество комнат</label>
-                                <select name="kolitchestvo_komnat" id="kolitchestvo_komnat" required>
-                                   @if($house->kolitchestvo_komnat == '1')
-                                       <option value="1" selected>1</option>
-                                       <option value="2">2</option>
-                                       <option value="3">3</option>
-                                       <option value="4">4+</option>
-                                   @elseif($house->kolitchestvo_komnat == '2')
-                                       <option value="1">1</option>
-                                       <option value="2" selected>2</option>
-                                       <option value="3">3</option>
-                                       <option value="4">4+</option>
-                                   @elseif($house->kolitchestvo_komnat == '3')
-                                       <option value="1">1</option>
-                                       <option value="2">2</option>
-                                       <option value="3" selected>3</option>
-                                       <option value="4">4+</option>
-                                   @else
-                                       <option value="1">1</option>
-                                       <option value="2">2</option>
-                                       <option value="3">3</option>
-                                       <option value="4" selected>4+</option>
-                                   @endif
-                               </select>
-                    		</div>
-                  </div><!-- /.col-md-6 -->
-                  <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                          <label for="roof">Высота потолков</label>
-                            <div class="input-group">
-                              <input type="text" class="form-control" id="roof" name="roof" value="{{$house->roof}}" >
-                              <span class="input-group-addon">м</span>
-                            </div>
-                      </div><!-- /.form-group -->
-                   </div><!-- /.col-md-6 -->
-                    <!-- /.col-md-6 -->
-                    <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                        <label for="etazh">Этаж</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="etazh" name="etazh" value="{{$house->etazh}}" >
-                        </div>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <!-- /.col-md-6 -->
-                    <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                        <label for="etajnost_doma">Этажность дома</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="etajnost_doma" name="etajnost_doma" value="{{$house->etajnost_doma}}" >
-                        </div>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <!-- /.col-md-6 -->
+                                      @if($house->type_nedvizhimosti == 'Квартира')
+                                        <option value="" title="Какой вид недвижимости?" style="display:none" >Тип жилья</option>
+                                        <option value="1" id="Komnata" selected>Квартира</option>
+                                        <option value="2" id="Kvartira">Комната</option>
+                                        <option value="3" id="Dom">Частный дом</option>
+                                        <option value="4" id="Novostroyka" >Новостройки</option>
+                                      @elseif($house->type_nedvizhimosti == 'Комната')
+                                        <option value="" title="Какой вид недвижимости?" style="display:none" >Тип жилья</option>
+                                        <option value="1" id="Komnata" selected>Квартира</option>
+                                        <option value="2" id="Kvartira">Комната</option>
+                                        <option value="3" id="Dom">Частный дом</option>
+                                        <option value="4" id="Novostroyka" selected>Новостройки</option>
+                                      @elseif($house->type_nedvizhimosti == 'Частный дом')
+                                        <option value="" title="Какой вид недвижимости?" style="display:none" >Тип жилья</option>
+                                        <option value="1" id="Komnata">Квартира</option>
+                                        <option value="2" id="Kvartira">Комната</option>
+                                        <option value="3" id="Dom" selected>Частный дом</option>
+                                        <option value="4" id="Novostroyka" selected>Новостройки</option>
+                                      @else
+                                        <option value="" title="Какой вид недвижимости?" style="display:none" >Тип жилья</option>
+                                        <option value="1" id="Komnata">Квартира</option>
+                                        <option value="2" id="Kvartira">Комната</option>
+                                        <option value="3" id="Dom">Частный дом</option>
+                                        <option value="4" id="Novostroyka" selected>Новостройки</option>
 
-                  </div>
-                  <!-- /.row -->
-                  </br>
-                  <p> Площадь: </p>
-                  <div class="row">
-                    <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                        <label for="obshaya_ploshad">Общая</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="submit-Beds" name="obshaya_ploshad" value="{{$house->obshaya_ploshad}}">
-                          <span class="input-group-addon">м<sup>2</sup></span>
-                        </div>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <!-- /.col-md-6 -->
-                    <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                        <label for="zhilaya_ploshad">Жилая</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="submit-Baths" name="zhilaya_ploshad" value="{{$house->zhilaya_ploshad}}" >
-                          <span class="input-group-addon">м<sup>2</sup></span>
-                        </div>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <!-- /.col-md-6 -->
-                  </div>
-                  <!-- /.row -->
-                  <div class="row">
-                    <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                        <label for="ploshad_kurhni">Кухня</label>
-                        <div class="input-group">
-                          <input type="text" class="form-control" id="submit-area" name="ploshad_kurhni" value="{{$house->ploshad_kurhni}}" >
-                          <span class="input-group-addon">м<sup>2</sup></span>
-                        </div>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <!-- /.col-md-6 -->
-                    <div class="col-md-6 col-sm-6">
-                      <div class="form-group">
-                        <label for="san_usel">Сан. узел</label>
-                        <select name="san_usel" id="san_usel">
-                          @if($house->san_usel == 'Совмещенный')
-                              <option value="Совмещенный" selected>Совмещенный</option>
-                              <option value="Раздельный">Раздельный</option>
-                          @else
-                            <option value="Совмещенный">Совмещенный</option>
-                            <option value="Раздельный" selected>Раздельный</option>
-                          @endif
-                        </select>
-                      </div>
-                    </div>
-                    <!-- /.col-md-6 -->
-                  </div>
-                  <!-- /.row -->
-                </section>
-                <!-- /#summary -->
-              </div>
-              <!-- /.col-md-6 -->
+                                      @endif
+                                  </select>
+                              </div><!-- /.form-group -->
+                          </div><!-- /.col-md-6 -->
+                          <div class="col-md-6 col-sm-6">
+                              <div class="form-group" required>
+                                  <label for="submit-room">Количество комнат</label>
+                                  <select name="room" id="submit-room">
+                                      <option value="" title="Сколько у Вас комнат?">Кол-во комнат</option>
+                                      <option value="1" id="1room">1</option>
+                                      <option value="2" id="2rooms">2</option>
+                                      <option value="3" id="3rooms">3</option>
+                                      <option value="4" id="4rooms">4+</option>
+                                      <option value="5" id="Studio">Студия</option>
 
-              <div class="col-md-6 col-sm-6">
-                <section id="place-on-map">
-                  <header class="section-title">
-                    <h2>На карте</h2>
-                    <!-- <span class="link-arrow geo-location">Найти автоматически</span> -->
-                  </header>
-                  <div class="form-group">
-                    <label for="address-map">Адрес</label>
-                    <input type="text" class="form-control" id="address-map" name="address" value="{{$house->ulitsa}}">
-                  </div>
-                  <!-- /.form-group -->
-                  <label for="address-map">Перенесите метку на карте к вашему дому</label>
-                  <div id="submit-map"></div>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <input type="text" class="form-control" title="Координаты широты" id="latitude" name="latitude" readonly>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <input type="text" class="form-control" title="Координаты долготы" id="longitude" name="longitude" readonly>
-                      </div>
-                      <!-- /.form-group -->
-                    </div>
-                  </div>
-                </section>
-                <!-- /#place-on-map -->
-              </div>
-              <!-- /.col-md-6 -->
-            </div>
-            <!-- /.block -->
+                                  </select>
+                              </div>
+                          </div><!-- /.col-md-6 -->
+                                          <div class="col-md-6 col-sm-6">
+                                              <div class="form-group">
+                                                  <label for="submit-roof">Высота потолков</label>
+                                                  <div class="input-group">
+                                                      <input type="text" class="form-control" id="roof" name="roof" value="{{$house->roof}}" title="Обязательно измерьте">
+                                                      <span class="input-group-addon">м</span>
+                                                  </div>
+                                              </div><!-- /.form-group -->
+                                          </div><!-- /.col-md-6 -->
+                                          <div class="col-md-6 col-sm-6">
+                                              <div class="form-group">
+                                                  <label for="ssubmit-etazh">Ваш этаж</label>
+                                                  <div class="input-group">
+                                                      <input type="text" class="form-control" id="etazh" name="etazh" value="{{$house->etazh}}" title="Какой у Вас этаж?" pattern="\d*">
+                                                      <span class="input-group-addon"><i class="fa fa-building-o" aria-hidden="true"></i></span>
+                                                  </div>
+                                              </div><!-- /.form-group -->
+                                          </div><!-- /.col-md-6 -->
+                                          <div class="col-md-6 col-sm-6">
+                                              <div class="form-group">
+                                                  <label for="submit-etajnost_doma">Этажность дома</label>
+                                                  <div class="input-group">
+                                                      <input type="text" class="form-control" id="etajnost_doma" name="etajnost_doma" value="{{$house->etajnost_doma}}" title="Сколько этажей в доме?"pattern="\d*">
+                                                      <span class="input-group-addon"><i class="fa fa-building" aria-hidden="true"></i></span>
+                                                  </div>
+                                              </div><!-- /.form-group -->
+                                          </div><!-- /.col-md-6 -->
+                                      </div><!-- /.row -->
+                                      </br>
+                                      <h3> Площадь: <a href="#"><i class="fa fa-question-circle tool-tip"  data-toggle="tooltip" data-placement="right" title="Возникли затруднения с измерением? Попросите помощь в чате поддержки прямо сейчас!"></i></a></h3>
+                                      <div class="row">
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="submit-area" title="Какова общая площадь квартиры?">Общая</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="submit-Beds" name="obshaya_ploshad" value="{{$house->obshaya_ploshad}}" title="Какова общая площадь квартиры?" pattern="\d*" required>
+                                                        <span class="input-group-addon">м<sup>2</sup></span>
+                                                    </div>
+                                                </div><!-- /.form-group -->
+                                            </div><!-- /.col-md-6 -->
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="submit-beds" title="Площадь жилой зоне очень важный параметр">Жилая</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="submit-Baths" name="zhilaya_ploshad" value="{{$house->zhilaya_ploshad}}"  title="Площадь жилой зоне очень важный параметр" pattern="\d*" required>
+                                                        <span class="input-group-addon">м<sup>2</sup></span>
+                                                    </div>
+                                                </div><!-- /.form-group -->
+                                            </div><!-- /.col-md-6 -->
+                                        </div><!-- /.row -->
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="submit-kitchen" title="Все хотят знать насколько большая кухня, укажите">Кухня</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="submit-area" name="ploshad_kurhni" value="{{$house->ploshad_kurhni}}" title="Все хотят знать насколько большая кухня, укажите" pattern="\d*" required>
+                                                        <span class="input-group-addon">м<sup>2</sup></span>
+                                                    </div>
+                                                </div><!-- /.form-group -->
+                                            </div><!-- /.col-md-6 -->
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="submit-Baths" title="Туалет/Ванная">Сан. узел</label>
+                                                    <select name="san_usel" id="submit-Baths">
+
+
+                                                        @if($house->san_usel == 'Совмещенный')
+                                                            <option value="Совмещенный" selected>Совмещенный</option>
+                                                            <option value="Раздельный">Раздельный</option>
+                                                            <option value="Два и более">Два и более</option>
+                                                        @elseif($house->san_usel == 'Раздельный')
+
+                                                              <option value="Совмещенный">Совмещенный</option>
+                                                              <option value="Раздельный" selected>Раздельный</option>
+                                                              <option value="Два и более">Два и более</option>
+                                                        @else
+                                                          <option value="Совмещенный">Совмещенный</option>
+                                                          <option value="Раздельный" >Раздельный</option>
+                                                          <option value="Два и более" selected>Два и более</option>
+                                                        @endif
+                                                    </select>
+                                                </div>
+                                            </div><!-- /.col-md-6 -->
+                                        </div> <!-- /.row -->
+                </section><!-- /#summary -->
+              </div><!-- /.col-md-6 -->
+              <div class="row">
+                                <div class="col-md-6 col-sm-6">
+                                    <section id="place-on-map">
+                                        <header class="section-title"><h2>На карте</h2></header>
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="submit-location">Местоположение</label>
+                                                <select name="city" id="submit-location">
+                                                    <option value="">Город</option>
+                                                    <option value="1" style="display:none">Все города</option>
+
+                                                    @if($house->gorod == 'Москва')
+
+                                                      <option value="2" selected>Москва</option>
+                                                      <option value="3">Московская область</option>
+                                                      <option value="4">Новая Москва</option>
+                                                    @elseif($house->gorod == 'Московская область')
+
+                                                      <option value="2">Москва</option>
+                                                      <option value="3" selected>Московская область</option>
+                                                      <option value="4">Новая Москва</option>
+
+                                                    @else
+
+                                                      <option value="2">Москва</option>
+                                                      <option value="3">Московская область</option>
+                                                      <option value="4" selected>Новая Москва</option>
+                                                    @endif
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="submit-district">Округ/район</label>
+                                                <select name="district" id="submit-district">
+                                                    <option value="">Округ</option>
+                                                    <option value="" data-city="2" style="display:none">Все округа</option>
+                                                    <option value="1" data-city="2">Центральный</option>
+                                                    <option value="2" data-city="2">Северный</option>
+                                                    <option value="3" data-city="2">Северо-Восточный</option>
+                                                    <option value="4" data-city="2">Восточный</option>
+                                                    <option value="5" data-city="2">Юго-Восточный</option>
+                                                    <option value="6" data-city="2">Южный</option>
+                                                    <option value="7" data-city="2">Юго-Западный</option>
+                                                    <option value="8" data-city="2">Западный</option>
+                                                    <option value="9" data-city="2">Северо-Западный</option>
+                                                    <option value="10" data-city="2">Зеленоградский</option>
+                                                    <option value="11" data-city="3">Все районы</option>
+                                                    <option value="12" data-city="4">Новомосковский АО</option>
+                                                    <option value="13" data-city="4">Троицкий АО</option>
+                                                </select>
+                                            </div><!-- /.form-group -->
+                                            <div class="form-group">
+                                                <label for="metro">Ближайшее метро</label>
+                                                <input type="text" class="form-control" id="metro" name="metro" value="{{$house->metro}}" placeholder="Укажите название станции метро рядом с Вами" required>
+                                            </div><!-- /.form-group -->
+                                            <div class="form-group">
+                                                <label for="address-map">Улица</label>
+                                                <input type="text" class="form-control" id="address-map" name="ulitsa" value="{{$house->ulitsa}}" placeholder="Введите адрес в свободной форме" required>
+                                            </div><!-- /.form-group -->
+
+                                            {{-- <div class="row">
+                                                <div class="col-md-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <iframe src="https://static-maps.yandex.ru/1.x/?ll=37.620070,55.753630&spn=0.003,0.003& \
+&size=393,320&z=13&l=map&pt=37.620070,55.753630,pmwtm1" width="100%" height="320" frameborder="0"></iframe>
+                                                    </div><!-- /.form-group -->
+                                                </div>
+                                            </div> --}}
+                                        </div><!-- /.col-md-12 -->
+                                    </div>
+                                </div><!-- /.block -->
           </div>
           <!-- /.row -->
         </section>
@@ -267,8 +256,8 @@
       <aside class="submit-step">
         <figure class="step-number">1</figure>
         <div class="description">
-          <h4>Укажите информацию по объекту</h4>
-          <p>Укажите точную информацию о вашей квартире или доме в полном соответствии с действительностью. Будьте внимательны. Все объявления проверяются модераторами вручную!
+            <h4>Укажите информацию по объекту</h4>
+            <p>Укажите точную информацию о вашей квартире или доме в полном соответствии с действительностью. Будьте внимательны. Все объявления проверяются модераторами вручную!
           </p>
         </div>
       </aside>
@@ -289,15 +278,17 @@
                 <div class="row">
                   <div class="col-md-12 col-sm-12">
                     <div class="form-group">
-                      <label for="status">Статус</label>
-                      <select name="status" id="status">
-                        @if($house->status == 'Совмещенный')
+                      <label for="submit-status">Статус</label>
+                      <select name="status" id="submit-status">
+
+                        @if($house->status == 'Обмен')
                             <option value="Обмен" selected>Обмен</option>
-                            <option value="Обмен продажа">Обмен продажа</option>
+                            <option value="Обмен_продажа">Обмен продажа</option>
                         @else
                           <option value="Обмен">Обмен</option>
-                          <option value="Обмен продажа" selected>Обмен продажа</option>
+                          <option value="Обмен_продажа" selected>Обмен продажа</option>
                         @endif
+
                       </select>
                     </div>
                     <!-- /.form-group -->
@@ -305,29 +296,34 @@
                   <!-- /.col-md-6 -->
                   <div class="col-md-6 col-sm-6">
                     <div class="form-group">
-                      <label for="tseli_obmena">Цель обмена</label>
-                      <select name="tseli_obmena" id="tseli-obmena">
-                        @if($house->tseli_obmena == 'На увеличение')
-                            <option value="На увеличение" selected>На увеличение</option>
-                            <option value="На уменьшение">На уменьшение</option>
+                      <label for="submit-status">Цель обмена</label>
+                      <select name="tseli_obmena" id="submit-status">
+
+                        @if($house->tseli_obmena == 'На_увеличение')
+                          <option value="На_увеличение" selected>На увеличение</option>
+                          <option value="На_уменьшение">На уменьшение</option>
                         @else
-                          <option value="На увеличение">На увеличение</option>
-                          <option value="На уменьшение" selected>На уменьшение</option>
+                          <option value="На_увеличение" >На увеличение</option>
+                          <option value="На_уменьшение" selected>На уменьшение</option>
                         @endif
+
                       </select>
                     </div>
                   </div>
                   <!-- /.col-md-6 -->
                   <div class="col-md-6 col-sm-6">
                     <div class="form-group">
-                      <label for="mestopolozhenie_obmena">Местоположение</label>
-                      <select name="mestopolozhenie_obmena" id="mestopolozhenie_obmena">
-                        @if($house->tseli_obmena == 'В том же районе')
-                          <option value="В том же районе" selected>В том же районе</option>
-                          <option value="В другом районе">В другом районе</option>
+                      <label for="submit-status">Местоположение</label>
+                      <select name="mestopolozhenie_obmena" id="submit-status">
+                        {{-- <option value="В_том_же_районе">В том же районе</option>
+                        <option value="В_другом_районе">В другом районе</option> --}}
+
+                        @if($house->mestopolozhenie_obmena == 'В_своём_районе')
+                          <option value="В_своём_районе" selected>В своём районе</option>
+                          <option value="В_другом_районе">В другом районе</option>
                         @else
-                          <option value="В том же районе">В том же районе</option>
-                          <option value="В другом районе" selected>В другом районе</option>
+                          <option value="В_своём_районе">В своём районе</option>
+                          <option value="В_другом_районе" selected>В другом районе</option>
                         @endif
 
                       </select>
@@ -339,7 +335,7 @@
                       <label for="submit-price">Предположительная цена объекта</label><i class="fa fa-question-circle tool-tip" data-toggle="tooltip" data-placement="right" title="Мы можем помочь в определении рыночной цены объекта"></i>
                       <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-rub"></i></span>
-                        <input type="text" class="form-control" id="submit-price" name="price" value="{{$house->price}}" >
+                        <input type="text" class="form-control" id="submit-price" name="price"  value="{{$house->price}}" pattern="\d*">
                       </div>
                     </div>
                     <!-- /.form-group -->
@@ -364,7 +360,7 @@
                       <div class="form-group">
                         <div class="input-group">
                           <span class="input-group-addon"><i class="fa fa-rub"></i></span>
-                          <input type="text" class="form-control" id="submit-price" name="doplata" value="{{$house->doplata}}">
+                          <input type="text" class="form-control" id="submit-doplata" name="doplata" value="{{$house->doplata}}" >
                         </div>
                       </div>
                       <!-- /.form-group -->
@@ -387,10 +383,10 @@
         <aside class="submit-step">
           <figure class="step-number">2</figure>
           <div class="description">
-            <h4>Укажите информацию по объекту</h4>
-            <p>Укажите точную информацию о вашей квартире или доме в полном соответствии с действительностью. Будьте внимательны. Все объявления проверяются модераторами вручную!
-            </p>
-          </div>
+                                          <h4>Укажите какие цели обмена?</h4>
+                                          <p>Укажите большую или меньшую жильё вы хотите получить. Предположительную цену объекта и желаемую сумму доплаты, если Вы идёте на уменьшение. Будьте внимательны. От правильности заполнения зависит подбор автоматически обучаемого поиска!
+                                          </p>
+                                      </div>
         </aside>
         <!-- /.submit-step -->
       </div>
@@ -423,9 +419,8 @@
         <aside class="submit-step">
           <figure class="step-number">3</figure>
           <div class="description">
-            <h4>Загрузите фотографии</h4>
-            <p>Загрузите несколько красивых фотографий вашего объекта, чтобы составить хорошее впечатление
-            </p>
+              <h4>Загрузите фотографии</h4>
+              <p>Загрузите несколько красивых фотографий вашего объекта. От качества фотографий зависит какое впечатление составят об объекте.  </p>
           </div>
         </aside>
         <!-- /.submit-step -->
@@ -450,8 +445,8 @@
         <aside class="submit-step">
           <figure class="step-number">4</figure>
           <div class="description">
-            <h4>Проверьте информацию и нажмите "Отправить"</h4>
-            <p>Проверьте введённую Вами информацию и только после этого нажмите продолжить.
+              <h4>Проверьте информацию и нажмите "Отправить"</h4>
+              <p>Проверьте введённую Вами информацию и только после этого нажмите продолжить. Вы всегда сможете отредактировать объявление в личном кабинете.
             </p>
           </div>
         </aside>
@@ -460,6 +455,7 @@
       <!-- /.col-md-3 -->
     </div>
   </div>
+
   {!! Form::close() !!}
   <!--</form> /#form-submit -->
-  @endsection
+@endsection

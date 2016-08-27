@@ -1,56 +1,22 @@
-@extends('templates.TemplatePropertiesListing')
-
-@section('search-results')
-  <section id="results">
-               <header><h1>Предложения по вашему запросу</h1></header>
-               <section id="search-filter">
-                   <figure><h3><i class="fa fa-search"></i>Результатов поиска:</h3>
-                       <span class="search-count">{{ $foundelemts }}</span>
-                       @if($foundelemts != 0)
-                         <div class="sorting">
-                             <div class="form-group">
-                               <form  id="formdata" method="post"  action="/sorted/properties">
-                                 <input type="hidden" name="_token" value="{!! csrf_token() !!}">
-                                   @foreach($paramSearch as $key => $value )
-                                        <input type="hidden" name="{{$key}}" value="{{$value}}">
-                                   @endforeach
-                                  <select name="sorting" id="sorting">
-                                      <option value="">Сортировать</option>
-                                      <option value="1">По цене убывания</option>
-                                      <option value="2">По метражу</option>
-                                      <option value="3">По дате добавления</option>
-                                  </select>
-                              </form>
-
-                             </div><!-- /.form-group -->
-                         </div>
-                       @endif
-                   </figure>
-               </section>
-               <?php $count_ads  = 0 ; ?>
-
-               <section id="properties" class="display-lines">
-
-                   @if(Auth::check())
+                @if(Auth::check())
 
 
-                   @else
+                  @else
 
                      <div id="myCarousel" class="carousel slide" data-ride="carousel">
 
                               <?php $itemid = 0; ?>
 
-                              <!-- Carousel items -->
-                               <div class="carousel-inner" role="listbox">
-
-
                                @foreach(array_chunk($houses, 2) as $items)
                                     <?php $itemid = $itemid + 1; ?>
 
+                                    <!-- Carousel items -->
+                                     <div class="carousel-inner" role="listbox">
+                                       
+                                        @foreach($items as $house )
+
                                           @if($itemid == 1)
                                                <div class="active item">
-
-                                               @foreach($items as $house )
                                                  <?php
                                                       $home = new App\Obivlenie ;
                                                       $typehousenumberrooms =  $home->typeHouse($house->kolitchestvo_komnat, $house->type_nedvizhimosti) ;
@@ -120,16 +86,9 @@
                                                    </div>
                                                    <!-- </div>  /.property -->
 
-
-                                                   @endforeach
-                                               </div>    <!-- </div>  /.active item -->
-
-
-
+                                               </div>
                                            @else
                                                <div class="item">
-                                                  @foreach($items as $house )
-
                                                    <?php
                                                         $home = new App\Obivlenie ;
                                                         $typehousenumberrooms =  $home->typeHouse($house->kolitchestvo_komnat, $house->type_nedvizhimosti) ;
@@ -199,37 +158,12 @@
                                                    </div>
                                                    <!-- </div>  /.property -->
 
-
-                                                   @endforeach
-                                               </div> <!-- </div>  /.item -->
+                                               </div>
                                            @endif
-
+                                        @endforeach
+                                   </div>
                                 @endforeach
-                              </div>
-
 
                       </div><!-- carousel-->
 
-
-                   @endif
-
-
-
-                    <!-- Pagination ($foundelemts / 2 )-->
-                    <div class="center">
-                        <ul class="pagination">
-                            @for($i=0; $i < 4; $i++)
-                                @if( $i== 0)
-                                    <li  data-target="#myCarousel" data-slide-to="{!!$i!!}" class="active"><a href="">{{$i+1}}</a></li>
-                                @else
-                                    <li data-target="#myCarousel" data-slide-to="{!!$i!!}"><a href="">{{$i+1}}</a></li>
-                                @endif
-                              @endfor
-                         </ul><!-- /.pagination-->
-
-                              </div><!-- /.center-->
-                </section><!-- /#properties-->
-
-  </section><!-- /#results -->
-
-@endsection
+                  @endif

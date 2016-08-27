@@ -38,6 +38,13 @@ class Obivlenie extends Model
         return $this->morphMany('App\Images', 'imageable');
     }
 
+    public function favorisutilisateurs()
+    {
+        return $this->morphMany('App\FavorisUtilisateurs', 'favorisutilisateurable');
+    }
+
+
+
     public function getCategoriesByName($categorie_id)
     {
       $allcategorie = Categorie::whereid($categorie_id)->get();
@@ -78,7 +85,7 @@ class Obivlenie extends Model
         $isStudio = function() use($number_room, $room){
              return ($room($number_room) != "Студия") ? false : true ;
         };
-        
+
         if (in_array($type_nedvizhimosti, $TYPE_OBJECT)) {
             return  ($type_nedvizhimosti  == "Комната") ? "Комната" : "Дом" ;
         }

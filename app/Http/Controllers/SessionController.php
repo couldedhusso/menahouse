@@ -179,4 +179,14 @@ class SessionController extends Controller
 
     }
 
+
+    public function setfilterValue(){
+        $inputs = Input::all();
+        dd($inputs);
+        return json_decode($inputs);
+    }
+
+    public function getfilterValue(){
+        return 0 ;
+    }
 }
