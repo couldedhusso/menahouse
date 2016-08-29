@@ -34,12 +34,12 @@ mainApp.controller("mainController", ['$scope', 'RangeSliderFactory','$http', fu
 
   $scope.range = RangeSliderFactory.getrangeValue();
   var url = '/getqueryresults';
-  //
 
-  //
+  $scope.data = [];
+
   $http.get(url).success(function(response) {
          $scope.data = response;
-         alert('Everything is well ');
+
   }).error(function(response) {
           console.log(response);
           alert('This is embarassing. An error has occured. Please check the log for details');
