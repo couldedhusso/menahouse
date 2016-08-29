@@ -9,12 +9,14 @@ use App\User;
 use App\Thumbnail;
 use App\Bookmarked;
 use Menahouse\CustomHelper;
+use Request;
+use Session;
 
 use Intervention\Image\Facades\Image;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
-use Request;
+use Illuminate\Session\Store;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -29,7 +31,7 @@ use Auth ;
 use DB;
 use Storage;
 
-use Menahouse\ElasticSearchEngine;
+use Menahouse\MenahouseSearchEngine;
 use Redirect;
 
 use App\Events\ObivlyavleniyeWasStored;
@@ -67,7 +69,7 @@ class ObivlenieController extends Controller
         */
 
         $user_id = Auth::user()->id ;
-        $indexmodel = new ElasticSearchEngine;
+        $indexmodel = new MenahouseSearchEngine;
         $Helper = new CustomHelper;
         $StoragePath = $Helper->getStorageDirectory();
 
@@ -254,9 +256,9 @@ class ObivlenieController extends Controller
 
     public function resultsSearch(){
         if ( count($this->searchresults) == 0 ) {
-           $elasticsearcher = new ElasticSearchEngine ;
+           $menahousefinder = new MenahouseSearchEngine ;
            $term["gorod"] = "Москва";
-           $this->searchresults = $elasticsearcher->getIndexedElements($term);
+           $this->searchresults = $menahousefinder->getIndexedElements($term);
         }
         return json_encode($this->searchresults );
 
@@ -338,13 +340,150 @@ class ObivlenieController extends Controller
 
     }
 
-    public function searchEngine(Request $request){
+    public function extractquery(Request $request)
+    {
+        //create a new instance of MenahouseSearchEngine to performing search
+        $menahousefinder = new MenahouseSearchEngine ;
+        $term = []; $range = [];
+
+        $paramSearch = Input::except('_token', 'rangeMin', 'rangeMax');
+
+        $maxrange = Input::get('rangeMax');
+        $minrange = Input::get('rangeMin');
+
+        $setRange =  "BETWEEN " .$minrange.
+                     " AND ". $maxrange;
+        $paramSearch += ['obshaya_ploshad' => $setRange];
+
+
+        if (("11" != $paramSearch["district"])  &&
+            ("Московская область" != $paramSearch["city"])) {
+            $paramSearch["district"] = "";
+        }
+
+
+        $matchParamValues = function($paramName, $paramKey) {
+              $all = ['Все города', 'Все округа', 'Все районы'];
+
+              $queryParam = [
+
+                  "city" => [
+                      "1" => "Все города",
+                      "2" => "Москва",
+                      "3" => "Московская область",
+                      "4" => "Новая Москва"
+                  ],
+
+                  "district" => [
+                      "0" => "Все округа",
+                      "1" => "Центральный",
+                      "2" => "Северный",
+                      "3" => "Северо-Восточный",
+                      "4" => "Восточный",
+                      "5" => "Юго-Восточный",
+                      "6" => "Южный",
+                      "7" => "Юго-Западный",
+                      "8" => "Западный",
+                      "9" => "Северо-Западный",
+                      "10" => "Зеленоградский",
+                      "11" => "Все районы",
+                      "12" => "Троицкий"
+                  ],
+
+                  "propertytype" => [
+                        "1" => "Квартира",
+                        "2" => "Комната",
+                        "3" => "Частный дом",
+                        "4" => "Новостройки"
+                  ],
+
+                  "mestopolozhenie_obmena" => [
+                      "1" => "В_другом_районе",
+                      "2" => "В_своём_районе"
+                  ],
+
+                  "room" => [
+                    "1" => "1",
+                    "2" => "2",
+                    "3" => "3",
+                    "4" => "4",
+                    "5" => "5"
+                  ],
+
+                  // en fonction du critere de recherche prendre le contraire
+                  // tseli_obmena == На увеличение ns retournons ttes les offres qui ont
+                  // tseli_obmena == На уменьшение
+                  // <select name="tseli_obmena">
+                  //     <option value="">Обмен на</option>
+                  //     <option value="1">На увеличение</option>
+                  //     <option value="2">На уменьшение</option>
+                  // </select>
+                  //
+
+                  "tseli_obmena" => [
+                      "1" => "На_уменьшение",
+                      "2" => "На_увеличение"
+                  ]
+
+              ];
+
+              $q = function() use ($paramName){
+
+                 $qt = [
+                            "city" => "gorod",
+                            "district" => "rayon",
+                            "propertytype" => "type_nedvizhimosti",
+                            "tseli_obmena" => "tseli_obmena",
+                            "room" => "kolitchestvo_komnat",
+                            "mestopolozhenie_obmena" => "mestopolozhenie_obmena"
+                      ];
+                 return $qt[$paramName];
+              };
+
+              foreach ($queryParam as $queryParamKey => $queryParamValue) {
+                  //  $qr = "";
+                    if ($queryParamKey == $paramName) {
+
+                        if (!in_array($queryParamValue[$paramKey], $all)) {
+                            return  ["1" => $q($paramName), "2" => $queryParamValue[$paramKey]];
+                        }
+                    }
+              }
+
+            //  return $qr ;
+        };
+
+
+        foreach ($paramSearch as $key => $value) {
+
+          if ((!in_array($key, ['_token'])) AND (!empty($paramSearch[$key]))) {
+
+                  if ($key == 'obshaya_ploshad') {
+                      $params += [ 'obshaya_ploshad'  => $setRange];
+                  } else {
+                      $qv = $matchParamValues($key, $value);
+                      if (!is_null($qv)) {
+                        $params += [ $qv['1'] => $qv['2']];
+
+                        ///===  request parameters for elasticsearch
+                        $term += [ $qv['1'] => $qv['2']];
+                      }
+                  }
+
+              }
+        }
+
+
+    }
+
+
+    public function searchengine(Request $request){
 
 
       ///=== TODO :  архитектура для высокой нагрузски на AWS
 
-      //create a new instance of Elasticsearch to performing search
-      $elasticsearcher = new ElasticSearchEngine ;
+      //create a new instance of MenahouseSearchEngine to performing search
+      $menahousefinder = new MenahouseSearchEngine ;
       $term = []; $range = [];
 
       $paramSearch = Input::except('_token', 'rangeMin', 'rangeMax');
@@ -608,7 +747,7 @@ class ObivlenieController extends Controller
           $paramSearch['obshaya_ploshad'] = $flag ;
       }
 
-      // $houses = $elasticsearcher->getIndexedElements($paramSearchEngine);
+      // $houses = $menahousefinder->getIndexedElements($paramSearchEngine);
       $foundelemts = count($houses);
 
       return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
@@ -624,7 +763,7 @@ class ObivlenieController extends Controller
      */
     public function update(Request $request)
     {
-      $indexmodel = new ElasticSearchEngine;
+      $indexmodel = new MenahouseSearchEngine;
       $Helper = new CustomHelper;
       $StoragePath = $Helper->getStorageDirectory();
 
@@ -747,6 +886,17 @@ class ObivlenieController extends Controller
     public function getCatalogue(Request  $request)
     {
 
+      //  menahouseUserQuery
+
+       $paramSearch = Input::except('_token');
+       $menahousefinder = new MenahouseSearchEngine() ;
+       $menahousefinder::SetQuerySearch($paramSearch);
+
+       return  redirect('search-results');
+
+    //   return Redirect('/sign-up');
+
+
         // $paramSearch = Input::all();
         //
         //   $form_sale_city = Input::get('form-sale-city');
@@ -769,43 +919,10 @@ class ObivlenieController extends Controller
         //   }
 
 
-
-          $paramSearch = Input::except('_token');
-
-          $foundNotEmptyValue = false;
-
-          foreach ($paramSearch as $key => $value) {
-            if (!empty($value)) {
-                  $strParam = $key;
-                  $foundNotEmptyValue = true;
-                  break;
-            }
-          }
-
-          if ($foundNotEmptyValue) {
-
-
-            $qb = "SELECT * FROM obivlenie WHERE $strParam = :$strParam";
-
-            $params = [$strParam => $paramSearch[$strParam] ];
-            foreach ($paramSearch as $key => $value) {
-            if ((!in_array($key, [$strParam])) AND (!empty($paramSearch[$key]))) {
-                    $qb = $qb ." AND ".$key."= :".$key;
-                    $params += [ $key => $value];
-                  }
-            }
-            if (Auth::check()) {
-                $qb = $qb. " AND user_id <> ".Auth::user()->id;
-            }
-            // $qb = $qb." ORDER BY ".$setOrderBy[$sort]." DESC";
-            $houses = DB::select(DB::raw($qb), $params);
-          } else {
-            return Redirect()->back();
-          }
-
-        $foundelemts =count($houses);
-
-        return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
+        // dd(json_encode($foundhouses));
+        // $foundelemts =count($houses);
+        //
+        // return View('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
     }
 
     /**
@@ -863,6 +980,14 @@ class ObivlenieController extends Controller
       $filePath = 'dev/thumbs/' .$thumbnailName;
       $CloudStorage->put($filePath, file_get_contents($thumbnail), 'public');
 
+    }
+
+    public function getItemsCollections()
+    {
+      $menahousefinder = new MenahouseSearchEngine() ;
+      $houses = $menahousefinder::getItemsCatalogue();
+
+      return json_encode($houses) ;
     }
 
     public static function makeLengthAware($collection)

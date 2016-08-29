@@ -133,6 +133,7 @@
 <br>
                    <form role="form" id="form-map-sale" class="form-map form-search clearfix" method="post" action="/properties/all">
                         <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
+                        
                         <div class="row">
                           <div class="col-md-1">
                           </div>

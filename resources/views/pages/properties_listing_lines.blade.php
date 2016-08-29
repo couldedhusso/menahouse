@@ -36,7 +36,7 @@
 
                    @else
 
-                     <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                     <div id="myCarousel" class="carousel slide carousel-fade" data-ride="carousel">
 
                               <?php $itemid = 0; ?>
 
@@ -218,7 +218,7 @@
                     <!-- Pagination ($foundelemts / 2 )-->
                     <div class="center">
                         <ul class="pagination">
-                            @for($i=0; $i < 4; $i++)
+                            @for($i=0; $i < ($foundelemts / 2); $i++)
                                 @if( $i== 0)
                                     <li  data-target="#myCarousel" data-slide-to="{!!$i!!}" class="active"><a href="">{{$i+1}}</a></li>
                                 @else

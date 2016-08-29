@@ -68,7 +68,7 @@
                   <section id="sidebar">
                     <aside id="edit-search">
                             <header><h3>Поиск</h3></header>
-                            <form role="form" id="form-sidebar" class="form-search" method="get" >
+                            <form role="form" id="form-sidebar" class="form-search" method="post"  action="/properties/all">
                                 <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
                                 {!! csrf_field() !!}
                                 <div class="form-group">
@@ -164,7 +164,7 @@
                               </div><!-- /.form-group -->
 
                                 <div class="form-group">
-                                    <button type="submit" ng-click="getItems()" class="btn btn-default">Искать</button>
+                                    <button type="submit"  class="btn btn-default">Искать</button>
                                 </div><!-- /.form-group -->
                             </form><!-- /#form-map -->
                         </aside><!-- /#edit-search -->
@@ -337,7 +337,7 @@
 
 $(document).ready(function(){
   $('#myCarousel').carousel({
-    interval : false;
+    interval: 3000
   });
 
   /* SLIDE ON CLICK */

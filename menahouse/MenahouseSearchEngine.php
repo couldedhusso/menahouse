@@ -1,12 +1,21 @@
 <?php namespace Menahouse ;
 
 use Elasticsearch;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
-use App\Obivlenie;
+use Elasticsearch\Client;
 
-class ElasticSearchEngine
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Illuminate\Session\Store as SessionStore;
+
+use App\User;
+use App\Obivlenie;
+use Menahouse\CustomHelper;
+
+use Auth ;
+use DB;
+use Session;
+
+class MenahouseSearchEngine
 {
 
   // connection by ssl on my AWS
@@ -22,14 +31,38 @@ class ElasticSearchEngine
   //   }
   // });
 
+  private $session;
+  private $container;
+  private $searchquery;
+
   private $hosts = ['127.0.0.1:9200'];
   private $client ;
 
   public function __construct()
   {
+
+  //  $this->session =  Session;
+    $this->container = 'Menahouse_search_Query';
+
+
     $this->client = Elasticsearch\ClientBuilder::create()
                 ->setHosts($this->hosts)
                 ->build();
+
+    $this->InitQueryContainer();
+  }
+
+  private function InitQueryContainer(){
+
+  }
+
+  private function inserQuerySearchToContainer(){
+
+  }
+
+  private function updatQuerySearchContainer(){
+  //  ,$this->session->get($this->container)
+    array_set($this->searchquery, $this->container, null);
   }
 
   public function ModelMapping($params)
@@ -53,12 +86,12 @@ class ElasticSearchEngine
       return $response;
   }
 
-  public function getIndexedElements($paramSearch){
+  public function getIndexedElements($queryParameters){
 
-      $paramTerm = $paramSearch["term"];
+      $paramTerm = $queryParameters["term"];
       $must = [];
-      if (isset($paramSearch["range"])) {
-        $paramRange = $paramSearch["range"];
+      if (isset($queryParameters["range"])) {
+        $paramRange = $queryParameters["range"];
       }
       if (count($paramTerm) == 1) {
            $searchConditons["bool"]["must"] =
@@ -103,7 +136,7 @@ class ElasticSearchEngine
         return $this->buildCollection($results) ;
   }
 
-  public function getSortedIndexedElements($paramSearch, $paramSort){
+  public function getSortedIndexedElements($queryParameters, $paramSort){
 
     $params = [
         "index" => "menahouse",
@@ -213,5 +246,63 @@ class ElasticSearchEngine
         foreach ($result['_source'] as $value) { $id->push($value['id']); }
         return $id ;
    }
+
+
+   public static function getItemsCatalogue(){
+
+
+     $queryParameters = Session::get('menahouseUserQuery');
+
+     $foundNotEmptyValue = false;
+
+     foreach ($queryParameters as $key => $value) {
+       if (!empty($value)) {
+             $strParam = $key;
+             $foundNotEmptyValue = true;
+             break;
+       }
+     }
+
+   //  ElasticSearchEngine
+
+     if ($foundNotEmptyValue) {
+
+
+       $qb = "SELECT * FROM obivlenie WHERE $strParam = :$strParam";
+
+       $params = [$strParam => $queryParameters[$strParam] ];
+       foreach ($queryParameters as $key => $value) {
+         if (!in_array($key, [$strParam]) AND (!empty($queryParameters[$key]))) {
+                 $qb = $qb ." AND ".$key."= :".$key;
+                 $params += [ $key => $value];
+               }
+         if (($key == "obshaya_ploshad") ) {
+                   $qb = $qb." AND ".$key." ".$setRange;
+               }
+       }
+       if (Auth::check()) {
+           $qb = $qb. " AND user_id <> ".Auth::user()->id;
+       }
+       // $qb = $qb." ORDER BY ".$setOrderBy[$sort]." DESC";
+       $houses = DB::select(DB::raw($qb), $params);
+     } else {
+
+         $qdb = "SELECT * FROM obivlenie";
+         $houses = DB::select(DB::raw($qdb));
+
+         // $queryParameters['gorod'] = "Москва";
+     }
+
+
+      return $houses ;
+   }
+
+  public static function SetQuerySearch($queryParameters){
+
+    Session::put('menahouseUserQuery', $queryParameters);
+
+  }
+
+
 
 }

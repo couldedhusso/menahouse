@@ -351,6 +351,19 @@ Route::post('property/catalogue', 'ObivlenieController@searchEngine');
 Route::post('properties/all', 'ObivlenieController@getCatalogue');
 Route::get('properties/all', 'ObivlenieController@getAllProperties');
 
+Route::get('extractquery', 'ObivlenieController@getItemsCatalogue');
+Route::get('getqueryresults', 'ObivlenieController@getItemsCollections');
+
+Route::get('search-results', function(){
+    return view('pages.properties_listing');
+});
+// Route::post('getSearchqueryValues', function(){
+//
+//   $value = Session::get('menahouseUserQuery');
+//   return  redirect('search-results');
+//
+// });
+
 
 // ==== angular search filters
 

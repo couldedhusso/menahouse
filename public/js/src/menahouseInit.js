@@ -99,23 +99,23 @@ mainApp.controller("IndexController", ['$scope', '$http', function($scope,  $htt
     'type_nedvizhimosti': ''
   };
 
-  $scope.IndexSearch = function() {
-
-      params = {
-        'gorod': $scope.qs.gorod,
-        'type_nedvizhimosti': $scope.qs.type_nedvizhimosti
-      }
-
-      $http({ method :  method, url : url, data : params}).then(function(response) {
-          console.log('Voila!');
-          console.log(response);
-      },
-
-      function(response) {
-          $scope.data = response.data || 'Request failed';
-          $scope.status = response.status;
-      });
-  };
+  // $scope.IndexSearch = function() {
+  //
+  //     params = {
+  //       'gorod': $scope.qs.gorod,
+  //       'type_nedvizhimosti': $scope.qs.type_nedvizhimosti
+  //     }
+  //
+  //     $http({ method :  method, url : url, data : params}).then(function(response) {
+  //         console.log('Voila!');
+  //         console.log(response);
+  //     },
+  //
+  //     function(response) {
+  //         $scope.data = response.data || 'Request failed';
+  //         $scope.status = response.status;
+  //     });
+  // };
 
   // $scope.initData = function(){
   //
@@ -136,140 +136,29 @@ mainApp.controller("IndexController", ['$scope', '$http', function($scope,  $htt
 mainApp.controller("mainController", ['$scope', 'RangeSliderFactory','$http', function($scope, RangeSliderFactory, $http) {
   $scope.range = RangeSliderFactory.getrangeValue();
 
-
-
   // ``$scope.filters = IndexSearcService.getfilterValue();
+  var url = '/getqueryresults';
+  $http.get(url).then(function(response, status) {
 
+    console.log(response.data);
+  //  $scope.data = response.data;
 
-  var method = 'GET';
+  });
 
-  $scope.IndexSearch = function() {
+  // $http({
+  //     method :  method,
+  //     url : url}).
+  //     success(function(response) {
+  //        $scope.data = response;
+  //     }).error(function(response) {
+  //         console.log(response);
+  //         alert('This is embarassing. An error has occured. Please check the log for details');
+  //  });
 
-      // $scope.data = $data;
-
-      var url = '`/properties/all`';
-
-      var params = {
-        'gorod': '',
-        'type_nedvizhimosti': ''
-      };
-
-      params = {
-        'gorod': $scope.qs.gorod,
-        'type_nedvizhimosti': $scope.qs.type_nedvizhimosti
-      }
-
-      $http({
-          method :  method,
-          url : url,
-          data: $.param($scope.qs),}).
-          success(function(response) {
-              //console.log(response);
-            //  alert('Voila!');
-             $scope.data = $scope.qs;
-              // $scope.data = window.location.search($scope.qs);
-              // window.location = url;
-          }).error(function(response) {
-              console.log(response);
-              alert('This is embarassing. An error has occured. Please check the log for details');
-       });
-
-      // then(function(response) {
-      //     console.log('Voila!');
-      //     console.log(response);
-      // },
-      //
-      // function(response) {
-      //     $scope.data = response.data || 'Request failed';
-      //     $scope.status = response.status;
-      // });
-
-    }
-
-
-  $scope.getItems = function() {
-
-    console.log($scope.qs);
-
-    var url = '/properties/all';
-    $http({
-            method: method,
-            url: url,
-            data: $.param($scope.qs),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).success(function(response) {
-            //console.log(response);
-          // SS$scope.data = $scope.qs;
-        }).error(function(response) {
-            console.log(response);
-            alert('This is embarassing. An error has occured. Please check the log for details');
-        });
-
-
-      // $http({ method :  method, url : url,  data: { test: 'test' } }).success(function(response) {
-      //     console.log('Voila!');
-      //     console.log(response);
-      //
-      //     $scope.data = response;
-      // },
-      //
-      // function(response) {
-      //     $scope.data = response.data || 'Request failed';
-      //     $scope.status = response.status;
-      // });
-
-  };
-
-
-  // $scope.data = IndexSearcFactory.getfilterValue();
-
-  // $scope.filters = {
-  //   gorod: '',
-  //   type_nedvizhimosti: ''
-  // };
-
-  // $scope.qsdata = {};
-  // $scope.qsdata  = IndexSearcFactory.getfilterValue();
-
-  //  $scope.initData = function(){
-   //
-  //      console.log($scope.qs);
-  //  };
-
-  // $scope.initData = function(){
-  //
-  //     for (var fld in $scope.filters) {
-  //                 if (fld in $scope.qs) {
-  //                     $scope.filters[fld] = qs[fld];
-  //                 }
-  //     }
-  //
-  //     console.log('hi');
-  //
-  //     console.log($scope.filters);
-  // };
 
 }]);
 
 
-mainApp.directive('searchfilter', function(){
-
-  return {
-    restrict: 'E',
-    templateUrl:'/resources/viewa/layouts/partials/nav.blade.php'
-  };
-
-});
-
-mainApp.controller("getSearchRespone", function($scope) {
-  $scope.initData = function() {
-
-    $scope.qs
-      //  console.log($scope.qs);
-
-
-  };
-});
 //
 // mainApp.controller('SearchItemsController', ['$scope','$location', '$http' ,
 //                       function($scope, $location, $http)
@@ -324,3 +213,62 @@ mainApp.controller("getSearchRespone", function($scope) {
 //       }
 //     };
 //   });
+
+
+// $sco}pe.IndexSearch = function() {
+//
+//     var url = '/properties/all';
+//
+//     $http({
+//         method :  method,
+//         url : url,
+//         success(function(response) {
+//            $scope.data = response;
+//         }).error(function(response) {
+//             console.log(response);
+//             alert('This is embarassing. An error has occured. Please check the log for details');
+//      });
+
+    // then(function(response) {
+    //     console.log('Voila!');
+    //     console.log(response);
+    // },
+    //
+    // function(response) {
+    //     $scope.data = response.data || 'Request failed';
+    //     $scope.status = response.status;
+    // });
+
+  // }
+
+
+
+
+
+// $scope.data = IndexSearcFactory.getfilterValue();
+
+// $scope.filters = {
+//   gorod: '',
+//   type_nedvizhimosti: ''
+// };
+
+// $scope.qsdata = {};
+// $scope.qsdata  = IndexSearcFactory.getfilterValue();
+
+//  $scope.initData = function(){
+ //
+//      console.log($scope.qs);
+//  };
+
+// $scope.initData = function(){
+//
+//     for (var fld in $scope.filters) {
+//                 if (fld in $scope.qs) {
+//                     $scope.filters[fld] = qs[fld];
+//                 }
+//     }
+//
+//     console.log('hi');
+//
+//     console.log($scope.filters);
+// };
