@@ -351,7 +351,7 @@ Route::post('property/catalogue', 'ObivlenieController@searchEngine');
 Route::post('properties/all', 'ObivlenieController@getCatalogue');
 Route::get('properties/all', 'ObivlenieController@getAllProperties');
 
-Route::get('extractquery', 'ObivlenieController@getItemsCatalogue');
+Route::post('extractquery', 'ObivlenieController@extractUserRequestData');
 Route::get('getqueryresults', 'ObivlenieController@getItemsCollections');
 
 Route::get('search-results', function(){

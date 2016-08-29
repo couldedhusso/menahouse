@@ -340,11 +340,13 @@ class ObivlenieController extends Controller
 
     }
 
-    public function extractquery(Request $request)
+    public function extractUserRequestData(Request $request)
     {
+
+
         //create a new instance of MenahouseSearchEngine to performing search
         $menahousefinder = new MenahouseSearchEngine ;
-        $term = []; $range = [];
+        $term = []; $params = [];
 
         $paramSearch = Input::except('_token', 'rangeMin', 'rangeMax');
 
@@ -354,6 +356,7 @@ class ObivlenieController extends Controller
         $setRange =  "BETWEEN " .$minrange.
                      " AND ". $maxrange;
         $paramSearch += ['obshaya_ploshad' => $setRange];
+        $params += ['status' => $paramSearch['status']];
 
 
         if (("11" != $paramSearch["district"])  &&
@@ -473,6 +476,12 @@ class ObivlenieController extends Controller
               }
         }
 
+        $menahousefinder = new MenahouseSearchEngine ;
+        $params += ['typerequest' => '2'];
+
+        $menahousefinder::SetQuerySearch($params);
+
+        return redirect('search-results');
 
     }
 

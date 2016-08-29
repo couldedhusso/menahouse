@@ -272,12 +272,12 @@ class MenahouseSearchEngine
 
        $params = [$strParam => $queryParameters[$strParam] ];
        foreach ($queryParameters as $key => $value) {
-         if (!in_array($key, [$strParam]) AND (!empty($queryParameters[$key]))) {
+         if (!in_array($key, [$strParam, 'typerequest']) AND (!empty($queryParameters[$key]))) {
                  $qb = $qb ." AND ".$key."= :".$key;
                  $params += [ $key => $value];
                }
          if (($key == "obshaya_ploshad") ) {
-                   $qb = $qb." AND ".$key." ".$setRange;
+                   $qb = $qb." AND ".$key." ".$value;
                }
        }
        if (Auth::check()) {
@@ -293,6 +293,8 @@ class MenahouseSearchEngine
          // $queryParameters['gorod'] = "Москва";
      }
 
+
+    //  dd($houses);
 
       return $houses ;
    }

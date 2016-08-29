@@ -342,11 +342,11 @@
 <script type="text/javascript" src="{{ asset('js/angular/vendor/angular.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/sm.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/angular.rangeSlider.js')}} "></script>
-<script>
+{{-- <script>
     angular.module("mainApp", ["ui-rangeSlider"]).controller("mainController", function ($scope) {
     $scope.range = { min: 5, max: 170 };
 });
-</script>
+</script> --}}
 
 <!--[if gt IE 8]>
 <script type="text/javascript" src="{{asset('static/assets/js/ie.js')}}"></script>
