@@ -9,13 +9,16 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
 
     <link href="{{ asset('assets/fonts/font-awesome.css') }}" rel="stylesheet" type="text/css">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ elixir("css/all.css") }}">
+
+
 
     <title>@yield('Title')</title>
 
 </head>
 
-<body class="page-sub-page page-create-account page-account" id="page-top">
+<body class="page-sub-page page-create-account page-account" id="page-top" ng-app="Mena" ng-controller="MesFavorisController">
 <!-- Wrapper -->
 <div class="wrapper">
 
@@ -117,6 +120,7 @@
 </div>
 
 <script src='https://www.google.com/recaptcha/api.js'></script>
+
 <script type="text/javascript" src="{{asset('assets/js/jquery-2.1.0.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('assets/js/jquery-migrate-1.2.1.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('assets/bootstrap/js/bootstrap.min.js')}}"></script>
@@ -127,6 +131,10 @@
 <script type="text/javascript" src="{{asset('assets/js/retina-1.1.0.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('assets/js/fileinput.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('assets/js/custom.js')}}"></script>
+<script type="text/javascript" src="{{ asset('js/angular/vendor/angular.min.js') }}"></script>
+<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
+
+<script type="text/javascript" src="{{ asset('js/src/menahouseInit.js') }} "></script>
 
 <!--[if gt IE 8]>
 <script type="text/javascript" src="{{asset('assets/js/ie.js')}}"></script>

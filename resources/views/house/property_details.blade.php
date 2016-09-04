@@ -1,15 +1,16 @@
-@extends('templates.TemplatePropertiesDetails')
+@extends('templates.TemplatesItemDetails')
 
 @section('Title')
-  Mena | Property Detail
+  Mena |  Property Detail
 @endsection
 
 @section('active_breadcrumb')
   <li class="active">Подробное описание</li>
+  <li> <a href="#poisk" class="link-arrow" title="Перейти к поиску">Перейти к поиску</a>
 @endsection
 
 @section('content')
-<section id="property-detail">
+  <section id="property-detail">
   <header class="property-title">
 
       <?php
@@ -155,8 +156,6 @@
       </div>
     </div>
     <!-- /.col-md-5 -->
-
-
     <div class="col-md-8">
       </br>
       </br>

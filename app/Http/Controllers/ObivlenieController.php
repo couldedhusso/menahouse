@@ -29,8 +29,6 @@ use Illuminate\Support\Str;
 
 use Auth ;
 use DB;
-use Storage;
-
 use Menahouse\MenahouseSearchEngine;
 use Redirect;
 
@@ -350,6 +348,8 @@ class ObivlenieController extends Controller
 
         $paramSearch = Input::except('_token', 'rangeMin', 'rangeMax');
 
+    //   dd($paramSearch);
+
         $maxrange = Input::get('rangeMax');
         $minrange = Input::get('rangeMin');
 
@@ -359,11 +359,9 @@ class ObivlenieController extends Controller
         $params += ['status' => $paramSearch['status']];
 
 
-        if (("11" != $paramSearch["district"])  &&
-            ("Московская область" != $paramSearch["city"])) {
+        if ("11" == $paramSearch["district"]) {
             $paramSearch["district"] = "";
-        }
-
+        };
 
         $matchParamValues = function($paramName, $paramKey) {
               $all = ['Все города', 'Все округа', 'Все районы'];
@@ -459,11 +457,15 @@ class ObivlenieController extends Controller
 
         foreach ($paramSearch as $key => $value) {
 
+
           if ((!in_array($key, ['_token'])) AND (!empty($paramSearch[$key]))) {
 
                   if ($key == 'obshaya_ploshad') {
                       $params += [ 'obshaya_ploshad'  => $setRange];
-                  } else {
+                  }elseif ($key == 'propertytype') {
+                    $params += [ 'type_nedvizhimosti'  => $value];
+                  }
+                   else {
                       $qv = $matchParamValues($key, $value);
                       if (!is_null($qv)) {
                         $params += [ $qv['1'] => $qv['2']];
@@ -479,7 +481,9 @@ class ObivlenieController extends Controller
         $menahousefinder = new MenahouseSearchEngine ;
         $params += ['typerequest' => '2'];
 
-        $menahousefinder::SetQuerySearch($params);
+
+       $menahousefinder::SetQuerySearch($params);
+
 
         return redirect('search-results');
 

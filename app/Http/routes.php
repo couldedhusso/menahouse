@@ -19,6 +19,7 @@ use App\UserMessage;
 use Illuminate\Support\Collection ;
 
 use Menahouse\CustomHelper;
+use Menahouse\MenahouseSearchEngine;
 
 
 // use Request;
@@ -84,6 +85,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('dashboard/advertisement/edit', 'ObivlenieController@update');
 
+    Route::post('dashboard/bookmarked/', 'FavorisUtilisateurController@bookmarkItem');
+
     Route::get('dashboard/bookmarked/{id}', function($id){
 
         $user_id = Auth::user()->id;
@@ -100,20 +103,36 @@ Route::group(['middleware' => 'auth'], function () {
 
         return redirect()->back();
     });
-    Route::get('dashboard/bookmarked', function (){
 
+    Route::get('getuserbookmarkedproperties', function()
+    {
         $userId = Auth::user()->id ;
-        $flag = 'bookmarked';
-        $show_link = true;
+
+        // $results = DB::select( DB::raw("SELECT * FROM some_table WHERE some_col = :somevariable"), array(
+        //    'somevariable' => $someVariable,
+        // ));
 
 
-        $houses = DB::table('bookmarked')
+        // $houses =
+
+        // ->selectR("obivlenie.*, bookmarked.id as bkm_id, DATE_FORMAT('bookmarked.created_at', '%d/%l/%Y')  as bkm_date")
+
+        return response()->json(
+            DB::table('bookmarked')
             ->join('obivlenie', 'bookmarked.obivlenie_id', '=', 'obivlenie.id')
             ->join('users', 'users.id', '=', 'bookmarked.user_id')
             ->select('obivlenie.*', 'bookmarked.id as bkm_id', 'bookmarked.created_at as bkm_date')
-            ->get();
+            ->get()
+          );
+    });
 
-        return View('sessions.bookmarked', compact('flag', 'houses', 'show_link'));
+    Route::get('dashboard/bookmarked', function (){
+
+
+        $flag = 'bookmarked';
+        $show_link = true;
+
+        return View('sessions.bookmarked', compact('flag', 'show_link'));
     });
 
     /* Route::get('dashboard/advertisement/add', function ()    {
@@ -299,29 +318,38 @@ Route::get('property/{id}', function($id){
 
 Route::get('property/number_of_rooms/{numberroom}', function($numberroom){
 
-  $paramSearch = array('kolitchestvo_komnat' => $numberroom);
-  if (Auth::check()) {
-    $userID = Auth::user()->id;
-    if ($numberroom >= 4) {
-      $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', $numberroom)
-                                      ->where('user_id', '!=', $userID)->get();
-    } else {
-      $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', $numberroom)
-                                      ->where('user_id', '!=', $userID)->get();
-    }
-  }else {
+  $paramSearch = array('kolitchestvo_komnat' => $numberroom, 'typerequest' => '2');
 
-    if ($numberroom >= 4) {
-      $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', $numberroom)->get();
-    } else {
-      $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', $numberroom)->get();
-    }
+  // Session::put('menahouseUserQuery', $paramSearch);
 
-  }
+  $menahousefinder = new MenahouseSearchEngine ;
+  $menahousefinder::SetQuerySearch($paramSearch);
 
-  $foundelemts = count($houses);
+  return redirect('search-results');
 
-  return view('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
+
+  // if (Auth::check()) {
+  //   $userID = Auth::user()->id;
+  //   if ($numberroom >= 4) {
+  //     $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', $numberroom)
+  //                                     ->where('user_id', '!=', $userID)->get();
+  //   } else {
+  //     $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', $numberroom)
+  //                                     ->where('user_id', '!=', $userID)->get();
+  //   }
+  // }else {
+  //
+  //   if ($numberroom >= 4) {
+  //     $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', $numberroom)->get();
+  //   } else {
+  //     $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', $numberroom)->get();
+  //   }
+  //
+  // }
+  //
+  // $foundelemts = count($houses);
+  //
+  // return view('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
 });
 
 Route::post('properties/all', function(){
@@ -330,21 +358,14 @@ Route::post('properties/all', function(){
 });
 
 Route::get('property/type/{param}', function($param){
-  $paramSearch = array('type_nedvizhimosti' => $param);
-  if (Auth::check()) {
-    $userID = Auth::user()->id;
-    $houses = DB::table('obivlenie')->where('type_nedvizhimosti', '=', $param)
-                                    ->where('user_id', '!=', $userID)->get();
 
-  }else {
+  $paramSearch = array('type_nedvizhimosti' => $param, 'typerequest' => '2');
 
-    $houses = DB::table('obivlenie')->where('type_nedvizhimosti', '=', $param)->get();
+  $menahousefinder = new MenahouseSearchEngine ;
+  $menahousefinder::SetQuerySearch($paramSearch);
 
-  }
+  return redirect('search-results');
 
-  $foundelemts = count($houses);
-
-  return view('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
 });
 
 Route::post('property/catalogue', 'ObivlenieController@searchEngine');
@@ -553,6 +574,55 @@ Route::get('/', function () {
   //
   //  }
 
+
+
+
+  //   $obivlenie = obivlenie::create([
+  //       // 'adressa' => $adressa,
+  //       'metro' => str_random(4),
+  //       'gorod' =>  "Москва",
+  //       'ulitsa' => str_random(4),
+  //       /*'dom' => Input::get('dom'),
+  //       'address' => $address,
+  //       'vicota_patolka' => Input::get('roof')
+  //       */
+  //       'type_nedvizhimosti' => "Частный дом",
+  //       'tekct_obivlenia' => str_random(100),
+  //       'kolitchestvo_komnat' => "4",
+  //       'etajnost_doma' => "5",
+  //       'zhilaya_ploshad' => 30,
+  //       'obshaya_ploshad' => "110" ,
+  //       'ploshad_kurhni' => 10 ,
+  //       'rayon' => str_random(4),
+  //       'roof' => "2",
+  //       'etazh' => "3",
+  //       'san_usel' => str_random(4),
+  //       'title' => str_random(4),
+  //       'price' => "50000" ,
+  //       'status' => "Обмен",
+  //       'tseli_obmena' => "На_увеличение",
+  //       'mestopolozhenie_obmena' => "В_том_же_районе",
+  //       'doplata' => str_random(4),
+  //       'numberclick' => 0,
+  //     //  'predpolozhitelnaya_tsena' => Input::get('predpolozhitelnaya_tsena'),
+  //       'user_id' => '10',
+  //   ]);
+  //
+  // //  На_уменьшение
+  //
+  //
+  //   $arrayName = [
+  //     '1' => '2cP7ZHUIwVBPbM3TSafu180RWvMbE0Cw.jpeg',
+  //     '2' => '2SIrJ1QTv0kN9Rm7lRke5fFRb9xYE5zV.jpeg',
+  //     '3' => '49CSL8PDRUtVya4FzlvjkSvLOYWwXqJW.jpeg'
+  //   ];
+  //
+  //   foreach ($arrayName as $key => $value) {
+  //     $img = new Images ;
+  //     $img = $obivlenie->images()->create(array('path' => $value));
+  //     $obivlenie->images()->save($img);
+  //   }
+
   // $roleCount = Role::count() ;
   // if ( $roleCount != 3){
   //     $roleadm = Role::wherename('Admin')->first();
@@ -576,9 +646,6 @@ Route::get('/', function () {
   //
   if (Auth::check()) {
 
-
-
-
       $userID = Auth::user()->id ;
       $oneroom  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 1)
                                         ->where('user_id', '!=', $userID)
@@ -593,6 +660,7 @@ Route::get('/', function () {
                                            ->count();
 
       $fourplusrooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', 4)
+                                              ->OrWhere('type_nedvizhimosti', '=','Комната')
                                               ->where('user_id', '!=', $userID)
                                               ->count();
 
@@ -608,7 +676,8 @@ Route::get('/', function () {
       $oneroom  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 1)->count();
       $tworooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 2)->count();
       $threerooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '=', 3)->count();
-      $fourplusrooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', 4)->count();
+      $fourplusrooms  = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', 4)
+                                              ->OrWhere('type_nedvizhimosti', '=','Комната')->count();
       $home  = DB::table('obivlenie')->where('type_nedvizhimosti', '=', 'Частный дом')->count();
       $newhome  = DB::table('obivlenie')->where('type_nedvizhimosti', '=', 'Новостройки')->count();
   }

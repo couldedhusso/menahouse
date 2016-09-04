@@ -2,82 +2,80 @@
 
 <html lang="en-US">
 <head>
-     <meta charset="UTF-8"/>
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <meta name="author" content="ThemeStarz">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="ThemeStarz">
 
-     <link href='http://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
-     <link href="assets/fonts/font-awesome.css" rel="stylesheet" type="text/css">
-     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" type="text/css">
-     <link rel="stylesheet" href="assets/css/bootstrap-select.min.css" type="text/css">
-     <link rel="stylesheet" href="assets/css/magnific-popup.css" type="text/css">
-     <link rel="stylesheet" href="assets/css/jquery.slider.min.css" type="text/css">
-     <link rel="stylesheet" href="assets/css/owl.carousel.css" type="text/css">
-     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-     <link rel="stylesheet" href="assets/css/style.css" type="text/css">
-     <link rel="stylesheet" href="assets/css/angular.rangeSlider.css" type="text/css">
-     <link rel="stylesheet" href="assets/css/angular.rangeSlider.sm.css" type="text/css">
-     <title>Mena | Properties Listing</title>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
+    {{-- <link href="{{asset('assets/fonts/font-awesome.css')}}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{asset('assets/bootstrap/css/bootstrap.css')}}" type="text/css">
+    <link rel="stylesheet" href="{{asset('assets/css/bootstrap-select.min.css')}}" type="text/css">
+    <link rel="stylesheet" href="{{asset('assets/css/magnific-popup.css')}}" type="text/css">
+    <link rel="stylesheet" href="{{asset('assets/css/jquery.slider.min.css')}}" type="text/css">
+    <link rel="stylesheet" href="{{asset('assets/css/owl.carousel.css')}}" type="text/css">
+    <link rel="stylesheet" href="{{asset('assets/css/style.css')}}" type="text/css">
+    <link rel="stylesheet" href="{{asset('assets/css/angular.rangeSlider.css')}}" type="text/css">
+    <link rel="stylesheet" href="{{asset('assets/css/angular.rangeSlider.sm.css')}}" type="text/css"> --}}
+
+    <link href="{{ asset('assets/fonts/font-awesome.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{ elixir("css/all.css") }}">
+
+    <link rel="stylesheet" href="{{asset('assets/css/angular.rangeSlider.css')}}" type="text/css">
+    <link rel="stylesheet" href="{{asset('assets/css/angular.rangeSlider.sm.css')}}" type="text/css">
+
+    <title>@yield('Title')</title>
+
 </head>
 
-<body class="page-sub-page page-create-account page-account" ng-app="mainApp" id="page-top"   ng-controller="mainController" >
+<body class="page-sub-page page-property-detail" id="page-top" ng-app="App" ng-controller="mainController">
 <!-- Wrapper -->
 <div class="wrapper">
-  {{-- Say hello to: {> $scope. <} --}}
-  {{-- Say hello to: <input type="text" ng-model="name"> --}}
 
+    <!-- Navigation -->
     <div class="navigation">
         <div class="secondary-navigation">
             <div class="container">
-                <div class="contact">
+                <div class="contact" style="display:none">
                     <figure><strong>Тел.:</strong>+7 999-123-4567</figure>
                     <figure><strong>Email:</strong>mena@yandex.ru</figure>
-                </div>
-                <div class="user-area">
-                    {{-- <div class="actions">
-                      @if(Auth::check())
-                         <a href="{{ url('/dashboard/nedvizhimosts') }}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
-                      @else
-                         <a href="{{ url('/sign-in')}}" title="Разместить объявление своей квартиры бесплатно!" class="promoted"><strong>Разместить объявление</strong></a>
-                      @endif
-                    </div> --}}
                 </div>
             </div>
         </div>
         <div class="container">
-             @include('templates.NavTemplate')
+          <div class="container">
+               @include('templates.NavTemplate')
+          </div><!-- /.container -->
         </div><!-- /.container -->
     </div><!-- /.navigation -->
 
-    <!-- Page Content -->
+    <!-- end Navigation -->
+
     <div id="page-content">
-        <!-- Breadcrumb -->
-        <div class="container">
-            <ol class="breadcrumb">
-                <li><a href="{{url('/')}}">Главная</a></li>
-                <li class="active">Результаты поиска</li>
-            </ol>
-        </div>
-        <!-- end Breadcrumb -->
-
-        <div class="container">
-          <div class="row">
-              <!-- Results -->
-              <div class="col-md-9 col-sm-9">
-                  @yield('search-results')
-              </div><!-- /.col-md-9 -->
-              <!-- end Results -->
-
-              <!-- sidebar -->
-              <div class="col-md-3 col-sm-3">
-                  @include('layouts.partials.quick-search')
-              </div><!-- /.col-md-3 -->
-              <!-- end Sidebar -->
-          </div><!-- /.row -->
-
-        </div><!-- /.container -->
+    <!-- Breadcrumb -->
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="{{url('/')}}">Главная</a></li>
+            @yield('active_breadcrumb')
+        </ol>
     </div>
-    <!-- end Page Content -->
+    <!-- end Breadcrumb -->
+
+    <div class="container">
+      <div class="row">
+            <!-- Property Detail Content -->
+            <div class="col-md-9 col-sm-9">
+                @yield('content')
+            </div>
+
+            <!-- sidebar -->
+            <div class="col-md-3 col-sm-3">
+                  @include('layouts.partials.quick-search')
+            </div><!-- /.col-md-3 -->
+            <!-- end Sidebar -->
+      </div>
+    </div><!-- /.container -->
+</div>
+
     <!-- Page Footer -->
     <footer id="page-footer">
         <div class="inner">
@@ -135,7 +133,13 @@
     <!-- end Page Footer -->
 </div>
 
-<script src='https://www.google.com/recaptcha/api.js'></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=places"></script>
+<script type="text/javascript" src="{{asset('static/assets/js/draggable-0.1.js')}}"></script>
+<script type="text/javascript" src="{{asset('static/assets/js/jshashtable-2.1_src.js')}}"></script>
+<script type="text/javascript" src="{{asset('static/assets/js/jquery.numberformatter-1.2.3.js')}}"></script>
+<script type="text/javascript" src="{{asset('static/assets/js/tmpl.js')}}"></script>
+<script type="text/javascript" src="{{asset('static/assets/js/jquery.dependClass-0.1.js')}}"></script>
+<script type="text/javascript" src="{{asset('static/assets/js/jquery.slider.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/jquery-2.1.0.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/jquery-migrate-1.2.1.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/bootstrap/js/bootstrap.min.js')}}"></script>
@@ -144,19 +148,22 @@
 <script type="text/javascript" src="{{asset('static/assets/js/jquery.validate.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/icheck.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/retina-1.1.0.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('assets/js/markerwithlabel_packed.js')}}"></script>
+<script type="text/javascript" src="{{asset('assets/js/owl.carousel.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('assets/js/jquery.magnific-popup.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('assets/js/fileinput.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('assets/js/custom-map.js')}}"></script>
 <script type="text/javascript" src="{{asset('static/assets/js/custom.js')}}"></script>
-<script type="text/javascript" src="{{asset('js/vendor/jquery.infinitescroll.min.js')}}"></script>
 <script type="text/javascript" src="{{ asset('js/angular/vendor/angular.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/sm.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/angular.rangeSlider.js')}} "></script>
-<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
-<script type="text/javascript" src="{{ asset('assets/js/ui-bootstrap-tpls-2.1.1.js')}} "></script>
 
-<script type="text/javascript" src="{{ asset('js/src/menahouseInit.js') }} "></script>
-{{-- <script type="text/javascript" src="{{ asset('js/controller/menahouseSearchEngine.js')}} "></script> --}}
+<script>angular.module("App", ["ui-rangeSlider"]).controller("mainController", function ($scope) {
+    $scope.range = { min: 20, max: 100 };
+});</script>
 
 <!--[if gt IE 8]>
-<script type="text/javascript" src="{{asset('static/assets/js/ie.js')}}"></script>
+<script type="text/javascript" src="assets/js/ie.js"></script>
 <![endif]-->
 
 </body>

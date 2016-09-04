@@ -1733,6 +1733,19 @@ color: maroon; /* Цвет текста */
 /****
   D
 ****/
+
+.display-lines ul{
+   width: inherit;;
+   position: relative;
+   list-style: none;
+   margin: 0;
+   padding: 0;
+}
+
+.display-lines ul li{
+   float: left;
+}
+
 .display-lines .property {
   border-bottom: 2px solid #f3f3f3;
   padding-left: 280px;

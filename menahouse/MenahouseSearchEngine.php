@@ -253,6 +253,7 @@ class MenahouseSearchEngine
 
      $queryParameters = Session::get('menahouseUserQuery');
 
+
      $foundNotEmptyValue = false;
 
      foreach ($queryParameters as $key => $value) {
@@ -272,7 +273,7 @@ class MenahouseSearchEngine
 
        $params = [$strParam => $queryParameters[$strParam] ];
        foreach ($queryParameters as $key => $value) {
-         if (!in_array($key, [$strParam, 'typerequest']) AND (!empty($queryParameters[$key]))) {
+         if (!in_array($key, [$strParam, 'typerequest', 'obshaya_ploshad']) AND (!empty($queryParameters[$key]))) {
                  $qb = $qb ." AND ".$key."= :".$key;
                  $params += [ $key => $value];
                }
@@ -302,6 +303,10 @@ class MenahouseSearchEngine
   public static function SetQuerySearch($queryParameters){
 
     Session::put('menahouseUserQuery', $queryParameters);
+
+    // $menahousefinder = new MenahouseSearchEngine ;
+    //
+    // return $menahousefinder::getItemsCatalogue();
 
   }
 
