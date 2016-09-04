@@ -70,7 +70,7 @@
         <div class="center">
                {{-- <ul total-items="$scope.totalItems" ng-model="$scope.currentPage" class="pagination pagination-sm"></ul> --}}
               {{-- <pagination total-items="houses.length" ng-model="currentPage"  class="pagination" items-per-page="itemsPerPage"></pagination> --}}
-              <pagination total-items="houses.length" ng-model="currentPage"  class="pagination" items-per-page="itemsPerPage"></pagination>
+              <pagination total-items="totalItems" ng-model="currentPage"  class="pagination" items-per-page="itemsPerPage"></pagination>
        </div><!-- /.center-->
 
 
