@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image ;
 use Illuminate\Filesystem\FileNotFoundException;
 
+use DB;
+
 use Menahouse\CustomHelper;
 
 
@@ -71,9 +73,108 @@ class UserMessageController extends Controller
         // }
 
         // dd(count($newMessageCount));
-        $mailcount = count($usermessages);
+        // $mailcount = count($usermessages);
         $flag = "inbox";
-        return view('sessions.inbox', compact('usermessages', 'mailcount', 'userid', 'flag', 'show_link'));
+        return view('sessions.inbox', compact( 'mailcount', 'userid', 'flag', 'show_link'));
+    }
+
+    public function usermail()
+    {
+            $userid = Auth::user()->id;
+
+            // recuperer ts les msges non lus, pas dans la liste de spams et non supprimes
+
+            // $usermessages =  DB::table('receivers')
+            //     ->join('usermessages', 'receivers.toid', '=', 'usermessages.toid')
+            //     ->join('senders', 'senders.userid', '=', 'usermessages.fromid')
+            //     ->join('users', 'senders.userid', '!=', 'users.id')
+            //     ->where('usermessages.toid', '=', $userid)
+            //     ->where('receivers.spam', '=', '0')
+            //     ->where('receivers.deleted', '=', '0')
+            //     ->orderBy('receivers.created_at', 'desc')
+            //     ->select('usermessages.*', 'users.imia as imia', 'users.familia as familia', 'receivers.readed  as isread')
+            //     ->get();
+
+            // TODO : user cant send message to themself
+
+            $usermessages =  DB::table('usermessages')
+                ->join('receivers', 'receivers.toid', '=', 'usermessages.toid')
+                ->join('users', 'users.id', '=', 'usermessages.fromid')
+                ->where('usermessages.toid','=', $userid)
+                ->where('receivers.spam', '=', '0')
+                ->where('receivers.deleted', '=', '0')
+                ->select('usermessages.*','users.imia as imia', 'users.familia as familia', 'receivers.readed  as isread')
+                ->get();
+
+          return json_encode($usermessages);
+    }
+
+    public function usermailsenv($value='')
+    {
+        $messagesSent = UserMessage::where('fromid', '=', Auth::user()->id)
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
+
+        return json_encode($messagesSent);
+    }
+
+    public function usermailstrash()
+    {
+        // $receiverMsgId = Receiver::wheretoid(Auth::user()->id)
+        //                           ->where('deleted', '=', '1')
+        //                           ->pluck('msgid')
+        //                           ->toArray();
+        //
+        // $messagesDel = UserMessage::whereIn('id', $receiverMsgId)
+        //                             ->orderBy('id', 'desc')
+        //                             ->get();
+
+        $messagesDel =  DB::table('usermessages')
+                              ->join('receivers', 'receivers.toid', '=', 'usermessages.toid')
+                              ->join('users', 'users.id', '=', 'usermessages.fromid')
+                              ->where('usermessages.toid','=', Auth::user()->id)
+                              ->where('receivers.spam', '=', '0')
+                              ->where('deleted', '=', '1')
+                              ->select('usermessages.*','users.imia as imia', 'users.familia as familia', 'receivers.readed  as isread')
+                              ->get();
+        return json_encode($messagesDel);
+    }
+
+
+    public function usermailspam()
+    {
+        // $receiverMsgId = Receiver::wheretoid(Auth::user()->id)
+        //                           ->where('deleted', '=', '1')
+        //                           ->pluck('msgid')
+        //                           ->toArray();
+        //
+        // $messagesDel = UserMessage::whereIn('id', $receiverMsgId)
+        //                             ->orderBy('id', 'desc')
+        //                             ->get();
+
+        $messagesDel =  DB::table('usermessages')
+                              ->join('receivers', 'receivers.toid', '=', 'usermessages.toid')
+                              ->join('users', 'users.id', '=', 'usermessages.fromid')
+                              ->where('usermessages.toid','=', Auth::user()->id)
+                              ->where('receivers.spam', '=', '1')
+                              ->select('usermessages.*','users.imia as imia', 'users.familia as familia', 'receivers.readed  as isread')
+                              ->get();
+        return json_encode($messagesDel);
+    }
+
+    public function usermailsfavoris()
+    {
+
+        $messagesLiked =  DB::table('usermessages')
+                              ->join('receivers', 'receivers.toid', '=', 'usermessages.toid')
+                              ->join('users', 'users.id', '=', 'usermessages.fromid')
+                              ->where('usermessages.toid','=', Auth::user()->id)
+                              ->where('receivers.favoris', '=', '1')
+                              // ->where('receivers.deleted', '=', '0')
+                              ->select('usermessages.*','users.imia as imia', 'users.familia as familia', 'receivers.readed  as isread')
+                              ->get();
+
+        return json_encode($messagesLiked);
     }
 
     /**
@@ -84,40 +185,20 @@ class UserMessageController extends Controller
 
     public function sent()
     {
-
-      $messagesSent = UserMessage::where('fromid', '=', Auth::user()->id)
-                                  ->orderBy('created_at', 'desc')
-                                  ->get();
       $flag = "sent";
-      return view('messenger.sent', compact('messagesSent', 'flag'));
+      return view('messenger.sent', compact('flag'));
     }
 
     public function trash()
     {
-
-      $receiverMsgId = Receiver::wheretoid(Auth::user()->id)
-                                ->where('deleted', '=', '1')
-                                ->pluck('msgid')
-                                ->toArray();
-
-      $messagesDel = UserMessage::whereIn('id', $receiverMsgId)
-                                  ->orderBy('id', 'desc')
-                                  ->get();
       $flag = "deleted";
-      return view('messenger.deleted-msg', compact('messagesDel', 'flag'));
+      return view('messenger.deleted-msg', compact('flag'));
     }
 
     public function liked(){
-      $receiverMsgId = Receiver::wheretoid(Auth::user()->id)
-                                ->where('favoris', '=', '1')
-                                ->pluck('msgid')
-                                ->toArray();
 
-      $messagesLiked = UserMessage::whereIn('id', $receiverMsgId)
-                                  ->orderBy('created_at', 'desc')
-                                  ->get();
       $flag = "liked";
-      return view('messenger.liked', compact('messagesLiked', 'flag'));
+      return view('messenger.liked', compact('flag'));
 
     }
     public function create()

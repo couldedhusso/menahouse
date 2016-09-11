@@ -46,7 +46,7 @@
                  <option value="Новостройки">Новостройки</option>
              </select>
          </div><!-- /.form-group -->
-         <div class="form-group">
+         {{-- <div class="form-group">
              <select name="room">
                  <option value="">Кол-во комнат</option>
                  <option value="1">1</option>
@@ -55,7 +55,19 @@
                  <option value="4">4+</option>
                  <option value="5">Студия</option>
              </select>
-         </div><!-- /.form-group -->
+         </div><!-- /.form-group --> --}}
+
+
+         <div class="form-group">
+                            <select name="room">
+                                <option value="">Кол-во комнат</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4+</option>
+                                <option value="5">Студия</option>
+                            </select>
+                        </div><!-- /.form-group -->
          <div>
 
          <div class="slider" style="margin-top: 8px; border: 1px solid #d2d2d2">

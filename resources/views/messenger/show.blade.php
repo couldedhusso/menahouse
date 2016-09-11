@@ -47,29 +47,12 @@
                               {{$usermessage->body}}
                               <hr>
                       </div>
-                          <div class="mail-attachment">
+                          {{-- <div class="mail-attachment">
                               <div class="attachment">
-                                      {{-- @foreach($house->images as $img )
 
-                                        <div class="file-box">
-                                          <div class="file">
-                                              <a href="{{asset('storage/pictures/'.$img->path)}}">
-                                                  <div class="icon">
-                                                    <i class="fa fa-file-image-o"></i>
-                                                  </div>
-                                                  <div class="file-name">
-                                                      {{-- {{asset('storage/pictures/'.$img->path)}} --}}
-                                                      {{-- <br>
-                                                      <small>Добавлено: {{$img->created_at->format("D M j")}}</small>
-                                                    </div>
-                                                </a>
-                                            </div>
-
-                                        </div>
-                                      @endforeach --}}
                                   <div class="clearfix"></div>
                               </div>
-                              </div>
+                              </div> --}}
                               <div class="mail-body text-right">
                                       <a class="btn btn-white2" href="{{url('/mailbox/message/reply/'.$usermessage->fromid.'/'.$house->id)}}"><i class="fa fa-reply"></i>&nbsp; Ответить на сообщение</a>
                                       <a class="btn btn-white-grey" href="#"><i class="fa fa-arrow-right"></i> Заключить сделку</a>

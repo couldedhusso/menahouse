@@ -338,6 +338,25 @@ class ObivlenieController extends Controller
 
     }
 
+    private  function setparamsSearch($paramSearch)
+    {
+
+        $authValues = [11, 12];
+
+        $cities = [3, 4];
+        if (("11" == $paramSearch["district"])) {
+           $paramSearch["district"]= "";
+        } elseif(in_array($paramSearch["city"], $cities))  {
+            if (!in_array($paramSearch["district"], $authValues)) {
+              $paramSearch["district"]= "";
+            }
+        }
+
+        return $paramSearch["district"];
+
+
+    }
+
     public function extractUserRequestData(Request $request)
     {
 
@@ -348,8 +367,6 @@ class ObivlenieController extends Controller
 
         $paramSearch = Input::except('_token', 'rangeMin', 'rangeMax');
 
-    //   dd($paramSearch);
-
         $maxrange = Input::get('rangeMax');
         $minrange = Input::get('rangeMin');
 
@@ -358,10 +375,7 @@ class ObivlenieController extends Controller
         $paramSearch += ['obshaya_ploshad' => $setRange];
         $params += ['status' => $paramSearch['status']];
 
-
-        if ("11" == $paramSearch["district"]) {
-            $paramSearch["district"] = "";
-        };
+        $paramSearch["district"] = $this->setparamsSearch($paramSearch);
 
         $matchParamValues = function($paramName, $paramKey) {
               $all = ['Все города', 'Все округа', 'Все районы'];
@@ -477,6 +491,7 @@ class ObivlenieController extends Controller
 
               }
         }
+
 
         $menahousefinder = new MenahouseSearchEngine ;
         $params += ['typerequest' => '2'];

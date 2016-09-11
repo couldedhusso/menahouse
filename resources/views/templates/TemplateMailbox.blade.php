@@ -15,10 +15,10 @@
 
 </head>
 
-<body class="page-sub-page page-create-account page-account" id="page-top">
+<body class="page-sub-page page-create-account page-account" id="page-top" ng-app="mena">
 <!-- Wrapper -->
 <div class="wrapper">
-
+    {> gretting <}
     <div class="navigation">
         <div class="secondary-navigation">
             <div class="container">
@@ -65,7 +65,7 @@
                                     <li><a href="{{ url('/auth/logout') }}" title="Обязательно зайдите завтра проверить новые сообщения!"><i class="fa fa-sign-out"></i>&nbsp;Выход</a></li>
                               </ul>
                           </li>
-            
+
                     </ul>
                 </nav><!-- /.navbar collapse-->
 
@@ -125,7 +125,7 @@
     <!-- end Page Footer -->
 </div>
 
-<script src='https://www.google.com/recaptcha/api.js'></script>
+
 <script type="text/javascript" src="{{asset('assets/js/jquery-2.1.0.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('assets/js/jquery-migrate-1.2.1.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('assets/bootstrap/js/bootstrap.min.js')}}"></script>
@@ -136,12 +136,18 @@
 <script type="text/javascript" src="{{asset('assets/js/retina-1.1.0.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('assets/js/fileinput.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('assets/js/custom.js')}}"></script>
+<script type="text/javascript" src="{{ asset('js/angular/vendor/angular.min.js') }}"></script>
+<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
+
+<script type="text/javascript" src="{{ asset('js/src/menahouseInit.js') }} "></script>
+
+{{-- <script type="text/javascript" src="{{asset('js/scr/mailbox.js')}}"></script> --}}
 
 <!--[if gt IE 8]>
 <script type="text/javascript" src="{{asset('assets/js/ie.js')}}"></script>
 <![endif]-->
 
-<script type="text/javascript">
+{{-- <script type="text/javascript">
 $(function () {
     $("div.table").slice(0, 1).show();
     $("#arrow-right").on('click', function (e) {
@@ -171,7 +177,7 @@ $(function () {
     });
 });
 
-</script>
+</script> --}}
 
 </body>
 </html>

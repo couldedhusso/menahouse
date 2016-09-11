@@ -5,7 +5,7 @@
     <header><h1>Предложения по вашему запросу</h1></header>
     <section id="search-filter">
                              <figure><h3><i class="fa fa-search"></i>Результатов поиска:</h3>
-                                 <span class="search-count">{>houses.length <}</span>
+                                 <span class="search-count">{>houses.length<}</span>
                                  <div class="sorting">
                                      <div class="form-group">
                                          <select name="sorting" ng-model ="criteria_sort">
@@ -24,7 +24,7 @@
           <div class="property">
             <span class="actions pull-right">
                  <?php // TODO: tester l envoie de la requete ?>
-                 <a id="bookmarkItem" href="#" class="bookmark" data-bookmark-state="empty"><span class="title-add">В избранное</span><span class="title-added">Добавлено</span></a>
+                 {{-- <a id="{>house.id<}"  ng-href="dashboard/bookmarked/{>house.id<}" class="bookmark" data-bookmark-state="empty"><span class="title-add">В избранное</span><span class="title-added">Добавлено</span></a> --}}
              </span>
 
             <div class="property-image">

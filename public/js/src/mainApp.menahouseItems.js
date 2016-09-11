@@ -1,25 +1,12 @@
 
-// var mainApp = angular.module('mainApp', ['ui-rangeSlider']);
+var mainApp.menahouseItem.module = angular.module('mainApp.menahouseItem.module',
+                                                  ['ui-rangeSlider']);
 
-var mainApp = angular.module('mainApp', ['ui-rangeSlider',
-                                         'ui.bootstrap'
-                                        ]);
+// var mainApp.menahouseItem.module = angular.module('mainApp.menahouseItem.module', ['ui-rangeSlider',
+//                                          'ui.bootstrap'
+//                                         ]);
 
-/*app configuration added here*/
-mainApp.config(['$interpolateProvider', '$locationProvider',
-  function($interpolateProvider, $locationProvider) {
-
-    $interpolateProvider.startSymbol('{>');
-    $interpolateProvider.endSymbol('<}');
-
-    $locationProvider.html5Mode({
-      enabled: true,
-      requireBase: false
-    });
-  }
-]);
-
-mainApp.factory('RangeSliderFactory', function() {
+mainApp.menahouseItem.module.factory('RangeSliderFactory', function() {
   // private variables and functions
   var range = {
     min: 20,
@@ -35,12 +22,14 @@ mainApp.factory('RangeSliderFactory', function() {
 });
 
 
-mainApp.controller("ItemsDetailsController", ['$scope', 'RangeSliderFactory', function($scope, RangeSliderFactory) {
+mainApp.menahouseItem.module.controller("ItemsDetailsController",
+        ['$scope', 'RangeSliderFactory', function($scope, RangeSliderFactory) {
   $scope.range = RangeSliderFactory.getrangeValue();
 }]);
 
 
-mainApp.controller("mainController", ['$scope', 'RangeSliderFactory','$http', function($scope, RangeSliderFactory, $http) {
+mainApp.menahouseItem.module.controller("mainController",
+    ['$scope', 'RangeSliderFactory','$http', function($scope, RangeSliderFactory, $http) {
 
   $scope.range = RangeSliderFactory.getrangeValue();
   var url = '/getqueryresults';
@@ -116,7 +105,7 @@ mainApp.controller("mainController", ['$scope', 'RangeSliderFactory','$http', fu
           default:
             tproom = "Студия";
             break;
-        }
+        };
 
         if (type_nedvizhimosti == 'Новостройки') {
             if (tproom != 'Студия') {
@@ -138,8 +127,16 @@ mainApp.controller("mainController", ['$scope', 'RangeSliderFactory','$http', fu
 }]);
 
 
+// mainApp.menahouseItem.module.controller("MesFavorisController", ['$scope', '$http', function($scope,  $http) {
+//     var url = '/getfavoris';
+//   //  $scope.mesfavoris = [];
+//    $scope.mesfavoris = "hi from controller";
+//
+// }]);
+
+
 // var mena = angular.module('mena', ['ui.bootstrap']);
-var mena = angular.module('mena', ['ui.bootstrap']);
+var mena = angular.module('mena', []);
 
 mena.config(['$interpolateProvider', '$locationProvider',
   function($interpolateProvider, $locationProvider) {
@@ -153,9 +150,6 @@ mena.config(['$interpolateProvider', '$locationProvider',
     });
   }
 ]);
-
-
-// ======================================================== gestion des favoris
 
 mena.controller("MesFavorisController", ['$scope', '$http', function($scope,  $http) {
 
@@ -236,7 +230,7 @@ mena.controller("MesFavorisController", ['$scope', '$http', function($scope,  $h
            default:
              tproom = "Студия";
              break;
-         }
+         };
 
         return tproom;
 
@@ -245,28 +239,22 @@ mena.controller("MesFavorisController", ['$scope', '$http', function($scope,  $h
 
 }]);
 
-
-mena.controller("UserMailInboxController", ['$scope', '$http', function($scope,  $http) {
+mena.controller("UserMailController", ['$scope', '$http', function($scope,  $http) {
 
    var url = '/mailbox/usermail';
    $scope.usermessages = [];
 
    $http.get(url).success(function(response) {
           $scope.usermessages = response;
-          $scope.totalMails = response.length;
+
    }).error(function(response) {
            console.log(response);
          //  alert('This is embarassing. An error has occured. Please check the log for details');
    });
 
-
+   $scope.totalItems = $scope.usermessages.length;
    $scope.currentPage = 1;
-   $scope.mailPerPage = 10;
-
-   $scope.sliceTexte = function(sizeText){
-        return parseInt((sizeText * 85) / 100)
-
-   };
+   $scope.itemsPerPage = 2;
 
   //  $scope.addItemToBookmark  = function(iditem){
   //    $http.get('/bookmarked', {  params: { id: iditem } })
@@ -277,104 +265,4 @@ mena.controller("UserMailInboxController", ['$scope', '$http', function($scope, 
   //      })
   //  }
 
-}]);
-
-
-mena.controller("UserMailSentController", ['$scope', '$http', function($scope,  $http) {
-
-   var url = '/mailbox/usermailsenv';
-   $scope.usermessages = [];
-
-    // scope.msg = 'UserMailTrashController';
-
-   $http.get(url).success(function(response) {
-          $scope.usermessages = response;
-          $scope.totalMails = response.length;
-
-   }).error(function(response) {
-           console.log(response);
-         //  alert('This is embarassing. An error has occured. Please check the log for details');
-   });
-
-
-   $scope.currentPage = 1;
-   $scope.mailPerPage = 10;
-
-   $scope.sliceTexte = function(sizeText){
-        return parseInt((sizeText * 85) / 100)
-
-   };
-}]);
-
-
-mena.controller("UserMailTrashController", ['$scope', '$http', function($scope,  $http) {
-
-   var url = '/mailbox/usermailstrash';
-   $scope.usermessages = [];
-
-   $http.get(url).success(function(response) {
-          $scope.usermessages = response;
-          $scope.totalMails = response.length;
-    //      scope.msg = 'UserMailTrashController';
-   }).error(function(response) {
-           console.log(response);
-         //  alert('This is embarassing. An error has occured. Please check the log for details');
-   });
-
-
-   $scope.currentPage = 1;
-   $scope.mailPerPage = 10;
-
-   $scope.sliceTexte = function(sizeText){
-        return parseInt((sizeText * 85) / 100)
-
-   };
-}]);
-
-
-mena.controller("UserMailFavorisController", ['$scope', '$http', function($scope,  $http) {
-
-   var url = '/mailbox/usermailsfavoris';
-   $scope.usermessages = [];
-
-   $http.get(url).success(function(response) {
-          $scope.usermessages = response;
-          $scope.totalMails = response.length;
-   }).error(function(response) {
-           console.log(response);
-         //  alert('This is embarassing. An error has occured. Please check the log for details');
-   });
-
-
-   $scope.currentPage = 1;
-   $scope.mailPerPage = 10;
-
-   $scope.sliceTexte = function(sizeText){
-        return parseInt((sizeText * 85) / 100)
-
-   };
-}]);
-
-
-// ======================================================== gestion du mailbox
-
-// var mena = angular.module('mena', ['ui.bootstrap']);
-var menahouseInbox = angular.module('menahouseInbox', []);
-
-menahouseInbox.config(['$interpolateProvider', '$locationProvider',
-  function($interpolateProvider, $locationProvider) {
-
-    $interpolateProvider.startSymbol('{>');
-    $interpolateProvider.endSymbol('<}');
-
-    $locationProvider.html5Mode({
-      enabled: true,
-      requireBase: false
-    });
-  }
-]);
-
-
-menahouseInbox.controller('inboxController',['$scope', '$http', function($scope,  $http){
-    $scope.gretting = "inbox module";
 }]);

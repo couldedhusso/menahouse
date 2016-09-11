@@ -15,41 +15,45 @@
 
 @section('content')
   <!-- My Properties -->
-             <div class="col-lg-9 col-sm-3">
+             <div class="col-lg-9 col-sm-3" ng-controller="UserMailTrashController">
+                 {>scope.msg<}
                  <div class="mail-box-header">
                      <h2>
                          Удалёные сообщения
                      </h2>
-                     <div class="mail-tools">
+                     {{-- <div class="mail-tools">
                          <div class="btn-group pull-right">
                              <button class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i></button>
                              <button class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i></button>
                          </div>
-                     </div>
+                     </div> --}}
                  </div>
                  <div class="mail-box">
-                   <table class="table table-hover table-mail">
-                     <tbody>
-                       @foreach($messagesDel as $umsge)
+                 <table class="table table-hover table-mail">
+                   <tbody ng-repeat="umsge in usermessages.slice(((currentPage-1)*mailPerPage), ((currentPage)*mailPerPage))">
+                         <tr class="unread">
+                             <td class="check-mail">
+                                 <input type="checkbox" class="i-checks">
+                             </td>
 
-                           <tr class="read">
-                               {{-- <td class="check-mail">
-                                   <input type="checkbox" class="i-checks">
-                               </td> --}}
-                               <td class="mail-contact">От : <a href="{{url("/mailbox/inbox/".$umsge->id)}}" > <?php  echo  $umsge->getSenderInfos($umsge->fromid); ?> </a></td>
-                               <td class="mail-subject"><a href="{{url("/mailbox/inbox/".$umsge->id)}}" >
-                                 <?php
-                                    $str = $umsge->body;
-                                    $lenStr = strlen($str);
-                                    echo mb_strimwidth($str, 0, $lenStr/3, " ...");
-                                  ?>
-                               </a></td>
-                               <td class="text-right mail-date">{{$umsge->created_at->format('d.m')}}</td>
-                           </tr>
-                       @endforeach
-                     </tbody>
-                   </table>
-                   </div>
+                             <td class="mail-contact"><a ng-href="/mailbox/inbox/{>umsge.id<}">{>umsge.familia<} {>umsge.imia<}</a></td>
+                             <td class="mail-subject">
+                               <a ng-href="/mailbox/inbox/{>umsge.id<}"> {> umsge.body.slice(0, -sliceTexte(umsge.body.length)) <} ...
+                             </a>
+                           </td>
+                             <td class="text-right mail-date">{> umsge.created_at.slice(0, -9)<}</td>
+
+                         </tr>
+                   </tbody>
+                 </table>
+
+                 <!-- Pagination -->
+                   <div class="center">
+                     <pagination total-items="totalMails" ng-model="currentPage"  class="pagination" items-per-page="mailPerPage"></pagination>
+                   </div><!-- /.center-->
+                   <!-- End Pagination -->
+
+                 </div>
              </div>
              <!-- end My Properties -->
 @endsection

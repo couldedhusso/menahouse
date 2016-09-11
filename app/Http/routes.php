@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Input as Input;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\UserMessage;
 use Illuminate\Support\Collection ;
-
+use Carbon\Carbon;
 use Menahouse\CustomHelper;
 use Menahouse\MenahouseSearchEngine;
 
@@ -39,6 +39,10 @@ use Menahouse\MenahouseSearchEngine;
 
 
 Route::group(['middleware' => 'auth'], function () {
+
+    Route::get('subscription-plan', function(){
+      return View('pages.subscription-plan');
+    });
 
     Route::get('dashboard/advertisements', function(){
 
@@ -87,22 +91,31 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('dashboard/bookmarked/', 'FavorisUtilisateurController@bookmarkItem');
 
-    Route::get('dashboard/bookmarked/{id}', function($id){
+    Route::get('dashboard/bookmarked/', 'FavorisUtilisateurController@bookmarkItem');
 
-        $user_id = Auth::user()->id;
-        $bkm =  Bookmarked::whereuser_id($user_id)
-                            ->where('obivlenie_id', '=', $id)
-                            ->first();
-
-        if ($bkm == null ) {
-            $favoris = Bookmarked::create([
-              'user_id' => $user_id,
-              'obivlenie_id' => $id
-            ]);
-        }
-
-        return redirect()->back();
-    });
+    // Route::get('dashboard/bookmarked/{id}', function($id){
+    //
+    //     /// TODO :   RENAME obivlenie_id TO  item_id
+    //
+    //     $user_id = Auth::user()->id;
+    //     $bkm =  Bookmarked::whereuser_id($user_id)
+    //                         ->where('obivlenie_id', '=', $id)
+    //                         ->first();
+    //
+    //     if ($bkm == null ) {
+    //         $favoris = Bookmarked::create([
+    //           'user_id' => $user_id,
+    //           'obivlenie_id' => $id
+    //         ]);
+    //     } else {
+    //
+    //       //  delete from bookmarked table
+    //       $bkm->deleted = true;
+    //       $bkm->save();
+    //     }
+    //
+    //     return redirect()->back();
+    // });
 
     Route::get('getuserbookmarkedproperties', function()
     {
@@ -150,9 +163,15 @@ Route::group(['middleware' => 'auth'], function () {
                                   'uses' => 'UserMessageController@update']);
 
     Route::group(['prefix' => 'mailbox'], function () {
-          Route::get('inbox', ['as' => 'messages', 'uses' => 'UserMessageController@index']);
-          Route::get('message/compose/{id}', function($id){
 
+          Route::get('usermail', 'UserMessageController@usermail');
+          Route::get('usermailsenv', 'UserMessageController@usermailsenv');
+          Route::get('usermailstrash', 'UserMessageController@usermailstrash');
+          Route::get('usermailsfavoris', 'UserMessageController@usermailsfavoris');
+
+          Route::get('inbox', ['as' => 'messages', 'uses' => 'UserMessageController@index']);
+
+          Route::get('message/compose/{id}', function($id){
 
               $user = Auth::user() ;
               $ch = new CustomHelper;
@@ -575,8 +594,6 @@ Route::get('/', function () {
   //  }
 
 
-
-
   //   $obivlenie = obivlenie::create([
   //       // 'adressa' => $adressa,
   //       'metro' => str_random(4),
@@ -644,6 +661,7 @@ Route::get('/', function () {
   //     }
   // }
   //
+
   if (Auth::check()) {
 
       $userID = Auth::user()->id ;

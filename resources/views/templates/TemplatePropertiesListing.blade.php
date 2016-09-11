@@ -149,6 +149,8 @@
 <script type="text/javascript" src="{{ asset('js/angular/vendor/angular.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/sm.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/angular.rangeSlider.js')}} "></script>
+
+
 <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
 
 

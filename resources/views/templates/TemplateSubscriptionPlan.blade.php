@@ -72,7 +72,7 @@
 
                     </ul>
                 </nav><!-- /.navbar collapse-->
-                <div class="add-your-property">
+                {{-- <div class="add-your-property">
 
                   @if(Auth::check())
                       <a href="{{ url('/dashboard/advertisement/add') }}" class="btn btn-green"><i class="fa fa-plus"></i><span class="text">Разместить объявление</span></a>
@@ -80,7 +80,7 @@
                       <a href="{{ url('/auth/login') }}" class="btn btn-green"><i class="fa fa-plus"></i><span class="text">Разместить объявление</span></a>
                   @endif
 
-                </div>
+                </div> --}}
             </header><!-- /.navbar -->
         </div><!-- /.container -->
     </div><!-- /.navigation -->
@@ -90,7 +90,7 @@
         <!-- Breadcrumb -->
         <div class="container">
             <ol class="breadcrumb">
-                <li><a href="index.html">Главная</a></li>
+                <li><a href="{{ url('/') }}">Главная</a></li>
                 <li class="active">Тарифный план</li>
             </ol>
         </div>

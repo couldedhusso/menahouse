@@ -253,7 +253,6 @@ class MenahouseSearchEngine
 
      $queryParameters = Session::get('menahouseUserQuery');
 
-
      $foundNotEmptyValue = false;
 
      foreach ($queryParameters as $key => $value) {
@@ -281,6 +280,8 @@ class MenahouseSearchEngine
                    $qb = $qb." AND ".$key." ".$value;
                }
        }
+
+
        if (Auth::check()) {
            $qb = $qb. " AND user_id <> ".Auth::user()->id;
        }

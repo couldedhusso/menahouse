@@ -12,13 +12,11 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ elixir("css/all.css") }}">
 
-
-
     <title>@yield('Title')</title>
 
 </head>
 
-<body class="page-sub-page page-create-account page-account" id="page-top" ng-app="Mena" ng-controller="MesFavorisController">
+<body class="page-sub-page page-create-account page-account" id="page-top" ng-app="mena" ng-controller="MesFavorisController">
 <!-- Wrapper -->
 <div class="wrapper">
 

@@ -38,7 +38,7 @@
                                             <div class="tag price">{> house.price <}</div>
                                         </div>
                                         </td>
-                                        <td>{>house.bkm_date<}</td>
+                                        <td>{> house.bkm_date.slice(0, -9)<}</td>
                                         <td class="actions">
                                           <a ng-href="/property/{>house.id<}" class="edit"><i class="fa fa-link" title="Перейти к объявлению"></i>Перейти</a>
                                           <a ng-href="/dashboard/bookmarked/delete/{>house.bkm_id<}"><i class="delete fa fa-trash-o" title="Удалить объявление"></i></a>

@@ -7,10 +7,14 @@ use Illuminate\Eloquent\Model;
  */
 class FavorisUtilisateurs extends Model
 {
-    protected $fillable = ['deleted'];
+    protected $fillable = ['user_id', 'deleted', 'bkm_date'];
     protected $guarded =  array('id');
 
-    public function favorisutilisateurable(){
+    // public function favorisutilisateurable(){
+    //   return this->morphTo();
+    // }
+
+    public function bookmarkable(){
       return this->morphTo();
     }
 }

@@ -9,21 +9,14 @@ use App\Http\Requests;
 class FavorisUtilisateurController extends Controller
 {
     public function bookmarkItem(Request $data){
-        $user_id = Auth::user()->id;
-        $bkm =  Bookmarked::whereuser_id($user_id)
-                            ->where('obivlenie_id', '=', $id)
-                            ->first();
 
-        $data = new carbon;
-        $bkm_date = date($data, "d.m.Y");
+        /// TODO :   RENAME obivlenie_id TO  item_id
 
-        if ($bkm == null ) {
-            $favoris = Bookmarked::create([
-              'user_id' => $user_id,
-              'obivlenie_id' => $id,
-              'created_at' => $bkm_date
-            ]);
+        if (Auth::check()) {
+
         }
+
+        $user_id = Auth::user()->id;
 
        return Redirect('dashboard/advertisements');
     }
@@ -34,5 +27,43 @@ class FavorisUtilisateurController extends Controller
 
     public function getBookmarkItemById($req){
 
+    }
+
+    private  function getbookmarked($id, $userID, $bookmarkable)
+    {
+
+
+      $bkm =  Bookmarked::whereuser_id($userID)
+                          ->wherebookmarkable_id($id)
+                          >AndWhere('deleted', '=', false )
+                          ->first();
+
+      if ($bkm == null ) {
+
+          $date = date_create(Carbon::now());
+          $bkm_date = date_format($date,"d.m.Y");
+
+          $img = new Images ;
+          $img = $obivlenie->images()->create(array('path' => $filename));
+
+          $imgvalue->move($StoragePath["storage"] , $filename);
+
+         //  $imgvalue->move(public_path().'/storage/pictures' , $filename);
+          $obivlenie->images()->save($img);
+
+          $favoris = Bookmarked::create([
+            'user_id' => $userID,
+            'obivlenie_id' => $id,
+          ]);
+      } else {
+          $bkm->deleted = true;
+          $bkm->save();
+      }
+
+    }
+
+    private  function getbookmarked($id)
+    {
+      # code...
     }
 }

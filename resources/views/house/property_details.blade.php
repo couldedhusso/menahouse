@@ -15,7 +15,7 @@
 
       <?php
          $typehouse = $house->typeHouse($house->kolitchestvo_komnat, $house->type_nedvizhimosti) ;
-         $retVal = ($house->status == "Обмен") ? "Обмен" : "Обмен-продаж" ;
+         $retVal = ($house->status == "Обмен") ? "Обмен" : "Обмен+продажу" ;
       ?>
       <h1>{{$typehouse}} на {{ $retVal }}</h1>
       <!-- CZ изменяемый статус на "обмен"/"продажу" -->
@@ -24,13 +24,9 @@
 
       <span class="actions">
         <!--<a href="#" class="fa fa-print"></a>-->
-        @if(Auth::check())
-          <a href="{{url("/dashboard/bookmarked/".$id)}}" class="bookmark" data-bookmark-state="empty"><span class="title-add">Добавить в избранное</span><span class="title-added">Добавлено</span></a>
-          <a href="#form-contact-agent" class="btn btn-white-grey-2" style=""title="Написать"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-        @else
-          <a href="#" class="bookmark" data-bookmark-state="empty"><span class="title-add">Добавить в избранное</span><span class="title-added">Добавлено</span></a>
-          <a href="#form-contact-agent" class="btn btn-white-grey-2" style=""title="Написать"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-        @endif
+
+        <a href="{{url("/dashboard/bookmarked/".$id)}}" class="bookmark" data-bookmark-state="empty"><span class="title-add">Добавить в избранное</span><span class="title-added">Добавлено</span></a>
+        <a href="#form-contact-agent" class="btn btn-white-grey-2" style=""title="Написать"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 
       </span>
   </header>
