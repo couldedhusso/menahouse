@@ -116,7 +116,7 @@ return [
         'cluster' => false,
 
         'default' => [
-                    'host'     => 'menahouse-cache.sa54lb.0001.euc1.cache.amazonaws.com',
+                    'host'     => 'localhost',
                     'port'     => 6379,
                     'database' => 0,
         ],
