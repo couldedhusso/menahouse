@@ -84,7 +84,6 @@ mainApp.controller("mainController", ['$scope', 'RangeSliderFactory','$http', fu
       var nbre_room = parseInt(number_room, 10);
       var tproom ;
 
-
       if (type_nedvizhimosti == "Комната" ||
           type_nedvizhimosti == 'Частный дом') {
 
@@ -102,15 +101,15 @@ mainApp.controller("mainController", ['$scope', 'RangeSliderFactory','$http', fu
             break;
 
           case 2:
-            tproom = "2х комнатная ";
+            tproom = "2х комнатная";
             break;
 
           case 3:
-            tproom = "3х комнатная ";
+            tproom = "3х комнатная";
             break;
 
           case 4:
-              tproom = "4х комнатная ";
+              tproom = "4х комнатная";
               break;
 
           default:
@@ -118,19 +117,21 @@ mainApp.controller("mainController", ['$scope', 'RangeSliderFactory','$http', fu
             break;
         }
 
-        if (type_nedvizhimosti == 'Новостройки') {
-            if (tproom != 'Студия') {
-                return tproom + 'квартира в новостроике';
-            } else {
-              return tproom + 'в новостроике';
-            }
-        } else {
-          if (tproom == 'Студия') {
-              return tproom
-          } else {
-            return tproom + 'квартира';
-          }
-        }
+        return tproom;
+
+        // if (type_nedvizhimosti == 'Новостройки') {
+        //     if (tproom != 'Студия') {
+        //         return tproom + 'квартира в новостроике';
+        //     } else {
+        //       return tproom + 'в новостроике';
+        //     }
+        // } else {
+        //   if (tproom == 'Студия') {
+        //       return tproom
+        //   } else {
+        //     return tproom + 'квартира';
+        //   }
+        // }
 
       }
   }

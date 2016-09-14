@@ -82,20 +82,25 @@ class Obivlenie extends Model
 
           return $tpRoom;
         };
+
         $isStudio = function() use($number_room, $room){
-             return ($room($number_room) != "Студия") ? false : true ;
+             return ($room($number_room) == "Студия") ? true : false ;
         };
 
         if (in_array($type_nedvizhimosti, $TYPE_OBJECT)) {
             return  ($type_nedvizhimosti  == "Комната") ? "Комната" : "Дом" ;
+
+        }else {
+          
+          $rm_object = $room($number_room);
+          if ($type_nedvizhimosti  == "Новостройки") {
+             $ret = (!$isStudio($number_room)) ? $rm_object."квартира в новостроике" : "Студия в новостроике" ;
+          } else {
+             $ret = (!$isStudio($number_room)) ? $rm_object."квартира" : "Студия" ;
+          }
+
+          return $ret;
         }
-
-        $rm_object = $room($number_room);
-
-        return  ($type_nedvizhimosti  == "Новостройки") ?
-          (!$isStudio($number_room)) ? $rm_object."квартира в новостроике" : "Студия в новостроике"  :
-          (!$isStudio($number_room)) ? $rm_object."квартира" : "Студия" ;
-
     }
 
     public function HouseCategorie($numberOfRomm ){

@@ -232,16 +232,15 @@ class UserMessageController extends Controller
            return redirect()->back();
         }
 
-
         try
         {
-            $haveHouse = Obivlenie::whereid($To)->firstOrFail();
+            // authoriser uniquement les personnes qui ont des apparts a echanger entre elles
+            $haveHouse = obivlenie::whereuser_id($sender)->firstOrFail();
 
             // $conversation = Conversation::create(['subject' => Input::get('subject')]);
-
             $um = UserMessage::create([
                 'subject' => Input::get('subject'),
-                'fromid' => Auth::user()->id,
+                'fromid' => $sender,
                 'toid' => $To,
                 'id_obivlenie' => Input::get('id_obivlenie'),
                 'id_conversation' => Input::get('id_obivlenie'),
@@ -255,19 +254,19 @@ class UserMessageController extends Controller
             ]);
 
             $sender = Sender::create([
-              'userid' => Auth::user()->id,
+              'userid' => $sender,
               'msgid' =>  $um->id
             ]);
         }
         catch (ModelNotFoundException $e){
+
             Session::flash('flash_message', 'Чтобы писать владельцу
                                             надо иметь квартиру.');
-
             return redirect()->back();
         }
 
 
-       // ==== TO DO : return to list found items
+       // ==== TO DO : inbox
        return redirect('mailbox/inbox');
     }
 

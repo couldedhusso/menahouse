@@ -130,7 +130,7 @@
 <script type="text/javascript" src="{{asset('assets/js/fileinput.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('assets/js/custom.js')}}"></script>
 <script type="text/javascript" src="{{ asset('js/angular/vendor/angular.min.js') }}"></script>
-<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
+{{-- <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script> --}}
 
 <script type="text/javascript" src="{{ asset('js/src/menahouseInit.js') }} "></script>
 

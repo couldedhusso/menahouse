@@ -168,28 +168,33 @@
                                     <tr class="buttons">
                                         <td></td>
                                         <td class="" data-package="free">
-                                          <form class="" action="signup" method="post">
+                                          {{-- <form class="" action="signup" method="post">
                                               <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
                                               <input  type="hidden" name="plan" value="free">
                                               <button type="submit" class="btn btn-gray small">Выбрать</button>
-                                          </form>
+                                          </form> --}}
+
+                                          <button type="submit" class="btn btn-gray small">Выбрать</button>
+
                                         </td>
 
                                         <td data-package="silver">
-                                          <form class="" action="signup" method="post">
+                                          {{-- <form class="" action="signup" method="post">
                                               <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
                                               <input  type="hidden" name="plan" value="silver">
                                               <button type="submit" class="btn btn-success small">Выбрать</button>
-                                          </form>
+                                          </form> --}}
+                                            <button type="submit" class="btn btn-gray small">Выбрать</button>
 
                                         </td>
 
                                         <td data-package="gold">
-                                          <form class="" action="signup" method="post">
+                                          {{-- <form class="" action="signup" method="post">
                                               <input name="_token" type="hidden" value="{!! csrf_token() !!}" />
                                               <input  type="hidden" name="plan" value="gold">
                                                 <button type="submit" class="btn btn-yellow small">Выбрать</button>
-                                          </form>
+                                          </form> --}}
+                                            <button type="submit" class="btn btn-gray small">Выбрать</button>
 
                                         </td>
                                     </tr>

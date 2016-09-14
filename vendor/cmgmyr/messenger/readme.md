@@ -1,8 +1,10 @@
 [![Build Status](https://img.shields.io/travis/cmgmyr/laravel-messenger/v2.svg?style=flat-square)](https://travis-ci.org/cmgmyr/laravel-messenger)
-[![Code Climate](https://img.shields.io/codeclimate/github/cmgmyr/laravel-messenger.svg?style=flat-square)](https://codeclimate.com/github/cmgmyr/laravel-messenger)
+[![Scrutinizer](https://img.shields.io/scrutinizer/g/cmgmyr/laravel-messenger/v2.svg?style=flat-square)](https://scrutinizer-ci.com/g/cmgmyr/laravel-messenger/?branch=v2)
+[![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/cmgmyr/laravel-messenger/v2.svg?style=flat-square)](https://scrutinizer-ci.com/g/cmgmyr/laravel-messenger/?branch=v2)
 [![Latest Version](https://img.shields.io/github/release/cmgmyr/laravel-messenger.svg?style=flat-square)](https://github.com/cmgmyr/laravel-messenger/releases)
 [![Total Downloads](https://img.shields.io/packagist/dt/cmgmyr/messenger.svg?style=flat-square)](https://packagist.org/packages/cmgmyr/messenger)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Stories in Ready](https://badge.waffle.io/cmgmyr/laravel-messenger.svg?label=ready&title=Ready)](http://waffle.io/cmgmyr/laravel-messenger)
 [![Get help on Codementor](https://cdn.codementor.io/badges/get_help_github.svg)](https://www.codementor.io/cmgmyr)
 
 # Laravel Messenger

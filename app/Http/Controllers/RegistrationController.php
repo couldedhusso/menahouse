@@ -9,6 +9,7 @@ use Redirect;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Foundation\Exceptions;
+use Illuminate\Support\Facades\Session;
 // use App\Traits\CaptchaTrait;
 
 use ReCaptcha\ReCaptcha;
@@ -138,6 +139,21 @@ class RegistrationController extends Controller
   //          ->subject('Подтверждение регистрации');
   // });
 
+  // $Inputs = ['name' => Input::get('fio'), 'email' =>  Input::get('email')];
+  //
+  // $validator = Validator::make(
+  // array(
+  //   'name' => 'required',
+  //   'email' => 'required|email|unique:users'
+  //   )
+  // );
+  //
+  // $validator = Validator::make($Inputs, $rules);
+  //
+  // if ($validator->fails()) {
+  //   return redirect()->withErrors($validator);
+  // }
+
 
   $email = Input::get('email');
 
@@ -146,6 +162,7 @@ class RegistrationController extends Controller
   if ($emailExist)  {
 
       // Flash::warning('такая элекьронная почта уже есть !!');
+      Session::flash('flash_message', 'такая элекьронная почта уже есть.');
       return redirect()->back();
 
   } else {

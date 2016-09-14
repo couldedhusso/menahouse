@@ -34,13 +34,14 @@
                                    @foreach($obivlenie as $house)
                                    <tr>
                                        <?php
-                                          $typephouse = $house->HouseCategorie($house->kolitchestvo_komnat) ;
+                                          $typehouse = $house->HouseCategorie($house->kolitchestvo_komnat) ;
+                                          // $typehouse = $house->typeHouse($house->kolitchestvo_komnat, $house->type_nedvizhimosti) ;
                                        ?>
                                        <td class="image">
                                            <a href="{{url('/property/'.$house->id)}}"><img alt="" src="{{asset('storage/thumbnail/'.$house->id.'.jpeg')}}"></a>
                                        </td>
                                        <td><div class="inner">
-                                           <a href="{{url('/property/'.$house->id)}}"><h2>{{ $typephouse.', м.'.$house->metro }}</h2></a>
+                                           <a href="{{url('/property/'.$house->id)}}"><h2>{{ $typehouse.', м.'.$house->metro }}</h2></a>
                                            <figure>{{ $house->ulitsa }}</figure>
                                            <div class="tag price">{{ $house->price }}</div>
                                        </div>

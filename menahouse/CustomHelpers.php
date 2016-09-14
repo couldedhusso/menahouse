@@ -6,6 +6,8 @@
   use Illuminate\Contracts\Filesystem\Filesystem;
   use Yandex\Geo;
   use Redis;
+  use DB;
+  use App\User;
 
   // require "predis/autoload.php";
   // Predis\Autoloader::register();
@@ -36,7 +38,8 @@
     private function createToken($user){
 
         $issuedAt   = time();
-        $expire     = $issuedAt + 60; // 30 * 24 * 60 * 60 license d essai pour 1 mois
+        // $expire     = $issuedAt + 60; // 30 * 24 * 60 * 60 license d essai pour 1 mois
+        $expire     = $issuedAt +  30 * 24 * 60 * 60; //license d essai pour 1 mois
 
         /*
          * Create the token as an array
@@ -67,8 +70,15 @@
         // definisons le client redis
         // par default ns utiliserons le db 0 pour les licenses user
 
+
+
+        // $getUser = DB::table('users')->where('id', '=', $user->id)->first();
+
+        $getUser = User::where('id', '=', $user->id)->first();
         if (!Redis::hget("users:$user->id", "payload")) {
             $payload = $this->createToken($user);
+            $getUser->payload = $payload;
+            $getUser->save();
             Redis::hset("userpass:$user->id", "payload", "$payload");
         }
 

@@ -77,6 +77,14 @@
         <!-- end Breadcrumb -->
 
         <div class="container">
+              @if(Session::has('flash_message'))
+                <div class="alert alert-danger text-lg text-center" role="alert">
+                  <h3 class="margin-top margin-bottom-lg"><i class="fa fa-meh-o" aria-hidden="true"></i> Oops! Кажется введенная почта используется.</h3>
+                </div>
+              @endif
+              {{-- <div class="alert alert-info text-center">
+                <strong>Внимание! </strong> {{ Session::get('flash_message') }}&nbsp;
+             </div> --}}
               @yield('content')
         </div><!-- /.container -->
     </div>

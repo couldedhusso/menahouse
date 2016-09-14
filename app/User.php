@@ -31,7 +31,7 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     protected $fillable = ['familia', 'imia', 'otchestvo', 'name','email', 'password',
-                           'phonenumber', 'confirmation_code', 'status'];
+                           'phonenumber', 'confirmation_code', 'status', 'payload', 'billing'];
 
     // status == par exemple user bloque
 

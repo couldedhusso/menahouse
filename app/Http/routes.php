@@ -61,9 +61,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard/advertisement/add', function ()    {
         $userid = Auth::user()->id ;
         $havehouse = Obivlenie::whereuser_id($userid)->count();
-        if ($havehouse >= 1) {
-            return redirect()->back();
-        }
+
+        // TODO : en fonction du type de contrat definir le nombre d annonce
+
+        // if ($havehouse >= 1) {
+        //     return redirect()->back();
+        // }
 
         //
         // $token = Redis::hget("users:$userid", "payload");
@@ -171,64 +174,77 @@ Route::group(['middleware' => 'auth'], function () {
 
           Route::get('inbox', ['as' => 'messages', 'uses' => 'UserMessageController@index']);
 
-          Route::get('message/compose/{id}', function($id){
+          Route::group(['middleware' => 'mailboxacces'], function (){
 
-              $user = Auth::user() ;
-              $ch = new CustomHelper;
+              Route::get('message/compose/{id}', function($id){
 
-              if ($ch->getUserPlanPass($user)) {
-                  $house = Obivlenie::whereid($id)->first();
-                  $typemsg = "Новое сообщение ";
-                  $To = $house->user_id;
-                  $flag ="compose";
+                  $user = Auth::user() ;
+                  $ch = new CustomHelper;
 
-                  return view('messenger.compose', compact('house', 'To','typemsg', 'flag'));
-              }
 
-              return redirect()->back();
-          });
+                      $house = Obivlenie::whereid($id)->first();
+                      $typemsg = "Новое сообщение ";
+                      $To = $house->user_id;
+                      $flag ="compose";
 
-          Route::get('message/reply/{fromid}/{houseid}', function($fromid, $houseid){
-              // $sender =  User::where('id', '=', Auth::user()->id )->first();
-              // $usrmsge = $msgparams->usrmsge;
-              // $receiver = $usrmsge->fromid;
+                      return view('messenger.compose', compact('house', 'To','typemsg', 'flag'));
 
-              $typemsg = "Ответ на сообщение";
-              $To = $fromid;
 
-              if ($fromid != Auth::user()->id ) {
+                  // if ($ch->getUserPlanPass($user)) {
+                  //     $house = Obivlenie::whereid($id)->first();
+                  //     $typemsg = "Новое сообщение ";
+                  //     $To = $house->user_id;
+                  //     $flag ="compose";
+                  //
+                  //     return view('messenger.compose', compact('house', 'To','typemsg', 'flag'));
+                  // }
+                  //
+                  // return redirect()->back();
+              });
 
-                $house = Obivlenie::whereid($houseid)->with('images')->first();
-                $typemsg = "Ответ на сообщение ";
-                $flag = "compose";
-                return view('messenger.compose', compact('house', 'typemsg', 'To', 'flag'));
-              }
+              Route::get('message/reply/{fromid}/{houseid}', function($fromid, $houseid){
+                  // $sender =  User::where('id', '=', Auth::user()->id )->first();
+                  // $usrmsge = $msgparams->usrmsge;
+                  // $receiver = $usrmsge->fromid;
 
-              return redirect('/mailbox/inbox');
+                  $typemsg = "Ответ на сообщение";
+                  $To = $fromid;
 
-          });
-          Route::get('message/sent', ['as' => 'messages.sent', 'uses' => 'UserMessageController@sent']);
-          Route::get('message/trash', ['as' => 'messages.trash', 'uses' => 'UserMessageController@trash']);
-          Route::get('message/liked', ['as' => 'messages.liked', 'uses' => 'UserMessageController@liked']);
-          Route::get('inbox/{id}', ['as' => 'messages.show', 'uses' => 'UserMessageController@show']);
-          Route::post('message/compose', ['as' => 'messages.store', 'uses' => 'UserMessageController@store']);
-          Route::put('inbox/{id}', ['as' => 'messages.update', 'uses' => 'UserMessageController@update']);
+                  if ($fromid != Auth::user()->id ) {
 
-          Route::get('message/trash/{idmsg}', function($idmsg){
-            $receiverMsg = Receiver::wheretoid(Auth::user()->id)
-                                      ->where('msgid', '=', $idmsg)
-                                      ->update(array('deleted' => 1));
+                    $house = Obivlenie::whereid($houseid)->with('images')->first();
+                    $typemsg = "Ответ на сообщение ";
+                    $flag = "compose";
+                    return view('messenger.compose', compact('house', 'typemsg', 'To', 'flag'));
+                  }
 
-            return redirect('/mailbox/inbox');
+                  return redirect('/mailbox/inbox');
 
-          });
+              });
+              Route::get('message/sent', ['as' => 'messages.sent', 'uses' => 'UserMessageController@sent']);
+              Route::get('message/trash', ['as' => 'messages.trash', 'uses' => 'UserMessageController@trash']);
+              Route::get('message/liked', ['as' => 'messages.liked', 'uses' => 'UserMessageController@liked']);
+              Route::get('inbox/{id}', ['as' => 'messages.show', 'uses' => 'UserMessageController@show']);
+              Route::post('message/compose', ['as' => 'messages.store', 'uses' => 'UserMessageController@store']);
+              Route::put('inbox/{id}', ['as' => 'messages.update', 'uses' => 'UserMessageController@update']);
 
-          Route::get('message/like/{idmsg}', function($idmsg){
-            $receiverMsg = Receiver::wheretoid(Auth::user()->id)
-                                      ->where('msgid', '=', $idmsg)
-                                      ->update(array('favoris' => 1));
+              Route::get('message/trash/{idmsg}', function($idmsg){
+                $receiverMsg = Receiver::wheretoid(Auth::user()->id)
+                                          ->where('msgid', '=', $idmsg)
+                                          ->update(array('deleted' => 1));
 
-            return redirect('/mailbox/inbox');
+                return redirect('/mailbox/inbox');
+
+              });
+
+              Route::get('message/like/{idmsg}', function($idmsg){
+                $receiverMsg = Receiver::wheretoid(Auth::user()->id)
+                                          ->where('msgid', '=', $idmsg)
+                                          ->update(array('favoris' => 1));
+
+                return redirect('/mailbox/inbox');
+              });
+
           });
     });
 
@@ -302,7 +318,15 @@ Route::group(['middleware' => 'auth'], function () {
 
 });
 
-//====> advertisements routes
+
+
+///====================> advertisements routes ================================
+
+// TODO:
+      // 1- regler le probleme de parametres de recherches
+      // 2-changer les differentes urls suivant le modele
+        //localhost:8000/kvartiri/odnokomnatnaya
+        //localhost:8000/kvartiri/odnokomnatnaya
 
 Route::get('property/{id}', function($id){
 
@@ -337,7 +361,18 @@ Route::get('property/{id}', function($id){
 
 Route::get('property/number_of_rooms/{numberroom}', function($numberroom){
 
-  $paramSearch = array('kolitchestvo_komnat' => $numberroom, 'typerequest' => '2');
+
+  if ($numberroom == 4 ) {
+      $paramSearch = array(
+        'kolitchestvo_komnat' => '4',
+        'typerequest' => '1'
+      );
+
+  } else {
+      $paramSearch = array('kolitchestvo_komnat' => $numberroom, 'typerequest' => '3');
+  }
+  //dd($paramSearch);
+
 
   // Session::put('menahouseUserQuery', $paramSearch);
 
@@ -371,10 +406,6 @@ Route::get('property/number_of_rooms/{numberroom}', function($numberroom){
   // return view('pages.properties_listing_lines', compact('houses', 'foundelemts', 'paramSearch'));
 });
 
-Route::post('properties/all', function(){
-
-  return view('pages.properties_listing_lines', compact('houses', 'paramSearch'));
-});
 
 Route::get('property/type/{param}', function($param){
 
@@ -387,6 +418,16 @@ Route::get('property/type/{param}', function($param){
 
 });
 
+
+
+/// url servant les differentes requetes de recherches des users ===============
+
+
+
+
+///=============================================================================
+
+
 Route::post('property/catalogue', 'ObivlenieController@searchEngine');
 Route::post('properties/all', 'ObivlenieController@getCatalogue');
 Route::get('properties/all', 'ObivlenieController@getAllProperties');
@@ -397,6 +438,8 @@ Route::get('getqueryresults', 'ObivlenieController@getItemsCollections');
 Route::get('search-results', function(){
     return view('pages.properties_listing');
 });
+
+
 // Route::post('getSearchqueryValues', function(){
 //
 //   $value = Session::get('menahouseUserQuery');

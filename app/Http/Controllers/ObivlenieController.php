@@ -71,8 +71,10 @@ class ObivlenieController extends Controller
         $Helper = new CustomHelper;
         $StoragePath = $Helper->getStorageDirectory();
 
+      //  dd(Input::all());
+
         $TYPE_OBJECT = ['Комната', 'Частный дом'];
-        $submit_property = Input::get('propertytype');
+        $submit_property = Input::get('property-type');
 
         $submit_location = Input::get('city');
         if ("" ==  $submit_location) {
@@ -496,9 +498,7 @@ class ObivlenieController extends Controller
         $menahousefinder = new MenahouseSearchEngine ;
         $params += ['typerequest' => '2'];
 
-
-       $menahousefinder::SetQuerySearch($params);
-
+        $menahousefinder::SetQuerySearch($params);
 
         return redirect('search-results');
 

@@ -241,7 +241,6 @@ class MenahouseSearchEngine
 
    private function getIdFoundElements($items){
         $result = $items['hits']['hits'];
-        dd($result);
         $id = new Collection() ;
         foreach ($result['_source'] as $value) { $id->push($value['id']); }
         return $id ;
@@ -252,6 +251,33 @@ class MenahouseSearchEngine
 
 
      $queryParameters = Session::get('menahouseUserQuery');
+
+    //  if ($queryParameters['typerequest'] == 1) {
+    //        $houses = DB::table('obivlenie')->where('kolitchestvo_komnat', '=',
+    //                                        $queryParameters['numberroom'])->get();
+    //
+    //         return $houses;
+    //  }
+
+    /// dd($queryParameters);
+
+    if ($queryParameters['typerequest'] == '1') {
+      if (Auth::check()) {
+        $houses  = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', '4')
+                                              ->OrWhere('type_nedvizhimosti', '=','Комната')
+                                              ->where('user_id', '!=', $userID)
+                                              ->get();
+
+      } else {
+           $houses  = DB::table('obivlenie')->where('kolitchestvo_komnat', '>=', '4')
+                                              ->OrWhere('type_nedvizhimosti', '=','Комната')
+                                              ->get();
+      }
+
+
+        return $houses;
+
+    } else {
 
      $foundNotEmptyValue = false;
 
@@ -281,34 +307,29 @@ class MenahouseSearchEngine
                }
        }
 
-
        if (Auth::check()) {
            $qb = $qb. " AND user_id <> ".Auth::user()->id;
+           $houses = DB::select(DB::raw($qb), $params);
+       } else {
+         $houses = DB::select(DB::raw($qb), $params);
        }
        // $qb = $qb." ORDER BY ".$setOrderBy[$sort]." DESC";
-       $houses = DB::select(DB::raw($qb), $params);
+
      } else {
 
          $qdb = "SELECT * FROM obivlenie";
          $houses = DB::select(DB::raw($qdb));
-
          // $queryParameters['gorod'] = "Москва";
      }
-
 
     //  dd($houses);
 
       return $houses ;
-   }
+    }
+  }
 
   public static function SetQuerySearch($queryParameters){
-
     Session::put('menahouseUserQuery', $queryParameters);
-
-    // $menahousefinder = new MenahouseSearchEngine ;
-    //
-    // return $menahousefinder::getItemsCatalogue();
-
   }
 
 
