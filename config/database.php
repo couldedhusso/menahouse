@@ -116,13 +116,13 @@ return [
         'cluster' => false,
 
         'default' => [
-                    'host'     => 'localhost',
+                    'host'     => env('REDIS_HOST'),
                     'port'     => 6379,
                     'database' => 0,
         ],
 
         'session' => [
-            'host'     => 'localhost',
+            'host'     => env('REDIS_HOST'),
             'port'     => 6379,
             'database' => 1,
         ],
