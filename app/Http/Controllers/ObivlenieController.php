@@ -918,6 +918,7 @@ class ObivlenieController extends Controller
 
        $paramSearch = Input::except('_token');
        $menahousefinder = new MenahouseSearchEngine() ;
+       $paramSearch += ['typerequest' => '2'];
        $menahousefinder::SetQuerySearch($paramSearch);
 
        return  redirect('search-results');
